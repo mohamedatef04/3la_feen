@@ -1,0 +1,63 @@
+import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:ala_feen/core/theme/app_text_styles.dart';
+import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:ala_feen/core/widgets/logo_widget.dart';
+import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class GetStartedView extends StatelessWidget {
+  const GetStartedView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return Scaffold(
+      body: SafeArea(
+        child: SizedBox(
+          width: width,
+          child: Column(
+            children: [
+              Expanded(
+                child: LogoWidget(
+                  height: 100.h,
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  spacing: 20.h,
+                  children: [
+                    CustomButtonWidget(
+                      onPressed: () {},
+                      backgroundColor: AppColors.primary,
+                      child: Text(
+                        AppStrings.newUser,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.bold16(context),
+                      ),
+                    ),
+                    CustomButtonWidget(
+                      onPressed: () {},
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer,
+                      borderSide: const BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                      child: Text(
+                        AppStrings.login,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.semiBold16(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
