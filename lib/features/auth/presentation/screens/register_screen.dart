@@ -28,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +66,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   hintText: AppStrings.phoneNumber,
                   prefixIcon: const Icon(Icons.phone_android_outlined),
                   keyboardType: TextInputType.phone,
+                ),
+                SizedBox(height: 16.h),
+                CustomTextFormField(
+                  controller: passwordController,
+                  hintText: AppStrings.password,
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  obscureText: true,
                 ),
                 SizedBox(height: 16.h),
                 if (!isPassenger) ...[
