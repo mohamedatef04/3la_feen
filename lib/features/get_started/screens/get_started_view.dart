@@ -3,6 +3,7 @@ import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/core/widgets/logo_widget.dart';
 import 'package:ala_feen/features/auth/presentation/screens/login_screen.dart';
+import 'package:ala_feen/features/auth/presentation/screens/register_screen.dart';
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,7 +31,9 @@ class GetStartedView extends StatelessWidget {
                   spacing: 20.h,
                   children: [
                     CustomButtonWidget(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.push(RegisterScreen.routeName);
+                      },
                       backgroundColor: AppColors.primary,
                       child: Text(
                         AppStrings.newUser,
@@ -40,7 +43,7 @@ class GetStartedView extends StatelessWidget {
                     ),
                     CustomButtonWidget(
                       onPressed: () {
-                        GoRouter.of(context).push(LoginScreen.routeName);
+                        context.push(LoginScreen.routeName);
                       },
                       backgroundColor: Theme.of(
                         context,
