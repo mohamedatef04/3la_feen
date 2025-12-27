@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,11 +44,7 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
       children: [
         Text(
           widget.label,
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
-          ),
+          style: AppTextStyles.bold14(context),
         ),
         SizedBox(height: 8.h),
         Container(

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => MaterialApp.router(
         routerConfig: router,
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.getLightTheme(),
+        theme: AppTheme.getDarkTheme(),
         themeMode: ThemeMode.system,
         locale: const Locale('ar'),
         supportedLocales: const [

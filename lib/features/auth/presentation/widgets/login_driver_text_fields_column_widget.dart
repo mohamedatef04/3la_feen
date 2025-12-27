@@ -1,4 +1,3 @@
-import 'package:ala_feen/features/auth/presentation/screens/register_screen.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
@@ -8,7 +7,6 @@ import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart'
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginDriverTextFieldsColumnWidget extends StatelessWidget {
   const LoginDriverTextFieldsColumnWidget({
@@ -65,27 +63,6 @@ class LoginDriverTextFieldsColumnWidget extends StatelessWidget {
               AppStrings.login,
               style: AppTextStyles.bold16(context),
             ),
-          ),
-        ),
-        FadeInUp(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'ليس لديك حساب ؟ ',
-                style: AppTextStyles.medium14(context),
-              ),
-              GestureDetector(
-                onTap: () => context.push(RegisterScreen.routeName),
-                child: Text(
-                  AppStrings.newUser,
-                  style: AppTextStyles.bold14(context).copyWith(
-                    color: AppColors.primary,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ],
           ),
         ),
       ],
