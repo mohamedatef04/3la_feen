@@ -4,6 +4,7 @@ abstract class AppStrings {
   static const String skipButton = 'تخطي';
   static const String newUser = 'مستخدم جديد';
   static const String login = 'تسجيل الدخول';
+  static const String password = 'كلمه المرور';
   static const String guestAccount = 'الدخول كزائر';
   static const String pressHere = 'اضغط هنا';
   static const String driver = 'سائق';

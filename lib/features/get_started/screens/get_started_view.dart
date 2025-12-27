@@ -2,9 +2,11 @@ import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/core/widgets/logo_widget.dart';
+import 'package:ala_feen/features/auth/presentation/screens/login_screen.dart';
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class GetStartedView extends StatelessWidget {
   const GetStartedView({super.key});
@@ -37,7 +39,9 @@ class GetStartedView extends StatelessWidget {
                       ),
                     ),
                     CustomButtonWidget(
-                      onPressed: () {},
+                      onPressed: () {
+                        GoRouter.of(context).push(LoginScreen.routeName);
+                      },
                       backgroundColor: Theme.of(
                         context,
                       ).colorScheme.primaryContainer,

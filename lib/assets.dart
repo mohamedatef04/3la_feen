@@ -13,13 +13,23 @@ final class Assets {
   Assets._();
   static final _Fonts fonts = _Fonts._();
   static final _Icons icons = _Icons._();
-  static final _Images images = _Images._();
   static final _Lang lang = _Lang._();
 }
 
 @immutable
 final class _Fonts {
   _Fonts._();
+
+  final String ibmplexsansarabic_bold_ttf =
+      'assets/fonts/IBMPlexSansArabic-Bold.ttf';
+  final String ibmplexsansarabic_light_ttf =
+      'assets/fonts/IBMPlexSansArabic-Light.ttf';
+  final String ibmplexsansarabic_medium_ttf =
+      'assets/fonts/IBMPlexSansArabic-Medium.ttf';
+  final String ibmplexsansarabic_regular_ttf =
+      'assets/fonts/IBMPlexSansArabic-Regular.ttf';
+  final String ibmplexsansarabic_semibold_ttf =
+      'assets/fonts/IBMPlexSansArabic-SemiBold.ttf';
 }
 
 @immutable
@@ -27,12 +37,8 @@ final class _Icons {
   _Icons._();
 
   final String app_icon_png = 'assets/icons/app_icon.png';
+  final String login_image_png = 'assets/icons/login_image.png';
   final String logo_svg = 'assets/icons/logo.svg';
-}
-
-@immutable
-final class _Images {
-  _Images._();
 }
 
 @immutable
