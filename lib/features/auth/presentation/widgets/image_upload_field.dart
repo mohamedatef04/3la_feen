@@ -50,50 +50,52 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
           ),
         ),
         SizedBox(height: 8.h),
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                height: 48.h,
-                decoration: BoxDecoration(
-                  color: AppColors.lightGrey.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.symmetric(horizontal: 12.w),
+        Container(
+          height: 56.h,
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 213, 213, 232),
+            borderRadius: BorderRadius.circular(15.r),
+          ),
+          child: Row(
+            children: [
+              Expanded(
                 child: Text(
                   _image != null ? _image!.path.split('/').last : '...',
+                  textAlign: TextAlign.right,
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: AppColors.primary.withOpacity(0.7),
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-            SizedBox(width: 8.w),
-            SizedBox(
-              height: 48.h,
-              child: ElevatedButton(
-                onPressed: _pickImage,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.lightGrey,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r),
+              const Spacer(),
+              SizedBox(
+                height: 40.h,
+                child: ElevatedButton(
+                  onPressed: _pickImage,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.lightGrey.withOpacity(0.5),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
                   ),
-                ),
-                child: Text(
-                  'حمل الصورة',
-                  style: TextStyle(
-                    color: AppColors.primary,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.bold,
+                  child: Text(
+                    'حمل الصورة',
+                    style: TextStyle(
+                      color: AppColors.primary.withOpacity(0.6),
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         SizedBox(height: 16.h),
       ],

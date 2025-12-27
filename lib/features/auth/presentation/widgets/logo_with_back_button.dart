@@ -1,6 +1,7 @@
 import 'package:ala_feen/core/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class LogoWithBackButton extends StatelessWidget {
   const LogoWithBackButton({super.key});
@@ -11,7 +12,7 @@ class LogoWithBackButton extends StatelessWidget {
       children: [
         IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            context.pop();
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),

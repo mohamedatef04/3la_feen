@@ -7,7 +7,6 @@ class RoleContainerWidget extends StatelessWidget {
   const RoleContainerWidget({
     super.key,
     required this.title,
-
     required this.isSelected,
     required this.onTap,
     required this.icon,

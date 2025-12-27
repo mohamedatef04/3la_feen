@@ -1,15 +1,11 @@
 import 'dart:io';
-import 'package:ala_feen/features/auth/presentation/screens/registration_success_screen.dart';
-import 'package:ala_feen/core/theme/app_colors.dart';
-import 'package:ala_feen/core/utils/app_strings.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/custom_text_form_field.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/register_driver_form_widget.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/register_passenger_form_widget.dart';
 import 'package:ala_feen/features/auth/presentation/widgets/driver_and_passenger_toggle_widget.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/image_upload_field.dart';
 import 'package:ala_feen/features/auth/presentation/widgets/logo_with_back_button.dart';
 import 'package:ala_feen/features/auth/presentation/widgets/profile_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -20,15 +16,45 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  bool isPassenger = false;
-  File? profileImage;
-  File? idImage;
-  File? licenseImage;
-  File? carImage;
+  // Role selection state
+  bool _isPassenger = false;
 
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  // Common
+  File? _profileImage;
+
+  // Passenger controllers
+  final TextEditingController _passengerNameController =
+      TextEditingController();
+  final TextEditingController _passengerPhoneController =
+      TextEditingController();
+  final TextEditingController _passengerPasswordController =
+      TextEditingController();
+
+  // Driver controllers
+  final TextEditingController _driverNameController = TextEditingController();
+  final TextEditingController _driverPhoneController = TextEditingController();
+  final TextEditingController _driverPasswordController =
+      TextEditingController();
+
+  // Driver document images
+  File? _idImage;
+  File? _licenseImage;
+  File? _carImage;
+
+  @override
+  void dispose() {
+    // Dispose passenger controllers
+    _passengerNameController.dispose();
+    _passengerPhoneController.dispose();
+    _passengerPasswordController.dispose();
+
+    // Dispose driver controllers
+    _driverNameController.dispose();
+    _driverPhoneController.dispose();
+    _driverPasswordController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,82 +64,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Column(
+              spacing: 20.h,
               children: [
                 const LogoWithBackButton(),
-                SizedBox(height: 20.h),
                 DriverAndPassengerToggleWidget(
-                  onRoleChanged: (val) {
+                  initialIsPassenger: _isPassenger,
+                  onRoleChanged: (isPassenger) {
                     setState(() {
-                      isPassenger = val;
+                      _isPassenger = isPassenger;
                     });
                   },
                 ),
-                SizedBox(height: 30.h),
+                SizedBox(height: 10.h),
                 ProfileImagePicker(
                   onImageSelected: (image) {
-                    profileImage = image;
+                    _profileImage = image;
                   },
                 ),
-                SizedBox(height: 30.h),
-                CustomTextFormField(
-                  controller: nameController,
-                  hintText: AppStrings.fullName,
-                  prefixIcon: const Icon(Icons.person_outline),
-                ),
-                SizedBox(height: 16.h),
-                CustomTextFormField(
-                  controller: phoneController,
-                  hintText: AppStrings.phoneNumber,
-                  prefixIcon: const Icon(Icons.phone_android_outlined),
-                  keyboardType: TextInputType.phone,
-                ),
-                SizedBox(height: 16.h),
-                CustomTextFormField(
-                  controller: passwordController,
-                  hintText: AppStrings.password,
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  obscureText: true,
-                ),
-                SizedBox(height: 16.h),
-                if (!isPassenger) ...[
-                  ImageUploadField(
-                    label: AppStrings.personalIdCard,
-                    onImageSelected: (image) => idImage = image,
-                  ),
-                  ImageUploadField(
-                    label: AppStrings.licenseImage,
-                    onImageSelected: (image) => licenseImage = image,
-                  ),
-                  ImageUploadField(
-                    label: AppStrings.carImage,
-                    onImageSelected: (image) => carImage = image,
-                  ),
-                ],
-                SizedBox(height: 30.h),
-                SizedBox(
-                  width: double.infinity,
-                  height: 56.h,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.push(RegistrationSuccessScreen.routeName);
+                SizedBox(height: 10.h),
+                // Conditionally show passenger or driver form
+                if (_isPassenger)
+                  RegisterPassengerFormWidget(
+                    nameController: _passengerNameController,
+                    phoneController: _passengerPhoneController,
+                    passwordController: _passengerPasswordController,
+                    onSubmit: () {
+                      // Handle passenger registration
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.r),
-                      ),
-                    ),
-                    child: Text(
-                      AppStrings.send,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                  )
+                else
+                  RegisterDriverFormWidget(
+                    nameController: _driverNameController,
+                    phoneController: _driverPhoneController,
+                    passwordController: _driverPasswordController,
+                    onIdImageSelected: (image) => _idImage = image,
+                    onLicenseImageSelected: (image) => _licenseImage = image,
+                    onCarImageSelected: (image) => _carImage = image,
+                    onSubmit: () {
+                      // Handle driver registration
+                    },
                   ),
-                ),
-                SizedBox(height: 40.h),
+                SizedBox(height: 20.h),
               ],
             ),
           ),
