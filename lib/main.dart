@@ -1,5 +1,7 @@
 // ignore_for_file: depend_on_referenced_packages
 import 'package:ala_feen/core/routes/app_routes.dart';
+import 'package:ala_feen/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await di.init();
   await Supabase.initialize(
     url: 'https://rtxpmgwxndzuaxjajyni.supabase.co',

@@ -13,6 +13,7 @@ final class Assets {
   Assets._();
   static final _Fonts fonts = _Fonts._();
   static final _Icons icons = _Icons._();
+  static final _Images images = _Images._();
   static final _Lang lang = _Lang._();
 }
 
@@ -39,6 +40,16 @@ final class _Icons {
   final String app_icon_png = 'assets/icons/app_icon.png';
   final String login_image_png = 'assets/icons/login_image.png';
   final String logo_svg = 'assets/icons/logo.svg';
+}
+
+@immutable
+final class _Images {
+  _Images._();
+
+  final String driver_sleeping_png = 'assets/images/driver_sleeping.png';
+  final String sleeping_png = 'assets/images/sleeping.png';
+  final String sleeping_2_png = 'assets/images/sleeping_2.png';
+  final String sleeping_3_png = 'assets/images/sleeping_3.png';
 }
 
 @immutable
