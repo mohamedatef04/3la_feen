@@ -8,67 +8,92 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class LoginPassengerTextFieldsColumnWidget extends StatelessWidget {
+class LoginPassengerTextFieldsColumnWidget extends StatefulWidget {
   const LoginPassengerTextFieldsColumnWidget({
     super.key,
-    required this.emailController,
-    required this.passwordController,
-    required this.formKey,
-    required this.autoValidateMode,
-    this.onSubmit,
   });
 
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final GlobalKey<FormState> formKey;
-  final AutovalidateMode autoValidateMode;
-  final VoidCallback? onSubmit;
+  @override
+  State<LoginPassengerTextFieldsColumnWidget> createState() =>
+      _LoginPassengerTextFieldsColumnWidgetState();
+}
+
+class _LoginPassengerTextFieldsColumnWidgetState
+    extends State<LoginPassengerTextFieldsColumnWidget> {
+  final TextEditingController _passengerEmailController =
+      TextEditingController();
+  final TextEditingController _passengerPasswordController =
+      TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+
+  @override
+  void dispose() {
+    _passengerEmailController.dispose();
+    _passengerPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      spacing: 15.h,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // Email Field
-        _buildFieldWithHeader(
-          context: context,
-          headerText: AppStrings.phoneNumber,
-          hintText: 'أدخل ${AppStrings.phoneNumber}',
-          icon: Icons.phone,
-          controller: emailController,
-          keyboardType: TextInputType.phone,
-          validator: Validator.validateEmail,
-        ),
-
-        // Password Field
-        _buildFieldWithHeader(
-          context: context,
-          headerText: AppStrings.password,
-          hintText: 'أدخل ${AppStrings.password}',
-          icon: Icons.lock_outline,
-          controller: passwordController,
-          obscureText: true,
-          validator: Validator.validatePassword,
-        ),
-
-        // Submit Button
-        FadeInUp(
-          child: CustomButtonWidget(
-            backgroundColor: AppColors.primary,
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                // Form is valid, call onSubmit callback
-                onSubmit?.call();
-              }
-            },
-            child: Text(
-              AppStrings.login,
-              style: AppTextStyles.bold16(context),
+    return Form(
+      key: _formKey,
+      autovalidateMode: autoValidateMode,
+      child: Column(
+        spacing: 15.h,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Email Field
+          FadeInRight(
+            delay: const Duration(milliseconds: 200),
+            child: _buildFieldWithHeader(
+              context: context,
+              headerText: AppStrings.phoneNumber,
+              hintText: 'أدخل ${AppStrings.phoneNumber}',
+              icon: Icons.phone_android_outlined,
+              controller: _passengerEmailController,
+              keyboardType: TextInputType.phone,
+              validator: Validator.validatePhone,
             ),
           ),
-        ),
-      ],
+
+          // Password Field
+          FadeInRight(
+            delay: const Duration(milliseconds: 400),
+            child: _buildFieldWithHeader(
+              context: context,
+              headerText: AppStrings.password,
+              hintText: 'أدخل ${AppStrings.password}',
+              icon: Icons.lock_outline,
+              controller: _passengerPasswordController,
+              obscureText: true,
+              validator: Validator.validatePassword,
+            ),
+          ),
+
+          FadeInRight(
+            delay: const Duration(milliseconds: 600),
+            child: CustomButtonWidget(
+              backgroundColor: AppColors.primary,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                } else {
+                  setState(() {
+                    autoValidateMode = AutovalidateMode.always;
+                  });
+                }
+              },
+              child: Text(
+                AppStrings.login,
+                style: AppTextStyles.bold16(context),
+              ),
+            ),
+          ),
+
+          // Submit Button
+        ],
+      ),
     );
   }
 

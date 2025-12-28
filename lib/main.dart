@@ -2,6 +2,7 @@
 import 'package:ala_feen/core/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/theme/app_theme.dart';
 import 'core/di/injection_container.dart' as di;
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -9,6 +10,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
+  await Supabase.initialize(
+    url: 'https://rtxpmgwxndzuaxjajyni.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ0eHBtZ3d4bmR6dWF4amFqeW5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY4NDk2NTcsImV4cCI6MjA4MjQyNTY1N30.w_mp6Vjti1K2XEV_ROsYa_cqx5Lo1MSe7FXLnZrgJYM',
+  );
   runApp(const MyApp());
 }
 
@@ -22,7 +28,7 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => MaterialApp.router(
         routerConfig: router,
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.getDarkTheme(),
+        theme: AppTheme.getLightTheme(),
         themeMode: ThemeMode.system,
         locale: const Locale('ar'),
         supportedLocales: const [

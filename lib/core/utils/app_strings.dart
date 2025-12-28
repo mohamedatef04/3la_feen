@@ -11,6 +11,7 @@ abstract class AppStrings {
   static const String passenger = 'راكب';
   static const String fullName = 'الاسم الكامل';
   static const String phoneNumber = 'رقم الهاتف';
+  static const String profileImage = 'الصوره الشخصيه';
   static const String email = 'البريد الالكتروني';
   static const String personalIdCard = 'البطاقه الشخصيه';
   static const String licenseImage = 'صورة الرخصه';
@@ -19,9 +20,9 @@ abstract class AppStrings {
   static const String successfulRegistrationForDriver =
       ' تم التسجيل بنجاح وسيتم مراجعه بياناتك من قبل الاداره وسيتم الرد عليك في اقرب وقت';
   static const String successfulRegistrationForPassenger =
-      'لقد تم تسجيل دخولك بنجاح';
+      'لقد تم تسجيلك بنجاح';
   static const String thanksForUsingOurApp = 'شكرا لاستخدام تطبيقنا';
-  static const String backToLogin = 'العوده لتسجيل الدخول';
+  static const String backToLogin = 'تسجيل الدخول';
   static const String exit = 'خروج';
   static const String approveConditions =
       'بمجرد الضغط علي تسجيل فانك توافق على الشروط والاحكام';

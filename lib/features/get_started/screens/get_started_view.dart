@@ -9,8 +9,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-class GetStartedView extends StatelessWidget {
+import 'package:ala_feen/assets.dart';
+
+class GetStartedView extends StatefulWidget {
   const GetStartedView({super.key});
+
+  @override
+  State<GetStartedView> createState() => _GetStartedViewState();
+}
+
+class _GetStartedViewState extends State<GetStartedView> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Precache the login image so it's ready when the user navigates to LoginScreen
+    precacheImage(AssetImage(Assets.icons.login_image_png), context);
+  }
 
   @override
   Widget build(BuildContext context) {
