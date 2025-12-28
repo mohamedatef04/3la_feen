@@ -73,6 +73,7 @@ flutter:
     - assets/lang/
     - assets/fonts/
     - assets/icons/
+    - assets/images/
   fonts:
     - family: IBM Plex Sans Arabic
       fonts:

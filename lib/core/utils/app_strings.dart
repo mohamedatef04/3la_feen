@@ -51,4 +51,9 @@ abstract class AppStrings {
   static const String rateTheDriver = 'قم بتقييم السائق';
   static const String yourRatingWillHelpUsImprove =
       'تقييمك سيساعدنا في تطوير و تقديم افضل خدمه';
+  static const String logout = 'تسجيل الخروج';
+  static const String account = 'الحساب';
+  static const String notifications = 'الاشعارات';
+  static const String history = 'السجل';
+  static const String ratings = 'التقييمات';
 }

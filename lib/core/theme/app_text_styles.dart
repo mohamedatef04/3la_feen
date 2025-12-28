@@ -25,6 +25,15 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 20.sp,
       fontWeight: FontWeight.bold,
+      color: Theme.of(context).colorScheme.primary,
+      fontFamily: 'IBM Plex Sans Arabic',
+    );
+  }
+
+  static TextStyle bold18(BuildContext context) {
+    return TextStyle(
+      fontSize: 18.sp,
+      fontWeight: FontWeight.bold,
       color: AppColors.primary,
       fontFamily: 'IBM Plex Sans Arabic',
     );
