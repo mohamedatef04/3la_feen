@@ -19,16 +19,16 @@ Future<void> init() async {
   sl.registerLazySingleton<AuthRepo>(
     () => AuthRepoImpl(sl.get<AuthDataSource>()),
   );
-  sl.registerLazySingleton<RegisterCubit>(
+  sl.registerFactory<RegisterCubit>(
     () => RegisterCubit(sl.get<AuthRepo>()),
   );
-  sl.registerLazySingleton<LoginCubit>(
+  sl.registerFactory<LoginCubit>(
     () => LoginCubit(sl.get<AuthRepo>()),
   );
-  sl.registerLazySingleton<ForgetPasswordCubit>(
+  sl.registerFactory<ForgetPasswordCubit>(
     () => ForgetPasswordCubit(sl.get<AuthRepo>()),
   );
-  sl.registerLazySingleton<ResetPasswordCubit>(
+  sl.registerFactory<ResetPasswordCubit>(
     () => ResetPasswordCubit(sl.get<AuthRepo>()),
   );
 }

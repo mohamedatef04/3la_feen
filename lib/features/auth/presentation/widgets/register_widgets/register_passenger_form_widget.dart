@@ -6,8 +6,8 @@ import 'package:ala_feen/core/utils/validator.dart';
 import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/register_cubit/cubit/register_cubit.dart';
 import 'package:ala_feen/features/auth/presentation/screens/success_registration_view.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/custom_text_form_field.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/passenger_image_picker.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/custom_text_form_field.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/register_widgets/passenger_image_picker.dart';
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ala_feen/core/functions/show_snack_bar.dart';
 
 class RegisterPassengerFormWidget extends StatefulWidget {
   const RegisterPassengerFormWidget({
@@ -135,12 +136,7 @@ class _RegisterPassengerFormWidgetState
               if (state is RegisterSuccess) {
                 GoRouter.of(context).go(SuccessRegistrationView.routeName);
               } else if (state is RegisterError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.errorMessage),
-                    duration: const Duration(seconds: 10),
-                  ),
-                );
+                showCustomSnackBar(context, state.errorMessage, isError: true);
               }
             },
             builder: (context, state) {
@@ -151,6 +147,14 @@ class _RegisterPassengerFormWidgetState
                   onPressed: () {
                     if (passengerFormKey.currentState!.validate()) {
                       passengerFormKey.currentState!.save();
+                      if (_profileImage == null) {
+                        showCustomSnackBar(
+                          context,
+                          AppStrings.pleaseSelectProfileImage,
+                          isError: true,
+                        );
+                        return;
+                      }
 
                       context.read<RegisterCubit>().registerUser(
                         user: UserModel(

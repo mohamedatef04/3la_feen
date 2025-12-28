@@ -23,7 +23,7 @@ class _GetStartedViewState extends State<GetStartedView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Precache the login image so it's ready when the user navigates to LoginScreen
-    precacheImage(AssetImage(Assets.icons.login_image_png), context);
+    precacheImage(AssetImage(Assets.images.adobe_file_png), context);
   }
 
   @override
@@ -49,10 +49,12 @@ class _GetStartedViewState extends State<GetStartedView> {
                         context.push(RegisterScreen.routeName);
                       },
                       backgroundColor: AppColors.primary,
-                      child: Text(
-                        AppStrings.newUser,
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.bold16(context),
+                      child: Center(
+                        child: Text(
+                          AppStrings.newUser,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.bold16(context),
+                        ),
                       ),
                     ),
                     CustomButtonWidget(

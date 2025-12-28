@@ -38,7 +38,6 @@ final class _Icons {
   _Icons._();
 
   final String app_icon_png = 'assets/icons/app_icon.png';
-  final String login_image_png = 'assets/icons/login_image.png';
   final String logo_svg = 'assets/icons/logo.svg';
 }
 
@@ -46,10 +45,13 @@ final class _Icons {
 final class _Images {
   _Images._();
 
+  final String adobe_file_png = 'assets/images/Adobe - file.png';
+  final String adobe_express_file_png =
+      'assets/images/Adobe Express - file.png';
   final String driver_sleeping_png = 'assets/images/driver_sleeping.png';
   final String sleeping_png = 'assets/images/sleeping.png';
   final String sleeping_2_png = 'assets/images/sleeping_2.png';
-  final String sleeping_3_png = 'assets/images/sleeping_3.png';
+  final String sleeping_3_png = 'assets\images\sleeping_3.png';
 }
 
 @immutable

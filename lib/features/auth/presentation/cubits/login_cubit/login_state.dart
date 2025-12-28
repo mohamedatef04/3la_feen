@@ -1,4 +1,3 @@
-import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
@@ -9,8 +8,9 @@ class LoginInitial extends LoginState {}
 class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {
-  final UserModel user;
-  LoginSuccess({required this.user});
+  final String userId;
+  final String role;
+  LoginSuccess({required this.userId, required this.role});
 }
 
 class LoginFailure extends LoginState {

@@ -18,9 +18,19 @@ class LoginCubit extends Cubit<LoginState> {
       password: password,
     );
     if (!isClosed) {
-      result.fold(
-        (failure) => emit(LoginFailure(errorMessage: failure.errorMessage)),
-        (user) => emit(LoginSuccess(user: user)),
+      await result.fold(
+        (failure) async =>
+            emit(LoginFailure(errorMessage: failure.errorMessage)),
+        (userId) async {
+          final roleResult = await authRepo.getUserRole(userId: userId);
+          if (!isClosed) {
+            roleResult.fold(
+              (failure) =>
+                  emit(LoginFailure(errorMessage: failure.errorMessage)),
+              (role) => emit(LoginSuccess(userId: userId, role: role)),
+            );
+          }
+        },
       );
     }
   }

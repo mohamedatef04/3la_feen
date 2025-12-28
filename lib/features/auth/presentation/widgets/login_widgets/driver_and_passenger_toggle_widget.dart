@@ -1,6 +1,6 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/role_container_widget.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/role_container_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';

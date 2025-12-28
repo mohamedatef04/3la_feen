@@ -1,12 +1,9 @@
 import 'package:ala_feen/assets.dart';
-import 'package:ala_feen/features/auth/presentation/cubits/login_cubit/login_cubit.dart';
-import 'package:ala_feen/features/auth/presentation/cubits/login_cubit/login_state.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/driver_and_passenger_toggle_widget.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/login_driver_text_fields_column_widget.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/login_passenger_text_fields_column_widget.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/logo_with_back_button.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/driver_and_passenger_toggle_widget.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/login_driver_text_fields_column_widget.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/login_passenger_text_fields_column_widget.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/logo_with_back_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,11 +15,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // Auto validate mode
-  AutovalidateMode _autoValidateMode = AutovalidateMode.disabled;
-
   // Role selection state
   bool _isPassenger = false;
 
@@ -32,8 +24,17 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _loginImage = Image.asset(
-      Assets.icons.login_image_png,
+      Assets.images.adobe_file_png,
       gaplessPlayback: true,
+      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded) return child;
+        return AnimatedOpacity(
+          opacity: frame == null ? 0 : 1,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+          child: child,
+        );
+      },
     );
   }
 
@@ -46,53 +47,33 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return BlocListener<LoginCubit, LoginState>(
-      listener: (context, state) {
-        if (state is LoginSuccess) {
-          // Navigate to Home or whatever, for now maybe just show success
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Login Successful')),
-          );
-          // GoRouter.of(context).go(HomeRoute); // TODO: Add Home Route
-        } else if (state is LoginFailure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.errorMessage)),
-          );
-        }
-      },
-      child: Scaffold(
-        body: SafeArea(
-          child: SizedBox(
-            width: width,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.h),
-                child: Form(
-                  key: _formKey,
-                  autovalidateMode: _autoValidateMode,
-                  child: Column(
-                    spacing: 20.h,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const LogoWithBackButton(),
-                      DriverAndPassengerToggleWidget(
-                        initialIsPassenger: _isPassenger,
-                        onRoleChanged: (isPassenger) {
-                          setState(() {
-                            _isPassenger = isPassenger;
-                            _autoValidateMode = AutovalidateMode.disabled;
-                          });
-                        },
-                      ),
-                      _loginImage,
-                      // Conditionally show passenger or driver form
-                      if (_isPassenger)
-                        const LoginPassengerTextFieldsColumnWidget()
-                      else
-                        const LoginDriverTextFieldsColumnWidget(),
-                    ],
+    return Scaffold(
+      body: SafeArea(
+        child: SizedBox(
+          width: width,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.h),
+              child: Column(
+                spacing: 20.h,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const LogoWithBackButton(),
+                  DriverAndPassengerToggleWidget(
+                    initialIsPassenger: _isPassenger,
+                    onRoleChanged: (isPassenger) {
+                      setState(() {
+                        _isPassenger = isPassenger;
+                      });
+                    },
                   ),
-                ),
+                  _loginImage,
+                  // Conditionally show passenger or driver form
+                  if (_isPassenger)
+                    const LoginPassengerTextFieldsColumnWidget()
+                  else
+                    const LoginDriverTextFieldsColumnWidget(),
+                ],
               ),
             ),
           ),

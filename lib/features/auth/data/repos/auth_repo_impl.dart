@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/errors/failures.dart';
+import 'package:ala_feen/core/functions/translate_error_message.dart';
 import 'package:ala_feen/features/auth/data/data_source/auth_data_source.dart';
 import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/auth/data/repos/auth_repo.dart';
@@ -22,28 +23,36 @@ class AuthRepoImpl implements AuthRepo {
       return Right(result);
     } catch (e) {
       if (e is AuthException) {
-        return Left(ServerFailure(errorMessage: e.message));
+        return Left(
+          ServerFailure(errorMessage: translateErrorMessage(e.message)),
+        );
       }
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(
+        ServerFailure(errorMessage: translateErrorMessage(e.toString())),
+      );
     }
   }
 
   @override
-  Future<Either<Failures, UserModel>> loginUser({
+  Future<Either<Failures, String>> loginUser({
     required String email,
     required String password,
   }) async {
     try {
-      final result = await authDataSource.loginUser(
+      final userId = await authDataSource.loginUser(
         email: email,
         password: password,
       );
-      return Right(UserModel.fromJson(result));
+      return Right(userId);
     } catch (e) {
       if (e is AuthException) {
-        return Left(ServerFailure(errorMessage: e.message));
+        return Left(
+          ServerFailure(errorMessage: translateErrorMessage(e.message)),
+        );
       }
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(
+        ServerFailure(errorMessage: translateErrorMessage(e.toString())),
+      );
     }
   }
 
@@ -56,9 +65,13 @@ class AuthRepoImpl implements AuthRepo {
       return const Right(null);
     } catch (e) {
       if (e is AuthException) {
-        return Left(ServerFailure(errorMessage: e.message));
+        return Left(
+          ServerFailure(errorMessage: translateErrorMessage(e.message)),
+        );
       }
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(
+        ServerFailure(errorMessage: translateErrorMessage(e.toString())),
+      );
     }
   }
 
@@ -76,7 +89,9 @@ class AuthRepoImpl implements AuthRepo {
       );
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(
+        ServerFailure(errorMessage: translateErrorMessage(e.toString())),
+      );
     }
   }
 
@@ -88,7 +103,9 @@ class AuthRepoImpl implements AuthRepo {
       await authDataSource.saveUserData(user);
       return const Right(null);
     } catch (e) {
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(
+        ServerFailure(errorMessage: translateFailureMessage(e.toString())),
+      );
     }
   }
 
@@ -101,9 +118,31 @@ class AuthRepoImpl implements AuthRepo {
       return const Right(null);
     } catch (e) {
       if (e is AuthException) {
-        return Left(ServerFailure(errorMessage: e.message));
+        return Left(
+          ServerFailure(errorMessage: translateErrorMessage(e.message)),
+        );
       }
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(
+        ServerFailure(errorMessage: translateErrorMessage(e.toString())),
+      );
     }
+  }
+
+  @override
+  Future<Either<Failures, String>> getUserRole({
+    required String userId,
+  }) async {
+    try {
+      final role = await authDataSource.getUserRole(userId);
+      return Right(role);
+    } catch (e) {
+      return Left(
+        ServerFailure(errorMessage: translateErrorMessage(e.toString())),
+      );
+    }
+  }
+
+  String translateFailureMessage(String error) {
+    return translateErrorMessage(error);
   }
 }

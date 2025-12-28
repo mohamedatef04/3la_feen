@@ -8,7 +8,7 @@ abstract class AuthDataSource {
     required String email,
     required String password,
   });
-  Future<Map<String, dynamic>> loginUser({
+  Future<String> loginUser({
     required String email,
     required String password,
   });
@@ -18,11 +18,22 @@ abstract class AuthDataSource {
   Future<void> updatePassword(String newPassword);
   Future<String> uploadImage(String path, String bucketName, String fileName);
   Future<void> saveUserData(UserModel user);
+  Future<String> getUserRole(String userId);
 }
 
 class AuthDataSourceImpl implements AuthDataSource {
   final SupabaseClient supabase;
   AuthDataSourceImpl(this.supabase);
+
+  @override
+  Future<String> getUserRole(String userId) async {
+    final data = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', userId)
+        .single();
+    return data['role'] as String;
+  }
 
   @override
   Future<String> registerUser({
@@ -34,7 +45,7 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<Map<String, dynamic>> loginUser({
+  Future<String> loginUser({
     required String email,
     required String password,
   }) async {
@@ -42,20 +53,8 @@ class AuthDataSourceImpl implements AuthDataSource {
       email: email,
       password: password,
     );
-    // Fetch user data from table if needed, or just return basic auth data
-    // For now assuming we might want to return the user model or specific fields
-    // But since the signature returns Map<String, dynamic>, let's return the user json if possible or just the session
-    // Actually, usually we fetch the user profile after login.
-    // Let's check `saveUserData` implementation, it saves to `users` table.
-    // So here we might want to fetch that.
 
-    final userData = await supabase
-        .from('users')
-        .select()
-        .eq('u_id', result.user!.id)
-        .single();
-
-    return userData;
+    return result.user!.id;
   }
 
   @override

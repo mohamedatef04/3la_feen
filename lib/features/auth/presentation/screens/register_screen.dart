@@ -1,7 +1,7 @@
-import 'package:ala_feen/features/auth/presentation/widgets/register_driver_form_widget.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/register_passenger_form_widget.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/driver_and_passenger_toggle_widget.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/logo_with_back_button.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/register_widgets/register_driver_form_widget.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/register_widgets/register_passenger_form_widget.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/driver_and_passenger_toggle_widget.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/logo_with_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

@@ -57,4 +57,39 @@ abstract class AppStrings {
   static const String notifications = 'الاشعارات';
   static const String history = 'السجل';
   static const String ratings = 'التقييمات';
+
+  // Forget Password
+  static const String forgetPassword = 'نسيت كلمة المرور؟';
+  static const String forgetPasswordDescription =
+      'لا تقلق! أدخل بريدك الإلكتروني أدناه وسنرسل لك تعليمات لإعادة تعيين كلمة المرور.';
+  static const String enterEmail = 'أدخل البريد الإلكتروني';
+
+  // Reset Password
+  static const String resetPassword = 'إعادة تعيين كلمة المرور';
+  static const String resetPasswordDescription =
+      'أدخل كلمة المرور الجديدة الخاصة بك أدناه.';
+  static const String newPassword = 'كلمة المرور الجديدة';
+  static const String enterNewPassword = 'أدخل كلمة المرور الجديدة';
+  static const String confirmPassword = 'تأكيد كلمة المرور';
+  static const String confirmNewPassword = 'تأكيد كلمة المرور الجديدة';
+  static const String passwordsDoNotMatch = 'كلمات المرور غير متطابقة';
+  static const String changePassword = 'تغيير كلمة المرور';
+
+  // Error Messages
+  static const String passwordChangedSuccessfully =
+      'تم تغيير كلمة المرور بنجاح';
+  static const String resetLinkSent =
+      'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني';
+  static const String loginSuccessful = 'تم تسجيل الدخول بنجاح';
+  static const String userAlreadyRegistered = 'المستخدم موجود بالفعل';
+  static const String invalidLoginCredentials =
+      'خطأ في البريد الإلكتروني أو كلمة المرور';
+  static const String emailNotConfirmed = 'البريد الإلكتروني غير مؤكد';
+  static const String weakPassword =
+      'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل';
+  static const String networkError = 'خطأ في الاتصال بالشبكة';
+  static const String unexpectedError =
+      'حدث خطأ غير متوقع، يرجى المحاولة لاحقاً';
+  static const String pleaseSelectProfileImage = 'يرجى اختيار صورة شخصية';
+  static const String pleaseUploadAllImages = 'يرجى تحميل جميع الصور المطلوبة';
 }

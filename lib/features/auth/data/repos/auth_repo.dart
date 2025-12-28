@@ -8,7 +8,7 @@ abstract class AuthRepo {
     required String password,
   });
 
-  Future<Either<Failures, UserModel>> loginUser({
+  Future<Either<Failures, String>> loginUser({
     required String email,
     required String password,
   });
@@ -29,5 +29,9 @@ abstract class AuthRepo {
 
   Future<Either<Failures, void>> updatePassword({
     required String newPassword,
+  });
+
+  Future<Either<Failures, String>> getUserRole({
+    required String userId,
   });
 }
