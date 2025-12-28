@@ -1,7 +1,10 @@
 import 'package:ala_feen/features/auth/data/data_source/auth_data_source.dart';
 import 'package:ala_feen/features/auth/data/repos/auth_repo.dart';
 import 'package:ala_feen/features/auth/data/repos/auth_repo_impl.dart';
+import 'package:ala_feen/features/auth/presentation/cubits/forget_password_cubit/forget_password_cubit.dart';
+import 'package:ala_feen/features/auth/presentation/cubits/login_cubit/login_cubit.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/register_cubit/cubit/register_cubit.dart';
+import 'package:ala_feen/features/auth/presentation/cubits/reset_password_cubit/reset_password_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -18,5 +21,14 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<RegisterCubit>(
     () => RegisterCubit(sl.get<AuthRepo>()),
+  );
+  sl.registerLazySingleton<LoginCubit>(
+    () => LoginCubit(sl.get<AuthRepo>()),
+  );
+  sl.registerLazySingleton<ForgetPasswordCubit>(
+    () => ForgetPasswordCubit(sl.get<AuthRepo>()),
+  );
+  sl.registerLazySingleton<ResetPasswordCubit>(
+    () => ResetPasswordCubit(sl.get<AuthRepo>()),
   );
 }

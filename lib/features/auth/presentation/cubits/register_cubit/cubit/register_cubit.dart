@@ -28,8 +28,11 @@ class RegisterCubit extends Cubit<RegisterState> {
     );
 
     await result.fold(
-      (failure) async =>
-          emit(RegisterError(errorMessage: failure.errorMessage)),
+      (failure) async {
+        if (!isClosed) {
+          emit(RegisterError(errorMessage: failure.errorMessage));
+        }
+      },
       (userId) async {
         try {
           String? profilePicUrl;
@@ -106,13 +109,17 @@ class RegisterCubit extends Cubit<RegisterState> {
           );
 
           final dbResult = await authRepo.saveUserData(user: updatedUser);
-          dbResult.fold(
-            (failure) =>
-                emit(RegisterError(errorMessage: failure.errorMessage)),
-            (_) => emit(RegisterSuccess()),
-          );
+          if (!isClosed) {
+            dbResult.fold(
+              (failure) =>
+                  emit(RegisterError(errorMessage: failure.errorMessage)),
+              (_) => emit(RegisterSuccess()),
+            );
+          }
         } catch (e) {
-          emit(RegisterError(errorMessage: e.toString()));
+          if (!isClosed) {
+            emit(RegisterError(errorMessage: e.toString()));
+          }
         }
       },
     );

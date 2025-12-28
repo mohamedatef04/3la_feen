@@ -8,6 +8,15 @@ abstract class AuthRepo {
     required String password,
   });
 
+  Future<Either<Failures, UserModel>> loginUser({
+    required String email,
+    required String password,
+  });
+
+  Future<Either<Failures, void>> resetPassword({
+    required String email,
+  });
+
   Future<Either<Failures, String>> uploadImage({
     required String path,
     required String bucketName,
@@ -16,5 +25,9 @@ abstract class AuthRepo {
 
   Future<Either<Failures, void>> saveUserData({
     required UserModel user,
+  });
+
+  Future<Either<Failures, void>> updatePassword({
+    required String newPassword,
   });
 }

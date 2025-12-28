@@ -29,6 +29,40 @@ class AuthRepoImpl implements AuthRepo {
   }
 
   @override
+  Future<Either<Failures, UserModel>> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final result = await authDataSource.loginUser(
+        email: email,
+        password: password,
+      );
+      return Right(UserModel.fromJson(result));
+    } catch (e) {
+      if (e is AuthException) {
+        return Left(ServerFailure(errorMessage: e.message));
+      }
+      return Left(ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failures, void>> resetPassword({
+    required String email,
+  }) async {
+    try {
+      await authDataSource.resetPassword(email: email);
+      return const Right(null);
+    } catch (e) {
+      if (e is AuthException) {
+        return Left(ServerFailure(errorMessage: e.message));
+      }
+      return Left(ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failures, String>> uploadImage({
     required String path,
     required String bucketName,
@@ -54,6 +88,21 @@ class AuthRepoImpl implements AuthRepo {
       await authDataSource.saveUserData(user);
       return const Right(null);
     } catch (e) {
+      return Left(ServerFailure(errorMessage: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failures, void>> updatePassword({
+    required String newPassword,
+  }) async {
+    try {
+      await authDataSource.updatePassword(newPassword);
+      return const Right(null);
+    } catch (e) {
+      if (e is AuthException) {
+        return Left(ServerFailure(errorMessage: e.message));
+      }
       return Left(ServerFailure(errorMessage: e.toString()));
     }
   }

@@ -12,7 +12,11 @@ class LogoWithBackButton extends StatelessWidget {
       children: [
         IconButton(
           onPressed: () {
-            context.pop();
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go('/');
+            }
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
