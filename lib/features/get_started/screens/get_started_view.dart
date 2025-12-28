@@ -13,6 +13,7 @@ import 'package:ala_feen/assets.dart';
 
 class GetStartedView extends StatefulWidget {
   const GetStartedView({super.key});
+  static const String routeName = '/';
 
   @override
   State<GetStartedView> createState() => _GetStartedViewState();

@@ -14,6 +14,7 @@ import 'package:ala_feen/features/home/driver/presentation/screens/account_scree
 import 'package:ala_feen/features/home/driver/presentation/screens/history_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/notification_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/rates_screen.dart';
+import 'package:ala_feen/features/home/passenger/presentation/screens/passenger_home_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -57,7 +58,7 @@ final router = GoRouter(
     ),
     // Handle Supabase deep link callback paths
     GoRoute(
-      path: '/login-callback/reset-password',
+      path: ResetPasswordScreen.routeName,
       redirect: (context, state) => ResetPasswordScreen.routeName,
     ),
     GoRoute(
@@ -79,6 +80,10 @@ final router = GoRouter(
     GoRoute(
       path: HistoryScreen.routeName,
       builder: (context, state) => const HistoryScreen(),
+    ),
+    GoRoute(
+      path: PassengerHomeScreen.routeName,
+      builder: (context, state) => const PassengerHomeScreen(),
     ),
   ],
 );

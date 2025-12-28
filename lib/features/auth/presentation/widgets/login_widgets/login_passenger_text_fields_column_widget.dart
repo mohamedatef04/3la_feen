@@ -10,6 +10,7 @@ import 'package:ala_feen/features/auth/presentation/cubits/login_cubit/login_cub
 import 'package:ala_feen/features/auth/presentation/cubits/login_cubit/login_state.dart';
 import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/custom_text_form_field.dart';
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
+import 'package:ala_feen/features/home/passenger/presentation/screens/passenger_home_screen.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +120,7 @@ class _LoginPassengerTextFieldsColumnWidgetState
                   if (state.role == 'driver') {
                     GoRouter.of(context).go(DriverHomeScreen.routeName);
                   } else {
-                    GoRouter.of(context).go(DriverHomeScreen.routeName);
+                    GoRouter.of(context).go(PassengerHomeScreen.routeName);
                   }
                   log('userId ${state.userId}, role ${state.role}');
                 } else if (state is LoginFailure) {

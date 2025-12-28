@@ -1,6 +1,6 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/custom_text_form_field.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
