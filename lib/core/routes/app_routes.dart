@@ -9,6 +9,7 @@ import 'package:ala_feen/features/home/driver/presentation/screens/account_scree
 import 'package:ala_feen/features/home/driver/presentation/screens/history_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/notification_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/rates_screen.dart';
+import 'package:ala_feen/features/home/passenger/presentation/screens/passenger_home_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,7 +17,7 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const GetStartedView(),
+      builder: (context, state) => const PassengerHomeScreen(),
     ),
     GoRoute(
       path: LoginScreen.routeName,

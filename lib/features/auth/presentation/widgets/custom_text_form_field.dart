@@ -18,6 +18,9 @@ class CustomTextFormField extends StatelessWidget {
       vertical: 20,
     ),
     this.maxLines = 1,
+    this.fillColor,
+    this.enabled = true,
+    this.autofocus = false,
   });
   final TextEditingController? controller;
   final String hintText;
@@ -29,10 +32,15 @@ class CustomTextFormField extends StatelessWidget {
   final void Function(String)? onChanged;
   final EdgeInsetsGeometry? contentPadding;
   final int? maxLines;
+  final Color? fillColor;
+  final bool enabled;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      enabled: enabled,
+      autofocus: autofocus,
       style: TextStyle(
         color: Theme.of(context).colorScheme.primary,
       ),
@@ -44,11 +52,12 @@ class CustomTextFormField extends StatelessWidget {
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hintText,
+
         contentPadding: contentPadding,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
 
-        fillColor: const Color.fromARGB(255, 213, 213, 232),
+        fillColor: fillColor ?? const Color.fromARGB(255, 213, 213, 232),
         filled: true,
         hintStyle: AppTextStyles.medium14(context),
         border: OutlineInputBorder(
