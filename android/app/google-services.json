@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "844549159108",
+    "project_id": "feen-app-36efb",
+    "storage_bucket": "feen-app-36efb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:844549159108:android:2cf589d2f124879246f191",
+        "android_client_info": {
+          "package_name": "com.example.ala_feen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1DF7GXbCF7QwFS-RkJ2c0BjDQVxmoBFU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
