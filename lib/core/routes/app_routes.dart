@@ -13,7 +13,7 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const DriverHomeScreen(),
+      builder: (context, state) => const GetStartedView(),
     ),
     GoRoute(
       path: LoginScreen.routeName,
