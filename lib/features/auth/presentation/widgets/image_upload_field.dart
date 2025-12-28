@@ -44,57 +44,78 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
       children: [
         Text(
           widget.label,
-          style: AppTextStyles.bold14(context),
+          style: AppTextStyles.bold14(context).copyWith(
+            color: AppColors.primary,
+          ),
         ),
         SizedBox(height: 8.h),
-        Container(
-          height: 56.h,
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 213, 213, 232),
-            borderRadius: BorderRadius.circular(15.r),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  _image != null ? _image!.path.split('/').last : '...',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+        GestureDetector(
+          onTap: _pickImage,
+          child: Container(
+            height: 100.h,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 213, 213, 232),
+              borderRadius: BorderRadius.circular(15.r),
+              border: Border.all(
+                color: AppColors.primary.withOpacity(0.2),
+                width: 1,
               ),
-              const Spacer(),
-              SizedBox(
-                height: 40.h,
-                child: ElevatedButton(
-                  onPressed: _pickImage,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.lightGrey.withOpacity(0.5),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.r),
+              image: _image != null
+                  ? DecorationImage(
+                      image: FileImage(_image!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+            ),
+            child: _image == null
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.cloud_upload_outlined,
+                        color: AppColors.primary.withOpacity(0.6),
+                        size: 30.sp,
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'حمل الصورة',
+                        style: TextStyle(
+                          color: AppColors.primary.withOpacity(0.6),
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  )
+                : Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.r),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _image = null;
+                          });
+                          widget.onImageSelected(null);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(4.r),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.red,
+                            size: 16.sp,
+                          ),
+                        ),
+                      ),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
                   ),
-                  child: Text(
-                    'حمل الصورة',
-                    style: TextStyle(
-                      color: AppColors.primary.withOpacity(0.6),
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
           ),
         ),
-        SizedBox(height: 16.h),
       ],
     );
   }

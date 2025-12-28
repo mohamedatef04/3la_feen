@@ -8,64 +8,87 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class LoginDriverTextFieldsColumnWidget extends StatelessWidget {
+class LoginDriverTextFieldsColumnWidget extends StatefulWidget {
   const LoginDriverTextFieldsColumnWidget({
     super.key,
-    required this.emailController,
-    required this.passwordController,
-    required this.formKey,
-    required this.autoValidateMode,
-    this.onSubmit,
   });
 
-  final TextEditingController emailController;
-  final TextEditingController passwordController;
-  final GlobalKey<FormState> formKey;
-  final AutovalidateMode autoValidateMode;
-  final VoidCallback? onSubmit;
+  @override
+  State<LoginDriverTextFieldsColumnWidget> createState() =>
+      _LoginDriverTextFieldsColumnWidgetState();
+}
+
+class _LoginDriverTextFieldsColumnWidgetState
+    extends State<LoginDriverTextFieldsColumnWidget> {
+  final TextEditingController _driverEmailController = TextEditingController();
+  final TextEditingController _driverPasswordController =
+      TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
+
+  @override
+  void dispose() {
+    _driverEmailController.dispose();
+    _driverPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      spacing: 15.h,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        // Email Field
-        _buildFieldWithHeader(
-          context: context,
-          headerText: AppStrings.phoneNumber,
-          hintText: 'أدخل ${AppStrings.phoneNumber}',
-          icon: Icons.email_outlined,
-          controller: emailController,
-          keyboardType: TextInputType.emailAddress,
-          validator: Validator.validateEmail,
-        ),
-        _buildFieldWithHeader(
-          context: context,
-          headerText: AppStrings.password,
-          hintText: 'أدخل ${AppStrings.password}',
-          icon: Icons.lock_outline,
-          controller: passwordController,
-          obscureText: true,
-          validator: Validator.validatePassword,
-        ),
-
-        FadeInUp(
-          child: CustomButtonWidget(
-            backgroundColor: AppColors.primary,
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                // Form is valid, call onSubmit callback
-                onSubmit?.call();
-              }
-            },
-            child: Text(
-              AppStrings.login,
-              style: AppTextStyles.bold16(context),
+    return Form(
+      key: _formKey,
+      autovalidateMode: autoValidateMode,
+      child: Column(
+        spacing: 15.h,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Email Field
+          FadeInRight(
+            delay: const Duration(milliseconds: 200),
+            child: _buildFieldWithHeader(
+              context: context,
+              headerText: AppStrings.phoneNumber,
+              hintText: 'أدخل ${AppStrings.phoneNumber}',
+              icon: Icons.phone_android_outlined,
+              controller: _driverEmailController,
+              keyboardType: TextInputType.phone,
+              validator: Validator.validatePhone,
             ),
           ),
-        ),
-      ],
+          FadeInRight(
+            delay: const Duration(milliseconds: 400),
+            child: _buildFieldWithHeader(
+              context: context,
+              headerText: AppStrings.password,
+              hintText: 'أدخل ${AppStrings.password}',
+              icon: Icons.lock_outline,
+              controller: _driverPasswordController,
+              obscureText: true,
+              validator: Validator.validatePassword,
+            ),
+          ),
+
+          FadeInRight(
+            delay: const Duration(milliseconds: 600),
+            child: CustomButtonWidget(
+              backgroundColor: AppColors.primary,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                } else {
+                  setState(() {
+                    autoValidateMode = AutovalidateMode.always;
+                  });
+                }
+              },
+              child: Text(
+                AppStrings.login,
+                style: AppTextStyles.bold16(context),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -28,8 +28,8 @@ class CustomButtonWidget extends StatelessWidget {
           disabledBackgroundColor:
               backgroundColor, // Apply background color even when disabled
           shape: RoundedRectangleBorder(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(10),
+            borderRadius: BorderRadius.all(
+              Radius.circular(15.r),
             ),
             side: borderSide,
           ),

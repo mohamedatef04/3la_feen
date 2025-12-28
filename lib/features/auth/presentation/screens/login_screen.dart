@@ -23,28 +23,21 @@ class _LoginScreenState extends State<LoginScreen> {
   // Role selection state
   bool _isPassenger = false;
 
-  // Passenger controllers
-  final TextEditingController _passengerEmailController =
-      TextEditingController();
-  final TextEditingController _passengerPasswordController =
-      TextEditingController();
-
-  // Driver controllers
-  final TextEditingController _driverEmailController = TextEditingController();
-  final TextEditingController _driverPasswordController =
-      TextEditingController();
+  late Image _loginImage;
 
   @override
-  void dispose() {
-    // Dispose passenger controllers
-    _passengerEmailController.dispose();
-    _passengerPasswordController.dispose();
+  void initState() {
+    super.initState();
+    _loginImage = Image.asset(
+      Assets.icons.login_image_png,
+      gaplessPlayback: true,
+    );
+  }
 
-    // Dispose driver controllers
-    _driverEmailController.dispose();
-    _driverPasswordController.dispose();
-
-    super.dispose();
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(_loginImage.image, context);
   }
 
   @override
@@ -70,41 +63,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       onRoleChanged: (isPassenger) {
                         setState(() {
                           _isPassenger = isPassenger;
-                          // Reset auto-validate mode when switching roles
                           _autoValidateMode = AutovalidateMode.disabled;
                         });
                       },
                     ),
-                    Image.asset(Assets.icons.login_image_png),
+                    _loginImage,
                     // Conditionally show passenger or driver form
                     if (_isPassenger)
-                      LoginPassengerTextFieldsColumnWidget(
-                        emailController: _passengerEmailController,
-                        passwordController: _passengerPasswordController,
-                        formKey: _formKey,
-                        autoValidateMode: _autoValidateMode,
-                        onSubmit: () {
-                          // Handle passenger login
-
-                          setState(() {
-                            _autoValidateMode =
-                                AutovalidateMode.onUserInteraction;
-                          });
-                        },
-                      )
+                      const LoginPassengerTextFieldsColumnWidget()
                     else
-                      LoginDriverTextFieldsColumnWidget(
-                        emailController: _driverEmailController,
-                        passwordController: _driverPasswordController,
-                        formKey: _formKey,
-                        autoValidateMode: _autoValidateMode,
-                        onSubmit: () {
-                          setState(() {
-                            _autoValidateMode =
-                                AutovalidateMode.onUserInteraction;
-                          });
-                        },
-                      ),
+                      const LoginDriverTextFieldsColumnWidget(),
                   ],
                 ),
               ),
