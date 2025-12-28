@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ProfileImagePicker extends StatefulWidget {
-  const ProfileImagePicker({super.key, required this.onImageSelected});
+class DriverImagePicker extends StatefulWidget {
+  const DriverImagePicker({super.key, required this.onImageSelected});
 
   final Function(File? image) onImageSelected;
 
   @override
-  State<ProfileImagePicker> createState() => _ProfileImagePickerState();
+  State<DriverImagePicker> createState() => _DriverImagePickerState();
 }
 
-class _ProfileImagePickerState extends State<ProfileImagePicker> {
+class _DriverImagePickerState extends State<DriverImagePicker> {
   File? _image;
   final _picker = ImagePicker();
 
