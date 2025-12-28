@@ -44,7 +44,7 @@ abstract class AppStrings {
   static const String chooseYourTrip = 'اختر رحلتك الآن';
   static const String from = 'من';
   static const String to = 'الي';
-  static const String selectTheArea = 'اختر المنطقة';
+  static const String selectTheArea = 'ما الوجهه وما التكلفه ؟';
   static const String searchingForDriver = 'جاري البحث عن سائق';
   static const String driverFound = 'تم العثور على سائق';
   static const String rating = 'التقييم';
@@ -92,4 +92,19 @@ abstract class AppStrings {
       'حدث خطأ غير متوقع، يرجى المحاولة لاحقاً';
   static const String pleaseSelectProfileImage = 'يرجى اختيار صورة شخصية';
   static const String pleaseUploadAllImages = 'يرجى تحميل جميع الصور المطلوبة';
+
+  // Passenger Home
+  static const String chooseYourTripSafely = 'أختار رحلتك بامان';
+  static const String payment = 'الدفع';
+  static const String cash = 'كاش';
+  static const String searchForDriver = 'أبحث عن سائق';
+  static const String enterYourPath = 'أدخل مسارك';
+  static const String chooseOnMap = 'اختر على الخريطة';
+  static const String paymentMethods = 'طرق الدفع';
+  static const String offers = 'عروض';
+  static const String lightMode = 'الوضع الفاتح';
+  static const String darkMode = 'الوضع الداكن';
+  static const String home = 'المنزل';
+  static const String work = 'العمل';
+  static const String savedPlaces = 'الأماكن المحفوظة';
 }
