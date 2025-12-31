@@ -19,30 +19,26 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/driver_home_screen.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginPassengerTextFieldsColumnWidget extends StatefulWidget {
-  const LoginPassengerTextFieldsColumnWidget({
+class LoginFormWidget extends StatefulWidget {
+  const LoginFormWidget({
     super.key,
   });
 
   @override
-  State<LoginPassengerTextFieldsColumnWidget> createState() =>
-      _LoginPassengerTextFieldsColumnWidgetState();
+  State<LoginFormWidget> createState() => _LoginFormWidgetState();
 }
 
-class _LoginPassengerTextFieldsColumnWidgetState
-    extends State<LoginPassengerTextFieldsColumnWidget> {
-  final TextEditingController _passengerEmailController =
-      TextEditingController();
-  final TextEditingController _passengerPasswordController =
-      TextEditingController();
+class _LoginFormWidgetState extends State<LoginFormWidget> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isObscured = true;
   AutovalidateMode autoValidateMode = AutovalidateMode.disabled;
 
   @override
   void dispose() {
-    _passengerEmailController.dispose();
-    _passengerPasswordController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -63,7 +59,7 @@ class _LoginPassengerTextFieldsColumnWidgetState
               headerText: AppStrings.email,
               hintText: 'أدخل ${AppStrings.email}',
               icon: Icons.email_outlined,
-              controller: _passengerEmailController,
+              controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               validator: Validator.validateEmail,
             ),
@@ -77,7 +73,7 @@ class _LoginPassengerTextFieldsColumnWidgetState
               headerText: AppStrings.password,
               hintText: 'أدخل ${AppStrings.password}',
               icon: Icons.lock_outline,
-              controller: _passengerPasswordController,
+              controller: _passwordController,
               validator: Validator.validatePassword,
               suffixIcon: IconButton(
                 onPressed: () {
@@ -93,6 +89,7 @@ class _LoginPassengerTextFieldsColumnWidgetState
             ),
           ),
 
+          // Forgot Password
           FadeInRight(
             delay: const Duration(milliseconds: 600),
             child: Align(
@@ -111,12 +108,14 @@ class _LoginPassengerTextFieldsColumnWidgetState
             ),
           ),
 
+          // Login Button
           FadeInRight(
             delay: const Duration(milliseconds: 800),
             child: BlocConsumer<LoginCubit, LoginState>(
               listener: (context, state) {
                 if (state is LoginSuccess) {
                   showCustomSnackBar(context, AppStrings.loginSuccessful);
+                  // Navigate based on role
                   if (state.role == 'driver') {
                     GoRouter.of(context).go(DriverHomeScreen.routeName);
                   } else {
@@ -138,8 +137,8 @@ class _LoginPassengerTextFieldsColumnWidgetState
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
                       context.read<LoginCubit>().loginUser(
-                        email: _passengerEmailController.text.trim(),
-                        password: _passengerPasswordController.text.trim(),
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text.trim(),
                       );
                     } else {
                       setState(() {
@@ -157,8 +156,6 @@ class _LoginPassengerTextFieldsColumnWidgetState
               },
             ),
           ),
-
-          // Submit Button
         ],
       ),
     );

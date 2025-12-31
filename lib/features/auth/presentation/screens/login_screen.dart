@@ -1,7 +1,5 @@
 import 'package:ala_feen/assets.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/driver_and_passenger_toggle_widget.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/login_driver_text_fields_column_widget.dart';
-import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/login_passenger_text_fields_column_widget.dart';
+import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/login_form_widget.dart';
 import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/logo_with_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,9 +13,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Role selection state
-  bool _isPassenger = false;
-
   late Image _loginImage;
 
   @override
@@ -59,20 +54,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const LogoWithBackButton(),
-                  DriverAndPassengerToggleWidget(
-                    initialIsPassenger: _isPassenger,
-                    onRoleChanged: (isPassenger) {
-                      setState(() {
-                        _isPassenger = isPassenger;
-                      });
-                    },
-                  ),
                   _loginImage,
-                  // Conditionally show passenger or driver form
-                  if (_isPassenger)
-                    const LoginPassengerTextFieldsColumnWidget()
-                  else
-                    const LoginDriverTextFieldsColumnWidget(),
+                  const LoginFormWidget(),
                 ],
               ),
             ),

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:ala_feen/core/di/injection_container.dart';
+import 'package:ala_feen/features/auth/data/repos/auth_repo.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/forget_password_cubit/forget_password_cubit.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/login_cubit/login_cubit.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/register_cubit/cubit/register_cubit.dart';
@@ -15,14 +18,42 @@ import 'package:ala_feen/features/home/driver/presentation/screens/history_scree
 import 'package:ala_feen/features/home/driver/presentation/screens/notification_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/rates_screen.dart';
 import 'package:ala_feen/features/home/passenger/presentation/screens/passenger_home_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const GetStartedView(),
+      builder: (context, state) {
+        final userId = Supabase.instance.client.auth.currentUser?.id;
+        log('userId: $userId');
+
+        if (userId == null) {
+          return const GetStartedView();
+        }
+
+        return FutureBuilder<Widget>(
+          future: _getHomeScreenForUser(userId),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+
+            if (snapshot.hasError || !snapshot.hasData) {
+              return const GetStartedView();
+            }
+
+            return snapshot.data!;
+          },
+        );
+      },
     ),
     GoRoute(
       path: LoginScreen.routeName,
@@ -87,3 +118,30 @@ final router = GoRouter(
     ),
   ],
 );
+
+// Helper function to get the appropriate home screen based on user role
+Future<Widget> _getHomeScreenForUser(String userId) async {
+  try {
+    final authRepo = sl.get<AuthRepo>();
+    final roleResult = await authRepo.getUserRole(userId: userId);
+
+    return roleResult.fold(
+      (failure) {
+        log('Failed to get user role: ${failure.errorMessage}');
+        return const GetStartedView();
+      },
+      (role) {
+        log('User role: $role');
+        if (role == 'driver') {
+          return const DriverHomeScreen();
+        } else if (role == 'passenger') {
+          return const PassengerHomeScreen();
+        }
+        return const GetStartedView();
+      },
+    );
+  } catch (e) {
+    log('Error getting home screen: $e');
+    return const GetStartedView();
+  }
+}

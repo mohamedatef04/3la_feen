@@ -2,6 +2,7 @@ import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/core/widgets/logo_widget.dart';
+import 'package:ala_feen/features/auth/presentation/screens/login_screen.dart';
 import 'package:ala_feen/features/auth/presentation/widgets/success_registration_widgets/success_icon_widget.dart';
 import 'package:ala_feen/features/auth/presentation/widgets/success_registration_widgets/success_message_widget.dart';
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
@@ -53,7 +54,7 @@ class SuccessRegistrationView extends StatelessWidget {
                 CustomButtonWidget(
                   backgroundColor: AppColors.primary,
                   onPressed: () {
-                    GoRouter.of(context).go('/');
+                    GoRouter.of(context).replace(LoginScreen.routeName);
                   },
                   child: Text(
                     AppStrings.backToLogin,
