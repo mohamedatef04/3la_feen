@@ -1,8 +1,10 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/driver_details_header.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AccountScreen extends StatelessWidget {
@@ -28,18 +30,32 @@ class AccountScreen extends StatelessWidget {
                   _buildInfoField(
                     context,
                     label: AppStrings.fullName,
-                    value: 'محمد مصطفى احمد',
+                    value:
+                        context.read<HomeDriverCubit>().state.userModel?.name ??
+                        '',
                   ),
                   _buildInfoField(
                     context,
                     label: AppStrings.email,
-                    value: 'mohamed.mostafa199490@gmail.com',
+                    value:
+                        context
+                            .read<HomeDriverCubit>()
+                            .state
+                            .userModel
+                            ?.email ??
+                        '',
                   ),
 
                   _buildInfoField(
                     context,
                     label: AppStrings.phoneNumber,
-                    value: '0123456789',
+                    value:
+                        context
+                            .read<HomeDriverCubit>()
+                            .state
+                            .userModel
+                            ?.phone ??
+                        '',
                   ),
                 ],
               ),

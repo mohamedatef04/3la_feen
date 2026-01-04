@@ -1,8 +1,9 @@
+import 'package:ala_feen/core/utils/notifcations.dart/fcm.dart';
+import 'package:ala_feen/core/utils/notifcations.dart/local.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/availability_toggle.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/custom_driver_drawer.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/driver_home_header.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/trips_list.dart';
-import 'package:ala_feen/features/home/driver/presentation/widgets/unavailable_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -20,21 +21,29 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   bool _isAvailable = false;
 
   @override
+  initState() {
+    super.initState();
+
+    init();
+  }
+
+  Future<void> init() async {
+    final LocalNotifications localNotifications = LocalNotifications();
+    await localNotifications.init();
+    FcmService.instance.initFCM(localNotifications: localNotifications);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      drawer: const CustomDriverDrawer(
-        driverName: 'محمد مصطفى',
-        profileImageUrl: 'https://i.pravatar.cc/150?u=driver',
-      ),
-
+      drawer: const CustomDriverDrawer(),
       body: Column(
         children: [
           Stack(
             children: [
               DriverHomeHeader(
                 onMenuPressed: () => _scaffoldKey.currentState!.openDrawer(),
-                profileImageUrl: 'https://i.pravatar.cc/150?u=driver',
               ),
               Positioned(
                 bottom: 20.h,
@@ -51,11 +60,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               ),
             ],
           ),
-          Expanded(
-            child: _isAvailable
-                ? const TripsList()
-                : const UnavailableStateWidget(),
-          ),
+          const Expanded(child: TripsList()),
         ],
       ),
     );
