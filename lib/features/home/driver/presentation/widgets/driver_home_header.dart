@@ -1,7 +1,6 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/custom_profile_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DriverHomeHeader extends StatelessWidget {

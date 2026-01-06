@@ -1,11 +1,11 @@
 import 'package:ala_feen/core/functions/show_snack_bar.dart';
-import 'package:ala_feen/features/home/driver/data/models/offer_model.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_state.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trips_stream/trips_stream_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trips_stream/trips_stream_state.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/trip_card.dart';
+import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -51,7 +51,7 @@ class TripsList extends StatelessWidget {
                   phoneNumber: trip.passengerPhoneNumber ?? '',
                   pickupLocation: trip.originAddress ?? '',
                   dropoffLocation: trip.distAddress ?? '',
-                  price: trip.tripPrice.toString() ?? '',
+                  price: trip.tripPrice.toString(),
                   onAccept: () {
                     context.read<TripActionCubit>().makeOffer(
                       offer: OfferModel(

@@ -1,4 +1,3 @@
-import 'package:ala_feen/features/home/driver/data/models/offer_model.dart';
 import 'package:equatable/equatable.dart';
 
 enum TripActionStatus { initial, loading, pending, accepted, rejected, failure }
