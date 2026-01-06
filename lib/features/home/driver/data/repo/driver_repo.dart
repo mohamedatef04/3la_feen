@@ -5,6 +5,6 @@ import 'package:ala_feen/features/home/driver/data/models/offer_model.dart';
 abstract class DriverRepo {
   Future<UserModel?> getDriverData();
   Stream<List<TripModel>> getTrips();
-  Future<void> updateStatus({required String id});
-  Future<void> makeOffer({required OfferModel offer});
+  Future<OfferModel> makeOffer({required OfferModel offer});
+  Stream<String?> getOfferStatus({required String offerId});
 }

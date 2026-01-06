@@ -53,26 +53,6 @@ class TripsStreamCubit extends BaseCubit<TripsStreamState> {
     }
   }
 
-  Future<void> updateStatus({required String id}) async {
-    safeEmit(state.copyWith(status: TripsStreamStatus.loading));
-    try {
-      await checkNetwork();
-      await _driverRepo.updateStatus(id: id);
-      safeEmit(
-        state.copyWith(
-          status: TripsStreamStatus.success,
-        ),
-      );
-    } catch (e) {
-      safeEmit(
-        state.copyWith(
-          status: TripsStreamStatus.failure,
-          errorMessage: e.toString(),
-        ),
-      );
-    }
-  }
-
   @override
   Future<void> close() {
     _tripsSubscription?.cancel();

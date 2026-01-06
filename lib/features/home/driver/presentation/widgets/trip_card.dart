@@ -21,7 +21,7 @@ class TripCard extends StatelessWidget {
   final String dropoffLocation;
   final String price;
   final VoidCallback onAccept;
-  final Function(String price) onNegotiate;
+  final Function(double price) onNegotiate;
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +200,7 @@ class TripCard extends StatelessWidget {
           ElevatedButton(
             onPressed: () {
               if (controller.text.isNotEmpty) {
-                onNegotiate(controller.text);
+                onNegotiate(double.parse(controller.text));
                 Navigator.pop(context);
               }
             },

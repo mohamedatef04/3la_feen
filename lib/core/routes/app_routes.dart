@@ -108,11 +108,8 @@ final router = GoRouter(
     ),
     GoRoute(
       path: AccountScreen.routeName,
-      builder: (context, state) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: sl.get<HomeDriverCubit>()),
-          BlocProvider.value(value: sl.get<TripActionCubit>()),
-        ],
+      builder: (context, state) => BlocProvider(
+        create: (context) => sl.get<HomeDriverCubit>(),
         child: const AccountScreen(),
       ),
     ),

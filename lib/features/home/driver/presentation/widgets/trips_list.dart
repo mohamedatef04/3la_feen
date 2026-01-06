@@ -16,11 +16,18 @@ class TripsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<TripActionCubit, TripActionState>(
+      listenWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.errorMessage != current.errorMessage,
       listener: (context, state) {
         if (state.status == TripActionStatus.failure) {
           showCustomSnackBar(context, state.errorMessage.toString());
-        } else if (state.status == TripActionStatus.success) {
-          showCustomSnackBar(context, 'تم ارسال التفاوض');
+        } else if (state.status == TripActionStatus.pending) {
+          showCustomSnackBar(context, 'تم الارسال');
+        } else if (state.status == TripActionStatus.accepted) {
+          showCustomSnackBar(context, 'تم قبول العرض');
+        } else if (state.status == TripActionStatus.rejected) {
+          showCustomSnackBar(context, 'تم رفض العرض');
         }
       },
       child: BlocBuilder<TripsStreamCubit, TripsStreamState>(
@@ -41,13 +48,22 @@ class TripsList extends StatelessWidget {
               final trip = state.trips![index];
               return FadeInRight(
                 child: TripCard(
-                  phoneNumber: trip.phoneNumber ?? '',
+                  phoneNumber: trip.passengerPhoneNumber ?? '',
                   pickupLocation: trip.originAddress ?? '',
                   dropoffLocation: trip.distAddress ?? '',
-                  price: trip.tripPrice ?? '',
+                  price: trip.tripPrice.toString() ?? '',
                   onAccept: () {
-                    context.read<TripsStreamCubit>().updateStatus(
-                      id: trip.tripId ?? '',
+                    context.read<TripActionCubit>().makeOffer(
+                      offer: OfferModel(
+                        tripId: trip.tripId,
+                        driverId: context
+                            .read<HomeDriverCubit>()
+                            .state
+                            .userModel
+                            ?.id,
+                        offerPrice: trip.tripPrice,
+                        status: 'pending',
+                      ),
                     );
                   },
                   onNegotiate: (negotiatedPrice) {
@@ -59,6 +75,7 @@ class TripsList extends StatelessWidget {
                             .state
                             .userModel
                             ?.id,
+                        status: 'pending',
                         offerPrice: negotiatedPrice,
                       ),
                     );

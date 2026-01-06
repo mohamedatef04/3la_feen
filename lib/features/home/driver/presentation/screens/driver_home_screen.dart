@@ -23,7 +23,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   @override
   initState() {
     super.initState();
-
     init();
   }
 

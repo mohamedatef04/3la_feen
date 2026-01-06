@@ -6,8 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 abstract class DriverRemoteDataSource {
   Future<UserModel?> getDriverData();
   Stream<List<TripModel>> getTrips();
-  Future<void> updateStatus({required String id});
-  Future<void> makeOffer({required OfferModel offer});
+  Future<OfferModel> makeOffer({required OfferModel offer});
+  Stream<String?> getOfferStatus({required String offerId});
 }
 
 class DriverRemoteDataSourceImpl implements DriverRemoteDataSource {
@@ -42,24 +42,32 @@ class DriverRemoteDataSourceImpl implements DriverRemoteDataSource {
   }
 
   @override
-  Future<void> updateStatus({required String id}) async {
+  Future<OfferModel> makeOffer({required OfferModel offer}) async {
     try {
-      await supabaseClient
-          .from('trips')
-          .update({
-            'status': 'accepted',
-            'driver_id': supabaseClient.auth.currentUser!.id,
-          })
-          .eq('id', id);
+      final data = await supabaseClient
+          .from('offers')
+          .insert(offer.toJson())
+          .select()
+          .single();
+      return OfferModel.fromJson(data);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> makeOffer({required OfferModel offer}) async {
+  Stream<String?> getOfferStatus({required String offerId}) {
     try {
-      await supabaseClient.from('offers').insert(offer.toJson());
+      return supabaseClient
+          .from('offers')
+          .stream(primaryKey: ['id'])
+          .eq('id', offerId)
+          .map((data) {
+            if (data.isEmpty) {
+              return null;
+            }
+            return data.first['status'].toString();
+          });
     } catch (e) {
       rethrow;
     }

@@ -6,6 +6,7 @@ import 'package:ala_feen/features/home/driver/data/repo/driver_repo.dart';
 
 class DriverRepoImp implements DriverRepo {
   final DriverRemoteDataSource remoteDataSource;
+
   DriverRepoImp(this.remoteDataSource);
   @override
   Future<UserModel?> getDriverData() {
@@ -26,18 +27,18 @@ class DriverRepoImp implements DriverRepo {
   }
 
   @override
-  Future<void> updateStatus({required String id}) {
+  Future<OfferModel> makeOffer({required OfferModel offer}) {
     try {
-      return remoteDataSource.updateStatus(id: id);
+      return remoteDataSource.makeOffer(offer: offer);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> makeOffer({required OfferModel offer}) {
+  Stream<String?> getOfferStatus({required String offerId}) {
     try {
-      return remoteDataSource.makeOffer(offer: offer);
+      return remoteDataSource.getOfferStatus(offerId: offerId);
     } catch (e) {
       rethrow;
     }
