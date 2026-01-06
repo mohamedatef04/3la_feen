@@ -106,6 +106,7 @@ Future<void> init() async {
   );
   sl.registerFactory<AcceptOfferCubit>(
     () => AcceptOfferCubit(),
+  );
   sl.registerLazySingleton<DriverRemoteDataSource>(
     () => DriverRemoteDataSourceImpl(sl.get<SupabaseClient>()),
   );
