@@ -38,6 +38,7 @@ class _RegisterDriverFormWidgetState extends State<RegisterDriverFormWidget> {
   GlobalKey<FormState> driverFormKey = GlobalKey<FormState>();
 
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+  bool isVisable = true;
 
   File? _profileImage;
   File? _personalIdCard;
@@ -133,8 +134,20 @@ class _RegisterDriverFormWidgetState extends State<RegisterDriverFormWidget> {
                     headerText: AppStrings.password,
                     hintText: 'أدخل ${AppStrings.password}',
                     icon: Icons.lock_outline,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        !isVisable ? Icons.visibility : Icons.visibility_off,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isVisable = !isVisable;
+                        });
+                      },
+                    ),
                     controller: _driverPasswordController,
-                    obscureText: true,
+                    obscureText: isVisable,
+
                     validator: Validator.validatePassword,
                   ),
                 ),
@@ -248,6 +261,7 @@ class _RegisterDriverFormWidgetState extends State<RegisterDriverFormWidget> {
     required IconData icon,
     required TextEditingController controller,
     TextInputType? keyboardType,
+    Widget? suffixIcon,
     bool obscureText = false,
     String? Function(String?)? validator,
   }) {
@@ -262,6 +276,7 @@ class _RegisterDriverFormWidgetState extends State<RegisterDriverFormWidget> {
         ),
         SizedBox(height: 8.h),
         CustomTextFormField(
+          suffixIcon: suffixIcon,
           controller: controller,
           hintText: hintText,
           prefixIcon: Icon(icon),

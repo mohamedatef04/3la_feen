@@ -1,5 +1,6 @@
 import 'package:ala_feen/core/api/api_service.dart';
 import 'package:ala_feen/core/services/current_location_track_service.dart';
+import 'package:ala_feen/core/network/network_info.dart';
 import 'package:ala_feen/features/auth/data/data_source/auth_data_source.dart';
 import 'package:ala_feen/features/auth/data/repos/auth_repo.dart';
 import 'package:ala_feen/features/auth/data/repos/auth_repo_impl.dart';
@@ -19,6 +20,13 @@ import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_route_cubit/get_route_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/send_trip_cubit/send_trip_request_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
+import 'package:ala_feen/features/home/driver/data/dataSource/driver_remote_data_source.dart';
+import 'package:ala_feen/features/home/driver/data/repo/driver_repo.dart';
+import 'package:ala_feen/features/home/driver/data/repo/driver_repo_imp.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_cubit.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/trips_stream/trips_stream_cubit.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -26,6 +34,15 @@ final sl = GetIt.instance;
 
 /// Initialize Dependency Injection
 Future<void> init() async {
+  //network
+  sl.registerLazySingleton<Connectivity>(() => Connectivity());
+  sl.registerLazySingleton<NetworkInfo>(
+    () => NetworkInfoImpl(
+      sl.get<Connectivity>(),
+    ),
+  );
+
+  //
   sl.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
   sl.registerLazySingleton<ApiService>(
     () => ApiService(),
@@ -89,5 +106,31 @@ Future<void> init() async {
   );
   sl.registerFactory<AcceptOfferCubit>(
     () => AcceptOfferCubit(),
+  sl.registerLazySingleton<DriverRemoteDataSource>(
+    () => DriverRemoteDataSourceImpl(sl.get<SupabaseClient>()),
+  );
+  sl.registerLazySingleton<DriverRepo>(
+    () => DriverRepoImp(sl.get<DriverRemoteDataSource>()),
+  );
+
+  sl.registerLazySingleton<HomeDriverCubit>(
+    () => HomeDriverCubit(
+      sl.get<DriverRepo>(),
+      sl.get<NetworkInfo>(),
+    ),
+  );
+
+  sl.registerLazySingleton<TripsStreamCubit>(
+    () => TripsStreamCubit(
+      sl.get<DriverRepo>(),
+      sl.get<NetworkInfo>(),
+    ),
+  );
+
+  sl.registerLazySingleton<TripActionCubit>(
+    () => TripActionCubit(
+      sl.get<DriverRepo>(),
+      sl.get<NetworkInfo>(),
+    ),
   );
 }

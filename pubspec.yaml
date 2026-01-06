@@ -38,9 +38,12 @@ dependencies:
   easy_localization: ^3.0.8
   equatable: ^2.0.7
   firebase_core: ^4.3.0
+  firebase_messaging: ^16.1.0
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.1
+  flutter_dotenv: ^6.0.0
+  flutter_local_notifications: ^19.5.0
   flutter_localization: ^0.3.3
   flutter_screenutil: ^5.9.3
   flutter_svg: ^2.2.3
@@ -50,7 +53,7 @@ dependencies:
   google_fonts: ^6.3.3
   google_maps_flutter: ^2.14.0
   iconsax: ^0.0.8
-  image_picker: ^1.0.7
+  image_picker: ^1.2.1
   internet_connection_checker: ^3.0.1
   intl: ^0.20.2
   location: ^8.0.1
@@ -68,6 +71,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
+  mocktail: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -76,6 +80,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - .env
     - assets/lang/
     - assets/fonts/
     - assets/icons/

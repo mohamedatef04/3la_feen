@@ -36,8 +36,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                 ),
-
-                // Conditionally show passenger or driver form
                 if (_isPassenger)
                   const RegisterPassengerFormWidget()
                 else

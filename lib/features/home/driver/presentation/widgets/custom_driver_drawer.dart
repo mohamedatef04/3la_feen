@@ -1,23 +1,21 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/account_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/history_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/notification_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/rates_screen.dart';
+import 'package:ala_feen/features/home/driver/presentation/widgets/custom_profile_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class CustomDriverDrawer extends StatelessWidget {
   const CustomDriverDrawer({
     super.key,
-    required this.driverName,
-    required this.profileImageUrl,
   });
-
-  final String driverName;
-  final String profileImageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +38,16 @@ class CustomDriverDrawer extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      driverName,
+                      context.watch<HomeDriverCubit>().state.userModel?.name ??
+                          '',
                       style: AppTextStyles.bold18(context).copyWith(
                         color: AppColors.white,
                       ),
                     ),
                     SizedBox(height: 5.h),
                     Text(
-                      '01012345678',
+                      context.watch<HomeDriverCubit>().state.userModel?.phone ??
+                          '',
                       style: AppTextStyles.bold16(context).copyWith(
                         color: AppColors.white,
                       ),
@@ -55,11 +55,7 @@ class CustomDriverDrawer extends StatelessWidget {
                   ],
                 ),
                 SizedBox(width: 15.w),
-                CircleAvatar(
-                  radius: 35.r,
-                  backgroundImage: NetworkImage(profileImageUrl),
-                  backgroundColor: AppColors.white,
-                ),
+                const CustomProfileAvatar(isDrawer: true),
               ],
             ),
           ),
