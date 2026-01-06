@@ -1,4 +1,3 @@
-import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -7,7 +6,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 30.sp,
       fontWeight: FontWeight.bold,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -16,7 +15,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 25.sp,
       fontWeight: FontWeight.bold,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -34,7 +33,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 18.sp,
       fontWeight: FontWeight.bold,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -43,7 +42,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 16.sp,
       fontWeight: FontWeight.bold,
-      color: AppColors.white,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -52,7 +51,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 14.sp,
       fontWeight: FontWeight.bold,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onPrimary,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -61,7 +60,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 12.sp,
       fontWeight: FontWeight.bold,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -70,7 +69,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 10.sp,
       fontWeight: FontWeight.bold,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -88,7 +87,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 14.sp,
       fontWeight: FontWeight.w600,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -97,7 +96,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 12.sp,
       fontWeight: FontWeight.w600,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -106,7 +105,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 10.sp,
       fontWeight: FontWeight.w600,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -115,7 +114,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 16.sp,
       fontWeight: FontWeight.w500,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -124,7 +123,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 14.sp,
       fontWeight: FontWeight.w500,
-      color: AppColors.primaryDark,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -133,7 +132,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 12.sp,
       fontWeight: FontWeight.w500,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -142,7 +141,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 10.sp,
       fontWeight: FontWeight.w500,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -151,7 +150,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 8.sp,
       fontWeight: FontWeight.w500,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -160,7 +159,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 16.sp,
       fontWeight: FontWeight.w400,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -169,7 +168,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 14.sp,
       fontWeight: FontWeight.w400,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -178,7 +177,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 12.sp,
       fontWeight: FontWeight.w400,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -187,7 +186,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 10.sp,
       fontWeight: FontWeight.w400,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -196,7 +195,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 8.sp,
       fontWeight: FontWeight.w400,
-      color: AppColors.primary,
+      color: Theme.of(context).colorScheme.onSurface,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
