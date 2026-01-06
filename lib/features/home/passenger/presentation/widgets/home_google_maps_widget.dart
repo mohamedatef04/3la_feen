@@ -1,4 +1,10 @@
+import 'package:ala_feen/core/cubits/cubit/theme_toggle_cubit.dart';
+import 'package:ala_feen/core/functions/show_snack_bar.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyline_cubit/draw_polyline_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeGoogleMapsWidget extends StatefulWidget {
@@ -10,45 +16,140 @@ class HomeGoogleMapsWidget extends StatefulWidget {
 
 class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
   late CameraPosition initialCameraPosition;
-  late GoogleMapController mapController;
-  String? mapStyle;
+  GoogleMapController? mapController;
+  Set<Marker> markers = {};
+  Set<Polyline> polylines = {};
+  bool isFirstLocationUpdate = true;
+
   @override
   void initState() {
     initialCameraPosition = const CameraPosition(
-      target: LatLng(30.046555254564122, 31.234774235031885),
-      zoom: 13,
+      target: LatLng(27.686582867452735, 30.94757040769661),
+      zoom: 7,
     );
-
     super.initState();
   }
 
-  @override
-  void dispose() {
-    mapController.dispose();
-    super.dispose();
+  Future<void> _setMapStyle({Brightness? brightness}) async {
+    if (mapController == null) return;
+    final targetBrightness = brightness ?? Theme.of(context).brightness;
+    final isDarkMode = targetBrightness == Brightness.dark;
+    final stylePath = isDarkMode
+        ? 'assets/map_styles/dark_map_style.json'
+        : 'assets/map_styles/light_map_style.json';
+
+    try {
+      final style = await rootBundle.loadString(stylePath);
+      await mapController!.setMapStyle(style);
+    } catch (e) {
+      debugPrint('Error loading map style: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        GoogleMap(
-          initialCameraPosition: initialCameraPosition,
-          cameraTargetBounds: CameraTargetBounds(
-            LatLngBounds(
-              southwest: const LatLng(30.36226629559752, 30.912662177999945),
-              northeast: const LatLng(30.36226629559752, 30.912662177999945),
-            ),
-          ),
-          onMapCreated: (controller) {
-            mapController = controller;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ThemeToggleCubit, ThemeData>(
+          listener: (context, state) {
+            _setMapStyle(brightness: state.brightness);
           },
+        ),
+        BlocListener<TrackMyLocationCubit, TrackMyLocationState>(
+          listener: (context, state) {
+            if (state is TrackMyLocationFailure) {
+              showCustomSnackBar(
+                context,
+                state.errorMessage,
+                isError: true,
+              );
+            }
+          },
+        ),
+        BlocListener<DrawPolylineCubit, DrawPolylineState>(
+          listener: (context, state) {
+            setState(() {
+              polylines = state.polylines;
+              // Preserve the 'my_location' marker if it exists
+              Marker? myLocationMarker;
+              try {
+                myLocationMarker = markers.firstWhere(
+                  (m) => m.markerId.value == 'my_location',
+                );
+              } catch (_) {
+                myLocationMarker = null;
+              }
 
-          mapType: MapType.normal,
+              markers = {...state.markers};
+              if (myLocationMarker != null) {
+                markers.add(myLocationMarker);
+              }
+            });
 
-          zoomControlsEnabled: false,
+            if (state.bounds != null && mapController != null) {
+              mapController!.animateCamera(
+                CameraUpdate.newLatLngBounds(state.bounds!, 50),
+              );
+            }
+          },
         ),
       ],
+      child: Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: initialCameraPosition,
+            onMapCreated: (controller) {
+              mapController = controller;
+              _setMapStyle();
+              // Start tracking location when map is created
+              context.read<TrackMyLocationCubit>().getCurrentLocation(
+                (locationData) {
+                  if (!mounted) return;
+                  final latLng = LatLng(
+                    locationData.latitude!,
+                    locationData.longitude!,
+                  );
+                  if (isFirstLocationUpdate && mapController != null) {
+                    mapController!.animateCamera(
+                      CameraUpdate.newCameraPosition(
+                        CameraPosition(
+                          target: latLng,
+                          zoom: 15,
+                        ),
+                      ),
+                    );
+                    isFirstLocationUpdate = false;
+                  }
+                  setState(() {
+                    // Update only the position of the existing 'my_location' marker
+                    markers.removeWhere(
+                      (m) => m.markerId.value == 'my_location',
+                    );
+                    markers.add(
+                      Marker(
+                        markerId: const MarkerId('my_location'),
+                        position: latLng,
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueAzure,
+                        ),
+                        infoWindow: const InfoWindow(
+                          title: 'موقعي الحالي',
+                        ),
+                      ),
+                    );
+                  });
+                },
+              );
+            },
+            mapType: MapType.normal,
+            zoomControlsEnabled: false,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            markers: markers,
+            polylines: polylines,
+          ),
+        ],
+      ),
     );
   }
 }

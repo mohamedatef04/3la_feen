@@ -1,11 +1,12 @@
 // ignore_for_file: depend_on_referenced_packages
+import 'package:ala_feen/core/cubits/cubit/theme_toggle_cubit.dart';
 import 'package:ala_feen/core/routes/app_routes.dart';
 import 'package:ala_feen/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'core/theme/app_theme.dart';
 import 'core/di/injection_container.dart' as di;
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -28,21 +29,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
-      builder: (context, child) => MaterialApp.router(
-        routerConfig: router,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.getLightTheme(),
-        themeMode: ThemeMode.system,
-        locale: const Locale('ar'),
-        supportedLocales: const [
-          Locale('ar'),
-          Locale('en'),
-        ],
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
+      builder: (context, child) => BlocProvider(
+        create: (context) => ThemeToggleCubit(),
+        child: BlocBuilder<ThemeToggleCubit, ThemeData>(
+          builder: (context, state) {
+            return MaterialApp.router(
+              routerConfig: router,
+              debugShowCheckedModeBanner: false,
+              theme: state,
+              themeMode: ThemeMode.system,
+              locale: const Locale('ar'),
+              supportedLocales: const [
+                Locale('ar'),
+                Locale('en'),
+              ],
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+            );
+          },
+        ),
       ),
     );
   }

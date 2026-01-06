@@ -1,7 +1,7 @@
-import 'package:ala_feen/features/home/passenger/presentation/widgets/drawer_widgets/custom_passenger_drawer.dart';
+import 'package:ala_feen/features/home/passenger/presentation/widgets/passenger_home_widgets/drawer_widgets/custom_passenger_drawer.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/home_google_maps_widget.dart';
-import 'package:ala_feen/features/home/passenger/presentation/widgets/top_bar_widgets/passenger_home_top_bar.dart';
-import 'package:ala_feen/features/home/passenger/presentation/widgets/booking_widgets/ride_booking_card.dart';
+import 'package:ala_feen/features/home/passenger/presentation/widgets/passenger_home_widgets/top_bar_widgets/passenger_home_top_bar.dart';
+import 'package:ala_feen/features/home/passenger/presentation/widgets/passenger_home_widgets/home_widgets/passenger_home_bottom_section.dart';
 import 'package:flutter/material.dart';
 
 class PassengerHomeScreen extends StatelessWidget {
@@ -29,12 +29,7 @@ class PassengerHomeScreen extends StatelessWidget {
               },
             ),
           ),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: RideBookingCard(),
-          ),
+          const PassengerHomeBottomSection(),
         ],
       ),
     );

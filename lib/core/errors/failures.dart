@@ -65,24 +65,20 @@ class ServerFailure extends Failures {
         statusCode == 403 ||
         statusCode == 422 ||
         statusCode == 404) {
-      final errors = response?['errors'];
-
-      if (errors != null && errors is Map) {
-        final errorMessages = errors.entries
-            .map((e) {
-              final field = e.key;
-              final messages = (e.value as List).join(' ');
-              return "$field: $messages";
-            })
-            .join('\n');
-
-        return ServerFailure(errorMessage: errorMessages);
+      if (response != null && response is Map) {
+        if (response.containsKey('message')) {
+          return ServerFailure(errorMessage: response['message']);
+        }
+        if (response.containsKey('error_description')) {
+          return ServerFailure(errorMessage: response['error_description']);
+        }
       }
 
       return ServerFailure(
         errorMessage:
-            response?['errors'] ??
-            'Authorization error, please check your credentials.',
+            response?['message'] ??
+            response?['error'] ??
+            'Authentication error (Code: $statusCode)',
       );
     } else if (statusCode == 500) {
       return ServerFailure(

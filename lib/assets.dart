@@ -49,9 +49,10 @@ final class _Images {
   final String adobe_express_file_png =
       'assets/images/Adobe Express - file.png';
   final String driver_sleeping_png = 'assets/images/driver_sleeping.png';
+  final String loading_lottie_json = 'assets/images/loading_lottie.json';
   final String sleeping_png = 'assets/images/sleeping.png';
   final String sleeping_2_png = 'assets/images/sleeping_2.png';
-  final String sleeping_3_png = 'assets\images\sleeping_3.png';
+  final String sleeping_3_png = 'assets/images/sleeping_3.png';
 }
 
 @immutable

@@ -107,4 +107,14 @@ abstract class AppStrings {
   static const String home = 'المنزل';
   static const String work = 'العمل';
   static const String savedPlaces = 'الأماكن المحفوظة';
+  static const String fromValidator = 'يرجى اختيار مكان البداية';
+  static const String toValidator = 'يرجى اختيار وجهة الذهاب';
+  static const String tripDetails = 'تفاصيل الرحلة';
+  static const String km = 'كم';
+  static const String minute = 'دقيقة';
+  static const String tripCostOptional = 'تكلفة الرحلة (اختياري)';
+  static const String enterCost = 'التكلفه...';
+  static const String egp = 'ج.م';
+  static const String distance = 'المسافة';
+  static const String expectedTime = 'الوقت المتوقع';
 }

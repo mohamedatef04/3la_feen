@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ala_feen/assets.dart';
 import 'package:ala_feen/core/di/injection_container.dart';
 import 'package:ala_feen/features/auth/data/repos/auth_repo.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/forget_password_cubit/forget_password_cubit.dart';
@@ -17,10 +18,21 @@ import 'package:ala_feen/features/home/driver/presentation/screens/account_scree
 import 'package:ala_feen/features/home/driver/presentation/screens/history_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/notification_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/rates_screen.dart';
+import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_offers_stream_cubit/get_prices_offers_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyline_cubit/draw_polyline_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_passenger_data_cubit/get_passenger_data_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_items.dart/get_places_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_route_cubit/get_route_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/send_trip_cubit/send_trip_request_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/screens/passenger_home_screen.dart';
+import 'package:ala_feen/features/home/passenger/presentation/screens/searching_for_drivers_widget.dart';
+import 'package:ala_feen/features/home/passenger/presentation/screens/accept_offer_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final router = GoRouter(
@@ -39,9 +51,13 @@ final router = GoRouter(
           future: _getHomeScreenForUser(userId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
+              return Scaffold(
                 body: Center(
-                  child: CircularProgressIndicator(),
+                  child: Lottie.asset(
+                    Assets.images.loading_lottie_json,
+                    width: 200,
+                    height: 200,
+                  ),
                 ),
               );
             }
@@ -114,7 +130,40 @@ final router = GoRouter(
     ),
     GoRoute(
       path: PassengerHomeScreen.routeName,
-      builder: (context, state) => const PassengerHomeScreen(),
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => sl.get<TrackMyLocationCubit>()),
+          BlocProvider(create: (context) => sl.get<DrawPolylineCubit>()),
+          BlocProvider(create: (context) => sl.get<GetPlacesCubit>()),
+          BlocProvider(create: (context) => sl.get<GetRouteCubit>()),
+          BlocProvider(create: (context) => sl.get<SendTripRequestCubit>()),
+          BlocProvider(
+            create: (context) =>
+                sl.get<GetPassengerDataCubit>()..getPassengerData(),
+          ),
+        ],
+        child: const PassengerHomeScreen(),
+      ),
+    ),
+    GoRoute(
+      path: SearchingForDriversScreen.routeName,
+      builder: (context, state) {
+        final tripModel = state.extra as TripModel;
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) =>
+                  sl.get<GetPassengerDataCubit>()..getPassengerData(),
+            ),
+            BlocProvider(create: (context) => sl.get<GetPricesOffersCubit>()),
+          ],
+          child: SearchingForDriversScreen(tripModel: tripModel),
+        );
+      },
+    ),
+    GoRoute(
+      path: AcceptOfferScreen.routeName,
+      builder: (context, state) => const AcceptOfferScreen(),
     ),
   ],
 );
@@ -135,7 +184,20 @@ Future<Widget> _getHomeScreenForUser(String userId) async {
         if (role == 'driver') {
           return const DriverHomeScreen();
         } else if (role == 'passenger') {
-          return const PassengerHomeScreen();
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => sl.get<TrackMyLocationCubit>()),
+              BlocProvider(create: (context) => sl.get<DrawPolylineCubit>()),
+              BlocProvider(create: (context) => sl.get<GetPlacesCubit>()),
+              BlocProvider(create: (context) => sl.get<GetRouteCubit>()),
+              BlocProvider(create: (context) => sl.get<SendTripRequestCubit>()),
+              BlocProvider(
+                create: (context) =>
+                    sl.get<GetPassengerDataCubit>()..getPassengerData(),
+              ),
+            ],
+            child: const PassengerHomeScreen(),
+          );
         }
         return const GetStartedView();
       },
