@@ -12,6 +12,9 @@ import 'package:ala_feen/features/auth/presentation/screens/register_screen.dart
 import 'package:ala_feen/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:ala_feen/features/auth/presentation/screens/success_registration_view.dart';
 import 'package:ala_feen/features/get_started/screens/get_started_view.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_cubit.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/trips_stream/trips_stream_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/driver_home_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/account_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/history_screen.dart';
@@ -94,11 +97,21 @@ final router = GoRouter(
     ),
     GoRoute(
       path: DriverHomeScreen.routeName,
-      builder: (context, state) => const DriverHomeScreen(),
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: sl.get<HomeDriverCubit>()),
+          BlocProvider.value(value: sl.get<TripsStreamCubit>()),
+          BlocProvider.value(value: sl.get<TripActionCubit>()),
+        ],
+        child: const DriverHomeScreen(),
+      ),
     ),
     GoRoute(
       path: AccountScreen.routeName,
-      builder: (context, state) => const AccountScreen(),
+      builder: (context, state) => BlocProvider(
+        create: (context) => sl.get<HomeDriverCubit>(),
+        child: const AccountScreen(),
+      ),
     ),
     GoRoute(
       path: NotificationScreen.routeName,
@@ -127,13 +140,18 @@ Future<Widget> _getHomeScreenForUser(String userId) async {
 
     return roleResult.fold(
       (failure) {
-        log('Failed to get user role: ${failure.errorMessage}');
         return const GetStartedView();
       },
       (role) {
-        log('User role: $role');
         if (role == 'driver') {
-          return const DriverHomeScreen();
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: sl.get<HomeDriverCubit>()),
+              BlocProvider.value(value: sl.get<TripsStreamCubit>()),
+              BlocProvider.value(value: sl.get<TripActionCubit>()),
+            ],
+            child: const DriverHomeScreen(),
+          );
         } else if (role == 'passenger') {
           return const PassengerHomeScreen();
         }
@@ -141,7 +159,6 @@ Future<Widget> _getHomeScreenForUser(String userId) async {
       },
     );
   } catch (e) {
-    log('Error getting home screen: $e');
     return const GetStartedView();
   }
 }

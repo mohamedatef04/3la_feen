@@ -1,16 +1,16 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:ala_feen/features/home/driver/presentation/widgets/custom_profile_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DriverHomeHeader extends StatelessWidget {
   const DriverHomeHeader({
     super.key,
     required this.onMenuPressed,
-    required this.profileImageUrl,
   });
 
   final VoidCallback onMenuPressed;
-  final String profileImageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +46,7 @@ class DriverHomeHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  CircleAvatar(
-                    radius: 25.r,
-                    backgroundImage: NetworkImage(profileImageUrl),
-                    backgroundColor: AppColors.white,
-                  ),
+                  const CustomProfileAvatar(isDrawer: false),
                 ],
               ),
             ],

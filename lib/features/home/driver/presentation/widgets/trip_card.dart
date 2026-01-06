@@ -1,6 +1,7 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,6 +13,7 @@ class TripCard extends StatelessWidget {
     required this.dropoffLocation,
     required this.price,
     required this.onAccept,
+    required this.onNegotiate,
   });
 
   final String phoneNumber;
@@ -19,6 +21,7 @@ class TripCard extends StatelessWidget {
   final String dropoffLocation;
   final String price;
   final VoidCallback onAccept;
+  final Function(double price) onNegotiate;
 
   @override
   Widget build(BuildContext context) {
@@ -136,32 +139,74 @@ class TripCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  // Accept Button on the left (second child in RTL Row)
-                  ElevatedButton(
-                    onPressed: onAccept,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6.r),
+                  // Buttons Row
+                  Row(
+                    children: [
+                      CustomButtonWidget(
+                        width: 100.w,
+                        height: 35.h,
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: AppColors.primary,
+                        borderSide: const BorderSide(color: AppColors.primary),
+                        onPressed: () {
+                          _showNegotiateDialog(context);
+                        },
+                        child: Text(
+                          "تفاوض الان",
+                          style: AppTextStyles.bold14(context),
+                        ),
                       ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 25.w,
-                        vertical: 6.h,
+                      SizedBox(width: 8.w),
+                      CustomButtonWidget(
+                        onPressed: onAccept,
+                        width: 100.w,
+                        height: 35.h,
+                        child: Text(
+                          AppStrings.approve,
+                          style: AppTextStyles.bold14(context),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      AppStrings.approve,
-                      style: AppTextStyles.bold16(context).copyWith(
-                        color: AppColors.white,
-                      ),
-                    ),
+                    ],
                   ),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showNegotiateDialog(BuildContext context) {
+    final TextEditingController controller = TextEditingController(text: price);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("تفاوض على السعر", textAlign: TextAlign.right),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          textAlign: TextAlign.right,
+          decoration: const InputDecoration(
+            hintText: "أدخل السعر المقترح",
+            suffixText: "ج.م",
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("إلغاء"),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (controller.text.isNotEmpty) {
+                onNegotiate(double.parse(controller.text));
+                Navigator.pop(context);
+              }
+            },
+            child: const Text("إرسال العرض"),
+          ),
+        ],
       ),
     );
   }
