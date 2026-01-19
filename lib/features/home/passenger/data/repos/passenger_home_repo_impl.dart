@@ -103,4 +103,16 @@ class PassengerHomeRepoImpl implements PassengerHomeRepo {
           );
         });
   }
+
+  @override
+  Future<Either<Failures, TripModel>> getTripById(String tripId) async {
+    try {
+      final trip = await passengerDataSource.getTripById(tripId);
+      return Right(trip);
+    } on DioException catch (e) {
+      return Left(ServerFailure.fromDioExeption(e));
+    } catch (e) {
+      return Left(ServerFailure(errorMessage: e.toString()));
+    }
+  }
 }

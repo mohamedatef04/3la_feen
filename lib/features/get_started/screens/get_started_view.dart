@@ -1,8 +1,6 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
-import 'package:ala_feen/core/utils/notifcations.dart/fcm.dart';
-import 'package:ala_feen/core/utils/notifcations.dart/local.dart';
 import 'package:ala_feen/core/widgets/logo_widget.dart';
 import 'package:ala_feen/features/auth/presentation/screens/login_screen.dart';
 import 'package:ala_feen/features/auth/presentation/screens/register_screen.dart';
@@ -11,35 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:ala_feen/assets.dart';
-
-class GetStartedView extends StatefulWidget {
+class GetStartedView extends StatelessWidget {
   const GetStartedView({super.key});
   static const String routeName = '/';
-
-  @override
-  State<GetStartedView> createState() => _GetStartedViewState();
-}
-
-class _GetStartedViewState extends State<GetStartedView> {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Precache the login image so it's ready when the user navigates to LoginScreen
-    precacheImage(AssetImage(Assets.images.adobe_file_png), context);
-  }
-
-  @override
-  void initState() {
-    requestNotificationPermission();
-    super.initState();
-  }
-
-  Future<void> requestNotificationPermission() async {
-    final LocalNotifications localNotifications = LocalNotifications();
-    await localNotifications.init();
-    FcmService.instance.initFCM(localNotifications: localNotifications);
-  }
 
   @override
   Widget build(BuildContext context) {

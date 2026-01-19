@@ -120,7 +120,7 @@ class OfferItem extends StatelessWidget {
                       children: [
                         Text(
                           driver.name ?? 'كابتن',
-                          style: AppTextStyles.bold16(context),
+                          style: AppTextStyles.bold14(context),
                         ),
                         SizedBox(height: 4.h),
                         Row(
@@ -249,7 +249,9 @@ class OfferItem extends StatelessWidget {
               listener: (context, state) {
                 if (state is AcceptOfferSuccess) {
                   log('offer accepted successfully');
-                  GoRouter.of(context).go(AcceptOfferScreen.routeName);
+                  GoRouter.of(
+                    context,
+                  ).go(AcceptOfferScreen.routeName, extra: offer);
                 }
                 if (state is AcceptOfferFailure) {
                   log('offer accepted failed ${state.errorMessage}');
@@ -267,7 +269,7 @@ class OfferItem extends StatelessWidget {
                           )
                         : Text(
                             'قبول',
-                            style: AppTextStyles.bold14(context),
+                            style: AppTextStyles.bold16(context),
                           ),
                     onPressed: () {
                       context.read<AcceptOfferCubit>().acceptOffer(

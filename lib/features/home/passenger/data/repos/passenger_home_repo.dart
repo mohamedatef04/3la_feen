@@ -25,4 +25,5 @@ abstract class PassengerHomeRepo {
   Stream<Either<Failures, OfferModel>> getOffersStream({
     required String tripId,
   });
+  Future<Either<Failures, TripModel>> getTripById(String tripId);
 }

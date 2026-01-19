@@ -5,77 +5,63 @@ class LocalNotifications {
   LocalNotifications._();
   static final LocalNotifications _instance = LocalNotifications._();
   factory LocalNotifications() => _instance;
+
   late FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
+  bool _initialized = false;
+  int _id = 0;
 
-  //initialization settings for android
-  final initializationSettingsAndroid = AndroidInitializationSettings(
-    '@mipmap/ic_launcher',
-  );
-
-  //android channel settings for android
-  final _androidChannle = AndroidNotificationChannel(
+  // Android channel
+  final AndroidNotificationChannel _androidChannel = AndroidNotificationChannel(
     dotenv.env['ANDROID_CHANNEL_ID'] ?? 'high_importance_channel',
     dotenv.env['ANDROID_CHANNEL_NAME'] ?? 'High Importance Notifications',
     importance: Importance.max,
     description:
         dotenv.env['NOTIFICATION_CHANNEL_DESCRIPTION'] ??
         'This channel is used for important notifications.',
-    playSound: true,
   );
 
-  bool _isFlutterLocalNotificationsPlugin = false;
-  int _id = 0;
-
-  //initialization local notifications
   Future<void> init() async {
-    //check if the plugin is already initialized
-    if (_isFlutterLocalNotificationsPlugin) return;
-    //get full instance
-    _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    //initialize the settings for android
-    final initializeSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-    );
-    //initialize the plugin
-    await _flutterLocalNotificationsPlugin.initialize(
-      initializeSettings,
-      onDidReceiveNotificationResponse: (details) => {},
-    );
+    if (_initialized) return;
 
-    //create android channel if it does not exist
+    _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+    const settings = InitializationSettings(android: androidSettings);
+
+    await _flutterLocalNotificationsPlugin.initialize(settings);
+
+    // create Android channel
     await _flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >()
-        ?.createNotificationChannel(_androidChannle);
+        ?.createNotificationChannel(_androidChannel);
 
-    _isFlutterLocalNotificationsPlugin = true;
+    _initialized = true;
   }
 
-  //show notification
   Future<void> showNotification({
-    String? payload,
     String? title,
     String? body,
+    String? payload,
   }) async {
-    //
-    AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails(
-          _androidChannle.id,
-          _androidChannle.name,
-          channelDescription: _androidChannle.description,
-          importance: Importance.max,
-          priority: Priority.high,
-        );
-
-    final notificationDetails = NotificationDetails(
-      android: androidNotificationDetails,
+    final androidDetails = AndroidNotificationDetails(
+      _androidChannel.id,
+      _androidChannel.name,
+      channelDescription: _androidChannel.description,
+      importance: Importance.max,
+      priority: Priority.high,
     );
+
+    final details = NotificationDetails(android: androidDetails);
+
     await _flutterLocalNotificationsPlugin.show(
       _id++,
       title,
       body,
-      notificationDetails,
+      details,
       payload: payload,
     );
   }

@@ -262,7 +262,7 @@ class _RideLocationPopupState extends State<RideLocationPopup> {
                             ? CupertinoActivityIndicator(
                                 color: Theme.of(context).colorScheme.onPrimary,
                               )
-                            : Text('بحث', style: AppTextStyles.bold14(context)),
+                            : Text('بحث', style: AppTextStyles.bold16(context)),
                       ),
                     );
                   },
