@@ -4,11 +4,13 @@ import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/tri
 import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_state.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trips_stream/trips_stream_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trips_stream/trips_stream_state.dart';
+import 'package:ala_feen/features/home/driver/presentation/screens/driver_offer_accepted_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/trip_card.dart';
 import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class TripsList extends StatelessWidget {
   const TripsList({super.key});
@@ -26,6 +28,12 @@ class TripsList extends StatelessWidget {
           showCustomSnackBar(context, 'تم الارسال');
         } else if (state.status == TripActionStatus.accepted) {
           showCustomSnackBar(context, 'تم قبول العرض');
+          if (state.trip != null) {
+            context.push(
+              DriverOfferAcceptedScreen.routeName,
+              extra: state.trip,
+            );
+          }
         } else if (state.status == TripActionStatus.rejected) {
           showCustomSnackBar(context, 'تم رفض العرض');
         }
@@ -54,6 +62,7 @@ class TripsList extends StatelessWidget {
                   price: trip.tripPrice.toString(),
                   onAccept: () {
                     context.read<TripActionCubit>().makeOffer(
+                      trip: trip,
                       offer: OfferModel(
                         tripId: trip.tripId,
                         driverId: context
@@ -68,6 +77,7 @@ class TripsList extends StatelessWidget {
                   },
                   onNegotiate: (negotiatedPrice) {
                     context.read<TripActionCubit>().makeOffer(
+                      trip: trip,
                       offer: OfferModel(
                         tripId: trip.tripId,
                         driverId: context

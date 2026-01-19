@@ -23,6 +23,7 @@ import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_lo
 import 'package:ala_feen/features/home/driver/data/dataSource/driver_remote_data_source.dart';
 import 'package:ala_feen/features/home/driver/data/repo/driver_repo.dart';
 import 'package:ala_feen/features/home/driver/data/repo/driver_repo_imp.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/active_trip/active_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trips_stream/trips_stream_cubit.dart';
@@ -133,5 +134,8 @@ Future<void> init() async {
       sl.get<DriverRepo>(),
       sl.get<NetworkInfo>(),
     ),
+  );
+  sl.registerLazySingleton<ActiveTripMonitorCubit>(
+    () => ActiveTripMonitorCubit(sl.get<DriverRepo>(), sl.get<NetworkInfo>()),
   );
 }
