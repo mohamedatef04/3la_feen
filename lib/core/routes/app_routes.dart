@@ -16,7 +16,10 @@ import 'package:ala_feen/features/get_started/screens/get_started_view.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trips_stream/trips_stream_cubit.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/active_trip/active_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/driver_home_screen.dart';
+import 'package:ala_feen/features/home/driver/presentation/screens/driver_offer_accepted_screen.dart';
+import 'package:ala_feen/features/home/driver/presentation/screens/active_trip_map_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/account_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/history_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/notification_screen.dart';
@@ -118,9 +121,35 @@ final router = GoRouter(
           BlocProvider.value(value: sl.get<HomeDriverCubit>()),
           BlocProvider.value(value: sl.get<TripsStreamCubit>()),
           BlocProvider.value(value: sl.get<TripActionCubit>()),
+          BlocProvider.value(value: sl.get<ActiveTripMonitorCubit>()),
         ],
         child: const DriverHomeScreen(),
       ),
+    ),
+    GoRoute(
+      path: DriverOfferAcceptedScreen.routeName,
+      builder: (context, state) {
+        final trip = state.extra as TripModel;
+        return BlocProvider.value(
+          value: sl.get<ActiveTripMonitorCubit>(),
+          child: DriverOfferAcceptedScreen(trip: trip),
+        );
+      },
+    ),
+    GoRoute(
+      path: ActiveTripMapScreen.routeName,
+      builder: (context, state) {
+        final trip = state.extra as TripModel;
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: sl.get<ActiveTripMonitorCubit>()),
+            BlocProvider(create: (context) => sl.get<TrackMyLocationCubit>()),
+            BlocProvider(create: (context) => sl.get<GetRouteCubit>()),
+            BlocProvider(create: (context) => sl.get<DrawPolylineCubit>()),
+          ],
+          child: ActiveTripMapScreen(trip: trip),
+        );
+      },
     ),
     GoRoute(
       path: AccountScreen.routeName,
@@ -199,7 +228,15 @@ Future<Widget> _getHomeScreenForUser(String userId) async {
               BlocProvider.value(value: sl.get<TripsStreamCubit>()),
               BlocProvider.value(value: sl.get<TripActionCubit>()),
             ],
-            child: const DriverHomeScreen(),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: sl.get<HomeDriverCubit>()),
+                BlocProvider.value(value: sl.get<TripsStreamCubit>()),
+                BlocProvider.value(value: sl.get<TripActionCubit>()),
+                BlocProvider.value(value: sl.get<ActiveTripMonitorCubit>()),
+              ],
+              child: const DriverHomeScreen(),
+            ),
           );
         } else if (role == 'passenger') {
           return MultiBlocProvider(

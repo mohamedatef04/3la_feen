@@ -18,9 +18,9 @@ class CustomProfileAvatar extends StatelessWidget {
       child: CircleAvatar(
         radius: isDrawer ? 35.r : 25.r,
         backgroundImage:
-            context.read<HomeDriverCubit>().state.userModel?.profilePic != null
+            context.watch<HomeDriverCubit>().state.userModel?.profilePic != null
             ? NetworkImage(
-                context.read<HomeDriverCubit>().state.userModel?.profilePic ??
+                context.watch<HomeDriverCubit>().state.userModel?.profilePic ??
                     '',
               )
             : null,
