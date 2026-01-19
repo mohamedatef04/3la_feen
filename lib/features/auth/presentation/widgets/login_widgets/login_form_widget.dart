@@ -4,6 +4,8 @@ import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/core/functions/show_snack_bar.dart';
+import 'package:ala_feen/core/utils/notifcations.dart/fcm.dart';
+import 'package:ala_feen/core/utils/notifcations.dart/local.dart';
 import 'package:ala_feen/features/auth/presentation/screens/forget_password_screen.dart';
 import 'package:ala_feen/core/utils/validator.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/login_cubit/login_cubit.dart';
@@ -112,10 +114,14 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
           FadeInRight(
             delay: const Duration(milliseconds: 800),
             child: BlocConsumer<LoginCubit, LoginState>(
-              listener: (context, state) {
+              listener: (context, state) async {
                 if (state is LoginSuccess) {
-                  showCustomSnackBar(context, AppStrings.loginSuccessful);
-                  // Navigate based on role
+                  final LocalNotifications localNotifications =
+                      LocalNotifications();
+                  await localNotifications.init();
+                  FcmService.instance.initFCM(
+                    localNotifications: localNotifications,
+                  );
                   if (state.role == 'driver') {
                     GoRouter.of(context).go(DriverHomeScreen.routeName);
                   } else {

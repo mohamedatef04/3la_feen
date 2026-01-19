@@ -1,16 +1,16 @@
 import 'package:ala_feen/core/utils/notifcations.dart/local.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// MUST be a top-level function (outside any class)
+/// MUST be top-level for background messages
+@pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  final notification = message.notification;
-  if (notification != null) {
-    LocalNotifications().showNotification(
-      title: notification.title,
-      body: notification.body,
-    );
-  }
+  WidgetsFlutterBinding.ensureInitialized();
+  //   }
+  // } catch (e) {
+  //   debugPrint("Error in background handler: $e");
+  // }
 }
 
 class FcmService {
@@ -18,62 +18,51 @@ class FcmService {
   static final FcmService _instance = FcmService._();
   static FcmService get instance => _instance;
 
-  final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   LocalNotifications? _localNotifications;
+  bool _initialized = false;
 
   Future<void> initFCM({required LocalNotifications localNotifications}) async {
+    if (_initialized) return;
+    _initialized = true;
+
     _localNotifications = localNotifications;
 
     // Permissions
-    await firebaseMessaging.requestPermission(
+    await _firebaseMessaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
 
-    // Register background handler (MUST be before onMessage)
+    // Register background handler (must be top-level)
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-    // Foreground message
+    // Foreground messages
     FirebaseMessaging.onMessage.listen(_handleForegroundMessage);
 
-    // User taps notification (app was background)
+    // When app is opened from notification
     FirebaseMessaging.onMessageOpenedApp.listen(_handleOnMessageOpenApp);
 
-    // User taps notification (app was terminated)
-    final initialMessage = await firebaseMessaging.getInitialMessage();
+    final initialMessage = await _firebaseMessaging.getInitialMessage();
     if (initialMessage != null) {
       _handleOnMessageOpenApp(initialMessage);
     }
 
-    // Subscribe to updates topic for broadcasting
-    await firebaseMessaging.subscribeToTopic('updates');
+    // Subscribe to topic if needed
+    await _firebaseMessaging.subscribeToTopic('updates');
 
-    // Save FCM token to Supabase (only if logged in)
-    await registerUserFcmToken();
+    // Save token to Supabase
+    await _registerFcmToken();
   }
 
-  Future<void> registerUserFcmToken() async {
-    try {
-      final token = await firebaseMessaging.getToken();
-      if (token != null) {
-        await saveToken(token);
-      }
+  Future<void> _registerFcmToken() async {
+    final token = await _firebaseMessaging.getToken();
+    if (token != null) await _saveToken(token);
 
-      firebaseMessaging.onTokenRefresh.listen((newToken) async {
-        await saveToken(newToken);
-      });
-    } catch (e) {}
-  }
-
-  void _handleOnMessageOpenApp(RemoteMessage message) {
-    final notification = message.notification;
-    if (notification != null) {
-      _localNotifications?.showNotification(
-        title: notification.title,
-        body: notification.body,
-      );
-    }
+    _firebaseMessaging.onTokenRefresh.listen((newToken) async {
+      await _saveToken(newToken);
+    });
   }
 
   void _handleForegroundMessage(RemoteMessage message) {
@@ -86,20 +75,23 @@ class FcmService {
     }
   }
 
-  Future<void> saveToken(String token) async {
+  void _handleOnMessageOpenApp(RemoteMessage message) {
+    // Logic for when the app is opened via a notification click
+    // Usually you'd navigate to a specific screen here
+  }
+
+  Future<void> _saveToken(String token) async {
     final supabase = Supabase.instance.client;
-    print(token);
+    final user = supabase.auth.currentUser;
+    if (user == null) return;
+
     try {
-      await supabase.auth.updateUser(
-        UserAttributes(data: {'fcm_token': token}),
-      );
-    } on AuthApiException catch (e) {
-      if (e.message.contains('token is expired')) {
-        await supabase.auth.refreshSession();
-        await supabase.auth.updateUser(
-          UserAttributes(data: {'fcm_token': token}),
-        );
-      } else {}
+      await supabase
+          .from('users')
+          .update({'fcm_token': token})
+          .eq('id', user.id);
+    } catch (e) {
+      print('Error saving FCM token: $e');
     }
   }
 }

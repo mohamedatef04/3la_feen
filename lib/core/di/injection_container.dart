@@ -20,6 +20,7 @@ import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_route_cubit/get_route_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/send_trip_cubit/send_trip_request_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_trip_details_cubit/get_trip_details_cubit.dart';
 import 'package:ala_feen/features/home/driver/data/dataSource/driver_remote_data_source.dart';
 import 'package:ala_feen/features/home/driver/data/repo/driver_repo.dart';
 import 'package:ala_feen/features/home/driver/data/repo/driver_repo_imp.dart';
@@ -106,6 +107,9 @@ Future<void> init() async {
   );
   sl.registerFactory<AcceptOfferCubit>(
     () => AcceptOfferCubit(),
+  );
+  sl.registerFactory<GetTripDetailsCubit>(
+    () => GetTripDetailsCubit(sl.get<PassengerHomeRepo>()),
   );
   sl.registerLazySingleton<DriverRemoteDataSource>(
     () => DriverRemoteDataSourceImpl(sl.get<SupabaseClient>()),

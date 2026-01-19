@@ -1,6 +1,9 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
+import 'package:ala_feen/features/auth/data/models/user_model.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_driver_data_cubit/get_driver_data_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DriverInfoCard extends StatelessWidget {
@@ -8,46 +11,60 @@ class DriverInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(24.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'معلومات الكابتن',
-            style: AppTextStyles.bold16(context),
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            children: [
-              // Driver Avatar
-              _buildDriverAvatar(),
-              SizedBox(width: 16.w),
-              // Driver Details
-              Expanded(
-                child: _buildDriverDetails(context),
-              ),
-              // Contact Buttons
-              _buildContactButtons(context),
-            ],
-          ),
-        ],
-      ),
+    return BlocBuilder<GetDriverDataCubit, GetDriverDataState>(
+      builder: (context, state) {
+        if (state is GetDriverDataSuccess) {
+          return Container(
+            padding: EdgeInsets.all(20.w),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(24.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'معلومات الكابتن',
+                  style: AppTextStyles.bold14(context),
+                ),
+                SizedBox(height: 16.h),
+                Row(
+                  children: [
+                    // Driver Avatar
+                    _buildDriverAvatar(state.driverModel),
+                    SizedBox(width: 16.w),
+                    // Driver Details
+                    Expanded(
+                      child: _buildDriverDetails(context, state.driverModel),
+                    ),
+                    // Contact Buttons
+                    _buildContactButtons(context, state.driverModel),
+                  ],
+                ),
+              ],
+            ),
+          );
+        } else if (state is GetDriverDataFailure) {
+          return Center(
+            child: Text(state.errorMessage),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
-  Widget _buildDriverAvatar() {
+  Widget _buildDriverAvatar(UserModel driver) {
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
@@ -61,13 +78,18 @@ class DriverInfoCard extends StatelessWidget {
             ),
           ),
           child: CircleAvatar(
-            radius: 35.r,
+            radius: 30.r,
             backgroundColor: Colors.grey[200],
-            child: Icon(
-              Icons.person,
-              size: 35.sp,
-              color: Colors.grey,
-            ),
+            backgroundImage: driver.profilePic != null
+                ? NetworkImage(driver.profilePic!)
+                : null,
+            child: driver.profilePic == null
+                ? Icon(
+                    Icons.person,
+                    size: 30.sp,
+                    color: Colors.grey,
+                  )
+                : null,
           ),
         ),
         Container(
@@ -78,7 +100,7 @@ class DriverInfoCard extends StatelessWidget {
           ),
           child: Icon(
             Icons.check,
-            size: 12.sp,
+            size: 10.sp,
             color: Colors.white,
           ),
         ),
@@ -86,13 +108,13 @@ class DriverInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDriverDetails(BuildContext context) {
+  Widget _buildDriverDetails(BuildContext context, UserModel driver) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'أحمد محمد', // Placeholder
-          style: AppTextStyles.bold16(context),
+          driver.name ?? '',
+          style: AppTextStyles.bold14(context),
         ),
         SizedBox(height: 4.h),
         Row(
@@ -145,19 +167,25 @@ class DriverInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContactButtons(BuildContext context) {
+  Widget _buildContactButtons(BuildContext context, UserModel driver) {
     return Column(
       children: [
         _buildContactButton(
           context,
           icon: Icons.phone,
           color: Colors.green,
+          onTap: () {
+            // Handle phone button tap
+          },
         ),
         SizedBox(height: 8.h),
         _buildContactButton(
           context,
           icon: Icons.message,
           color: AppColors.primary,
+          onTap: () {
+            // Handle message button tap
+          },
         ),
       ],
     );
@@ -167,21 +195,27 @@ class DriverInfoCard extends StatelessWidget {
     BuildContext context, {
     required IconData icon,
     required Color color,
+    required VoidCallback onTap,
   }) {
-    return Container(
-      width: 44.w,
-      height: 44.w,
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: color.withValues(alpha: 0.3),
+    return GestureDetector(
+      onTap: () {
+        // Handle contact button tap
+      },
+      child: Container(
+        width: 44.w,
+        height: 44.w,
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: color.withValues(alpha: 0.3),
+          ),
         ),
-      ),
-      child: Icon(
-        icon,
-        size: 20.sp,
-        color: color,
+        child: Icon(
+          icon,
+          size: 20.sp,
+          color: color,
+        ),
       ),
     );
   }

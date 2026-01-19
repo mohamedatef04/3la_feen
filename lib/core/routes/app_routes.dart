@@ -21,9 +21,12 @@ import 'package:ala_feen/features/home/driver/presentation/screens/account_scree
 import 'package:ala_feen/features/home/driver/presentation/screens/history_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/notification_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/rates_screen.dart';
+import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_driver_data_cubit/get_driver_data_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_offers_stream_cubit/get_prices_offers_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_trip_details_cubit/get_trip_details_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyline_cubit/draw_polyline_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_passenger_data_cubit/get_passenger_data_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_items.dart/get_places_cubit.dart';
@@ -176,7 +179,17 @@ final router = GoRouter(
     ),
     GoRoute(
       path: AcceptOfferScreen.routeName,
-      builder: (context, state) => const AcceptOfferScreen(),
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => sl.get<GetDriverDataCubit>(),
+          ),
+          BlocProvider(
+            create: (context) => sl.get<GetTripDetailsCubit>(),
+          ),
+        ],
+        child: AcceptOfferScreen(offer: state.extra as OfferModel),
+      ),
     ),
   ],
 );

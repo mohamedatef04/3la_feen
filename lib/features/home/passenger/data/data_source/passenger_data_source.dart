@@ -29,6 +29,7 @@ abstract class PassengerDataSource {
   });
   Future<UserModel> getUserById(String userId);
   Stream<OfferModel> getOffersStream({required String tripId});
+  Future<TripModel> getTripById(String tripId);
 }
 
 class PassengerDataSourceImpl implements PassengerDataSource {
@@ -141,6 +142,18 @@ class PassengerDataSourceImpl implements PassengerDataSource {
       }
     }
     return [];
+  }
+
+  @override
+  Future<TripModel> getTripById(String tripId) async {
+    final res = await apiService.getRequest(
+      endpoint: '${ApiConstants.tripsEndpoint}?id=eq.$tripId',
+    );
+    final List<dynamic> tripsData = _ensureList(res.data);
+    if (tripsData.isEmpty) {
+      throw Exception('Trip not found');
+    }
+    return TripModel.fromJson(tripsData.first);
   }
 
   @override
