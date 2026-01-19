@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:ala_feen/core/network/network_info.dart';
 import 'package:ala_feen/core/utils/base_cubit.dart';
-import 'package:ala_feen/features/home/driver/data/models/offer_model.dart';
 import 'package:ala_feen/features/home/driver/data/repo/driver_repo.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
+import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
 import 'trip_action_state.dart';
 
 class TripActionCubit extends BaseCubit<TripActionState> {

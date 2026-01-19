@@ -2,6 +2,8 @@ import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/home/driver/data/dataSource/driver_remote_data_source.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/driver/data/models/offer_model.dart';
+import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
+import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/driver/data/repo/driver_repo.dart';
 
 class DriverRepoImp implements DriverRepo {
