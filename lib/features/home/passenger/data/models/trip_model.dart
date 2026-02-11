@@ -33,6 +33,7 @@ class TripModel {
 
   factory TripModel.fromJson(Map<String, dynamic> json) => TripModel(
     tripId: json['id']?.toString(),
+    passengerId: json['passenger_id']?.toString(),
     originLat: json['origin_lat'] ?? '',
     originLng: json['origin_lng'] ?? '',
     driverId: json['driver_id']?.toString(),
@@ -46,6 +47,11 @@ class TripModel {
     passengerPhoneNumber: json['phone_number'] ?? '',
     status: json['status'] ?? '',
   );
+
+  // Convenience getters
+  String? get origin => originAddress;
+  String? get destination => distAddress;
+  num? get price => tripPrice;
 
   Map<String, dynamic> toJson() => {
     'passenger_id': passengerId,

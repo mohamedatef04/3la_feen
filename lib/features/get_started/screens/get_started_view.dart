@@ -2,6 +2,7 @@ import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/core/widgets/logo_widget.dart';
+import 'package:ala_feen/core/utils/responsive_container.dart';
 import 'package:ala_feen/features/auth/presentation/screens/login_screen.dart';
 import 'package:ala_feen/features/auth/presentation/screens/register_screen.dart';
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
@@ -15,11 +16,10 @@ class GetStartedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
-        child: SizedBox(
-          width: width,
+        child: ResponsiveContainer(
+          maxWidth: 500,
           child: Column(
             children: [
               Expanded(

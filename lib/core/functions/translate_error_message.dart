@@ -1,20 +1,17 @@
-import 'package:ala_feen/core/utils/app_strings.dart';
-
 String translateErrorMessage(String message) {
-  if (message.contains('User already registered')) {
-    return AppStrings.userAlreadyRegistered;
+  if (message.contains('User already registered') ||
+      message.contains('23505') ||
+      message.contains('already exists')) {
+    return 'المستخدم موجود بالفعل';
   } else if (message.contains('Invalid login credentials')) {
-    return AppStrings.invalidLoginCredentials;
+    return 'خطأ في البريد الإلكتروني أو كلمة المرور';
   } else if (message.contains('Email not confirmed')) {
-    return AppStrings.emailNotConfirmed;
-  } else if (message.contains('Password should be at least 6 characters')) {
-    return AppStrings.weakPassword;
+    return 'البريد الإلكتروني غير مؤكد';
   } else if (message.contains('network') ||
       message.contains('SocketException')) {
-    return AppStrings.networkError;
-  } else {
-    // If we don't recognize the error, return the original or a generic one
-    // But since the user wants everything in Arabic, generic is safer.
-    return AppStrings.unexpectedError;
+    return 'خطأ في الاتصال بالشبكة';
   }
+
+  // Fallback: Return raw error for debugging
+  return message;
 }

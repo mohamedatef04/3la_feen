@@ -1,5 +1,6 @@
 import 'package:ala_feen/core/functions/show_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// String Extensions
 extension StringExtension on String {
@@ -176,4 +177,10 @@ extension NumExtension on num {
     }
     return '${(this / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
   }
+
+  /// Adds responsive vertical space
+  Widget get verticalSpace => SizedBox(height: toDouble().h);
+
+  /// Adds responsive horizontal space
+  Widget get horizontalSpace => SizedBox(width: toDouble().w);
 }

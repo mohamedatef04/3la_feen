@@ -1,6 +1,7 @@
 import 'package:ala_feen/assets.dart';
 import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/login_form_widget.dart';
 import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/logo_with_back_button.dart';
+import 'package:ala_feen/core/utils/responsive_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -41,14 +42,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
-        child: SizedBox(
-          width: width,
+        child: ResponsiveContainer(
+          maxWidth: 500,
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.h),
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(
                 spacing: 20.h,
                 crossAxisAlignment: CrossAxisAlignment.center,

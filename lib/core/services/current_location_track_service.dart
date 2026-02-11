@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:location/location.dart';
 
 class CurrentLocationTrackService {
@@ -47,6 +48,18 @@ class CurrentLocationTrackService {
 
     //* here i'm listening to the location stream
     _locationSubscription = location.onLocationChanged.listen(onData);
+
+    //* Fetch and send the initial location immediately in the background
+    if (onData != null) {
+      location
+          .getLocation()
+          .then((initialLocation) {
+            onData(initialLocation);
+          })
+          .catchError((e) {
+            debugPrint('Error fetching initial location: $e');
+          });
+    }
   }
 
   //* Stop tracking location

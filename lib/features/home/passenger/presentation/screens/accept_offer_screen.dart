@@ -7,6 +7,9 @@ import 'package:ala_feen/features/home/passenger/presentation/widgets/accepted_o
 import 'package:ala_feen/features/home/passenger/presentation/widgets/accepted_offer_widgets/estimated_arrival_card.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/accepted_offer_widgets/success_icon_widget.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/accepted_offer_widgets/trip_details_card.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/passenger_trip_monitor_cubit/passenger_trip_monitor_cubit.dart';
+import 'package:ala_feen/core/di/injection_container.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,7 +33,6 @@ class _AcceptOfferScreenState extends State<AcceptOfferScreen> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -42,42 +44,90 @@ class _AcceptOfferScreenState extends State<AcceptOfferScreen> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Column(
-                  children: [
-                    SizedBox(height: 20.h),
-                    const SuccessIconWidget(),
-                    SizedBox(height: 24.h),
-                    Text(
-                      'تم قبول العرض بنجاح!',
-                      style: AppTextStyles.bold25(context),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 8.h),
-                    Text(
-                      'الكابتن في الطريق إليك',
-                      style: AppTextStyles.regular14(context).copyWith(
-                        color: Colors.grey[600],
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 32.h),
-                    const DriverInfoCard(),
-                    SizedBox(height: 16.h),
-                    const TripDetailsCard(),
-                    SizedBox(height: 16.h),
-                    const EstimatedArrivalCard(),
-                    SizedBox(height: 24.h),
-                  ],
+        child: BlocProvider(
+          create: (context) =>
+              sl<PassengerTripMonitorCubit>()
+                ..monitorTrip(widget.offer.tripId!),
+          child:
+              BlocListener<
+                PassengerTripMonitorCubit,
+                PassengerTripMonitorState
+              >(
+                listener: (context, state) {
+                  if (state.status == PassengerTripStatus.cancelled) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('تم إلغاء الرحلة')),
+                    );
+                    context.go('/passenger-home');
+                  }
+                },
+                child: BlocBuilder<GetDriverDataCubit, GetDriverDataState>(
+                  builder: (context, driverState) {
+                    final driverName = driverState is GetDriverDataSuccess
+                        ? driverState.driverModel.name
+                        : null;
+                    final driverPhone = driverState is GetDriverDataSuccess
+                        ? driverState.driverModel.phone
+                        : null;
+
+                    return BlocBuilder<
+                      GetTripDetailsCubit,
+                      GetTripDetailsState
+                    >(
+                      builder: (context, tripState) {
+                        final trip = tripState is GetTripDetailsSuccess
+                            ? tripState.trip
+                            : null;
+
+                        return Column(
+                          children: [
+                            Expanded(
+                              child: SingleChildScrollView(
+                                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                child: Column(
+                                  children: [
+                                    SizedBox(height: 20.h),
+                                    const SuccessIconWidget(),
+                                    SizedBox(height: 24.h),
+                                    Text(
+                                      'تم قبول العرض بنجاح!',
+                                      style: AppTextStyles.bold25(context),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 8.h),
+                                    Text(
+                                      'الكابتن في الطريق إليك',
+                                      style: AppTextStyles.regular14(context)
+                                          .copyWith(
+                                            color: Theme.of(context).hintColor,
+                                          ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 32.h),
+                                    DriverInfoCard(
+                                      tripId: widget.offer.tripId!,
+                                    ),
+                                    SizedBox(height: 16.h),
+                                    const TripDetailsCard(),
+                                    SizedBox(height: 16.h),
+                                    const EstimatedArrivalCard(),
+                                    SizedBox(height: 24.h),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            BottomActionButtons(
+                              trip: trip,
+                              driverName: driverName,
+                              driverPhone: driverPhone,
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
-            ),
-            const BottomActionButtons(),
-          ],
         ),
       ),
     );

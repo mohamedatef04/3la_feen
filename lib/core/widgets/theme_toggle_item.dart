@@ -1,5 +1,5 @@
 import 'package:ala_feen/core/cubits/cubit/theme_toggle_cubit.dart';
-import 'package:ala_feen/core/theme/app_colors.dart';
+
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:flutter/material.dart';
@@ -26,14 +26,14 @@ class ThemeToggleItem extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.brightness_6_outlined,
-                    color: AppColors.primary,
+                    color: Theme.of(context).colorScheme.primary,
                     size: 24.sp,
                   ),
                   SizedBox(width: 15.w),
                   Text(
                     AppStrings.darkMode,
                     style: AppTextStyles.bold16(context).copyWith(
-                      color: AppColors.primary,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ],
@@ -43,7 +43,7 @@ class ThemeToggleItem extends StatelessWidget {
                 onChanged: (value) {
                   context.read<ThemeToggleCubit>().toggleTheme();
                 },
-                activeThumbColor: AppColors.primary,
+                activeColor: Theme.of(context).colorScheme.primary,
               ),
             ],
           ),

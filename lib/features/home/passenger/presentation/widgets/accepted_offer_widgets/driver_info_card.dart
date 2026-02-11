@@ -2,12 +2,15 @@ import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_driver_data_cubit/get_driver_data_cubit.dart';
+import 'package:ala_feen/features/chat/presentation/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DriverInfoCard extends StatelessWidget {
-  const DriverInfoCard({super.key});
+  final String tripId;
+  const DriverInfoCard({super.key, required this.tripId});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class DriverInfoCard extends StatelessWidget {
                 Row(
                   children: [
                     // Driver Avatar
-                    _buildDriverAvatar(state.driverModel),
+                    _buildDriverAvatar(context, state.driverModel),
                     SizedBox(width: 16.w),
                     // Driver Details
                     Expanded(
@@ -64,7 +67,7 @@ class DriverInfoCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDriverAvatar(UserModel driver) {
+  Widget _buildDriverAvatar(BuildContext context, UserModel driver) {
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
@@ -79,7 +82,9 @@ class DriverInfoCard extends StatelessWidget {
           ),
           child: CircleAvatar(
             radius: 30.r,
-            backgroundColor: Colors.grey[200],
+            backgroundColor: Theme.of(context).brightness == Brightness.dark
+                ? Theme.of(context).colorScheme.surfaceContainerHighest
+                : Colors.grey[200],
             backgroundImage: driver.profilePic != null
                 ? NetworkImage(driver.profilePic!)
                 : null,
@@ -87,7 +92,7 @@ class DriverInfoCard extends StatelessWidget {
                 ? Icon(
                     Icons.person,
                     size: 30.sp,
-                    color: Colors.grey,
+                    color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                   )
                 : null,
           ),
@@ -124,45 +129,15 @@ class DriverInfoCard extends StatelessWidget {
             Text(
               '4.9',
               style: AppTextStyles.bold14(context).copyWith(
-                color: Colors.grey[800],
+                color: Theme.of(context).textTheme.bodyMedium?.color,
               ),
             ),
             SizedBox(width: 4.w),
-            Text(
-              '(١٤٢ رحلة)',
-              style: AppTextStyles.regular12(context).copyWith(
-                color: Colors.grey[500],
-              ),
-            ),
           ],
         ),
         SizedBox(height: 8.h),
+
         // Car Info
-        Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: 12.w,
-            vertical: 6.h,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.grey[100],
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.directions_car,
-                size: 16.sp,
-                color: AppColors.primary,
-              ),
-              SizedBox(width: 6.w),
-              Text(
-                'تويوتا كامري 2020',
-                style: AppTextStyles.medium12(context),
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }
@@ -174,8 +149,16 @@ class DriverInfoCard extends StatelessWidget {
           context,
           icon: Icons.phone,
           color: Colors.green,
-          onTap: () {
-            // Handle phone button tap
+          onTap: () async {
+            if (driver.phone != null) {
+              final Uri launchUri = Uri(
+                scheme: 'tel',
+                path: driver.phone,
+              );
+              if (await canLaunchUrl(launchUri)) {
+                await launchUrl(launchUri);
+              }
+            }
           },
         ),
         SizedBox(height: 8.h),
@@ -184,7 +167,15 @@ class DriverInfoCard extends StatelessWidget {
           icon: Icons.message,
           color: AppColors.primary,
           onTap: () {
-            // Handle message button tap
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ChatScreen(
+                  tripId: tripId,
+                  otherUserName: driver.name ?? 'الكابتن',
+                ),
+              ),
+            );
           },
         ),
       ],
@@ -198,9 +189,7 @@ class DriverInfoCard extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return GestureDetector(
-      onTap: () {
-        // Handle contact button tap
-      },
+      onTap: onTap,
       child: Container(
         width: 44.w,
         height: 44.w,

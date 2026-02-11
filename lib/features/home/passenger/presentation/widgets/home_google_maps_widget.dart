@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class HomeGoogleMapsWidget extends StatefulWidget {
   const HomeGoogleMapsWidget({super.key});
@@ -20,6 +21,7 @@ class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
   bool isFirstLocationUpdate = true;
+  bool _isMapLoading = true;
 
   @override
   void initState() {
@@ -63,6 +65,10 @@ class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
                 state.errorMessage,
                 isError: true,
               );
+              // Stop loading if location fails
+              setState(() {
+                _isMapLoading = false;
+              });
             }
           },
         ),
@@ -119,6 +125,16 @@ class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
                       ),
                     );
                     isFirstLocationUpdate = false;
+                    setState(() {
+                      _isMapLoading = false;
+                    });
+                  } else {
+                    // In case it's not the first update but we're still loading
+                    if (_isMapLoading) {
+                      setState(() {
+                        _isMapLoading = false;
+                      });
+                    }
                   }
                   setState(() {
                     // Update only the position of the existing 'my_location' marker
@@ -140,6 +156,15 @@ class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
                   });
                 },
               );
+
+              // Fallback timeout
+              Future.delayed(const Duration(seconds: 5), () {
+                if (mounted && _isMapLoading) {
+                  setState(() {
+                    _isMapLoading = false;
+                  });
+                }
+              });
             },
             mapType: MapType.normal,
             zoomControlsEnabled: false,
@@ -148,6 +173,15 @@ class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
             markers: markers,
             polylines: polylines,
           ),
+          if (_isMapLoading)
+            Positioned.fill(
+              child: Skeletonizer(
+                enabled: true,
+                child: Container(
+                  color: Colors.grey[300],
+                ),
+              ),
+            ),
         ],
       ),
     );

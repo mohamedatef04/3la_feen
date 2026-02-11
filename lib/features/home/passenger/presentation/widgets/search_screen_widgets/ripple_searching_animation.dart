@@ -55,7 +55,6 @@ class _RippleSearchingAnimationState extends State<RippleSearchingAnimation>
       builder: (context, child) {
         double progress = (_controller.value + delay) % 1.0;
         double size = 80.w + (progress * 240.w);
-        double opacity = 0.5 * (1.0 - progress);
 
         return Container(
           width: size,
@@ -63,7 +62,7 @@ class _RippleSearchingAnimationState extends State<RippleSearchingAnimation>
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: AppColors.primary.withValues(alpha: opacity),
+              color: AppColors.primary.withValues(alpha: 0.8),
               width: 1.5,
             ),
           ),

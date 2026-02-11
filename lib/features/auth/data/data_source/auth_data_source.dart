@@ -19,6 +19,7 @@ abstract class AuthDataSource {
   Future<String> uploadImage(String path, String bucketName, String fileName);
   Future<void> saveUserData(UserModel user);
   Future<String> getUserRole(String userId);
+  Future<void> logout();
 }
 
 class AuthDataSourceImpl implements AuthDataSource {
@@ -80,7 +81,7 @@ class AuthDataSourceImpl implements AuthDataSource {
 
   @override
   Future<void> saveUserData(UserModel user) async {
-    await supabase.from('users').insert(user.toJson());
+    await supabase.from('users').upsert(user.toJson());
   }
 
   @override
@@ -90,5 +91,10 @@ class AuthDataSourceImpl implements AuthDataSource {
         password: newPassword,
       ),
     );
+  }
+
+  @override
+  Future<void> logout() async {
+    await supabase.auth.signOut();
   }
 }

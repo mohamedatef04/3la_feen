@@ -8,6 +8,7 @@ import 'package:ala_feen/features/auth/presentation/cubits/forget_password_cubit
 import 'package:ala_feen/features/auth/presentation/cubits/login_cubit/login_cubit.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/register_cubit/cubit/register_cubit.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/reset_password_cubit/reset_password_cubit.dart';
+import 'package:ala_feen/features/auth/presentation/cubits/logout_cubit/logout_cubit.dart';
 import 'package:ala_feen/features/home/passenger/data/data_source/passenger_data_source.dart';
 import 'package:ala_feen/features/home/passenger/data/repos/passenger_home_repo.dart';
 import 'package:ala_feen/features/home/passenger/data/repos/passenger_home_repo_impl.dart';
@@ -16,6 +17,7 @@ import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyli
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_driver_data_cubit/get_driver_data_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_offers_stream_cubit/get_prices_offers_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_passenger_data_cubit/get_passenger_data_cubit.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/get_passenger_data/get_passenger_details_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_items.dart/get_places_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_route_cubit/get_route_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/send_trip_cubit/send_trip_request_cubit.dart';
@@ -30,6 +32,12 @@ import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/tri
 import 'package:ala_feen/features/home/driver/presentation/cubit/trips_stream/trips_stream_cubit.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ala_feen/features/home/driver/data/services/driver_tracking_service.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/cancel_trip_cubit/cancel_trip_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/track_driver_cubit/track_driver_cubit.dart';
+import 'package:ala_feen/features/chat/presentation/cubits/chat_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/passenger_trip_monitor_cubit/passenger_trip_monitor_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/rating_cubit/rating_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final sl = GetIt.instance;
@@ -66,6 +74,9 @@ Future<void> init() async {
   );
   sl.registerFactory<ResetPasswordCubit>(
     () => ResetPasswordCubit(sl.get<AuthRepo>()),
+  );
+  sl.registerFactory<LogoutCubit>(
+    () => LogoutCubit(sl.get<AuthRepo>()),
   );
   //* passenger home
   sl.registerLazySingleton<CurrentLocationTrackService>(
@@ -133,6 +144,10 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerFactory<GetPassengerDetailsCubit>(
+    () => GetPassengerDetailsCubit(sl.get<DriverRepo>()),
+  );
+
   sl.registerLazySingleton<TripActionCubit>(
     () => TripActionCubit(
       sl.get<DriverRepo>(),
@@ -141,5 +156,25 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<ActiveTripMonitorCubit>(
     () => ActiveTripMonitorCubit(sl.get<DriverRepo>(), sl.get<NetworkInfo>()),
+  );
+
+  // New Feature Services & Cubits
+  sl.registerLazySingleton<DriverTrackingService>(
+    () => DriverTrackingService(sl.get<SupabaseClient>()),
+  );
+  sl.registerFactory<CancelTripCubit>(
+    () => CancelTripCubit(),
+  );
+  sl.registerFactory<TrackDriverCubit>(
+    () => TrackDriverCubit(),
+  );
+  sl.registerFactory<ChatCubit>(
+    () => ChatCubit(),
+  );
+  sl.registerFactory<PassengerTripMonitorCubit>(
+    () => PassengerTripMonitorCubit(),
+  );
+  sl.registerFactory<RatingCubit>(
+    () => RatingCubit(),
   );
 }

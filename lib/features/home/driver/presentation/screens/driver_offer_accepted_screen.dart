@@ -2,17 +2,26 @@ import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/active_trip/active_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/accepted_offer_widgets/success_icon_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'active_trip_map_screen.dart';
 
-class DriverOfferAcceptedScreen extends StatelessWidget {
+class DriverOfferAcceptedScreen extends StatefulWidget {
   static const String routeName = '/driver-offer-accepted';
   final TripModel trip;
 
   const DriverOfferAcceptedScreen({super.key, required this.trip});
+
+  @override
+  State<DriverOfferAcceptedScreen> createState() =>
+      _DriverOfferAcceptedScreenState();
+}
+
+class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +41,9 @@ class DriverOfferAcceptedScreen extends StatelessWidget {
             Text(
               'الركاب في انتظارك الآن',
               style: AppTextStyles.regular16(context).copyWith(
-                color: Colors.grey[600],
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey[400]
+                    : Colors.grey[600],
               ),
               textAlign: TextAlign.center,
             ),
@@ -42,9 +53,11 @@ class DriverOfferAcceptedScreen extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.all(20.w),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: Colors.grey.withOpacity(0.1)),
+                  border: Border.all(
+                    color: Theme.of(context).dividerColor.withOpacity(0.1),
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.05),
@@ -60,22 +73,28 @@ class DriverOfferAcceptedScreen extends StatelessWidget {
                       icon: Icons.location_on,
                       color: Colors.green,
                       label: 'نقطة الانطلاق',
-                      value: trip.originAddress ?? 'غير محدد',
+                      value: widget.trip.originAddress ?? 'غير محدد',
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
-                      child: Divider(color: Colors.grey[200], thickness: 1),
+                      child: Divider(
+                        color: Theme.of(context).dividerColor,
+                        thickness: 1,
+                      ),
                     ),
                     _buildStepItem(
                       context,
                       icon: Icons.flag_rounded,
                       color: Colors.red,
                       label: 'وجهة الوصول',
-                      value: trip.distAddress ?? 'غير محدد',
+                      value: widget.trip.distAddress ?? 'غير محدد',
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
-                      child: Divider(color: Colors.grey[200], thickness: 1),
+                      child: Divider(
+                        color: Theme.of(context).dividerColor,
+                        thickness: 1,
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,14 +102,14 @@ class DriverOfferAcceptedScreen extends StatelessWidget {
                         _buildInfoColumn(
                           context,
                           'السعر المتوقع',
-                          '${trip.tripPrice} ج.م',
+                          '${widget.trip.tripPrice} ج.م',
                           Icons.payments_outlined,
                           Colors.amber[800]!,
                         ),
                         _buildInfoColumn(
                           context,
                           'المسافة',
-                          trip.tripDistance ?? '--',
+                          widget.trip.tripDistance ?? '--',
                           Icons.straighten_outlined,
                           Colors.blue[700]!,
                         ),
@@ -104,13 +123,37 @@ class DriverOfferAcceptedScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(24.w),
               child: ElevatedButton(
-                onPressed: () {
-                  context.read<ActiveTripMonitorCubit>().setActiveTrip(trip);
-                  context.pushReplacement(
-                    ActiveTripMapScreen.routeName,
-                    extra: trip,
-                  );
-                },
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+
+                        // Small delay to ensure the indicator is visible before the heavy map build
+                        await Future.delayed(const Duration(milliseconds: 100));
+
+                        if (!mounted) return;
+
+                        context.read<ActiveTripMonitorCubit>().setActiveTrip(
+                          widget.trip,
+                        );
+
+                        if (mounted) {
+                          context.pushReplacement(
+                            ActiveTripMapScreen.routeName,
+                            extra: widget.trip,
+                          );
+                        }
+
+                        // We don't necessarily need to set _isLoading to false here
+                        // because we're using pushReplacement, but it's good practice.
+                        if (mounted) {
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,
                   minimumSize: Size(double.infinity, 56.h),
@@ -119,12 +162,14 @@ class DriverOfferAcceptedScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16.r),
                   ),
                 ),
-                child: Text(
-                  'التوجه إلى الخريطة',
-                  style: AppTextStyles.bold18(
-                    context,
-                  ).copyWith(color: Colors.white),
-                ),
+                child: _isLoading
+                    ? const CupertinoActivityIndicator(color: Colors.white)
+                    : Text(
+                        'التوجه إلى الخريطة',
+                        style: AppTextStyles.bold18(
+                          context,
+                        ).copyWith(color: Colors.white),
+                      ),
               ),
             ),
           ],
@@ -159,13 +204,15 @@ class DriverOfferAcceptedScreen extends StatelessWidget {
               Text(
                 label,
                 style: AppTextStyles.regular12(context).copyWith(
-                  color: Colors.grey[500],
+                  color: Theme.of(context).hintColor,
                 ),
               ),
               SizedBox(height: 2.h),
               Text(
                 value,
-                style: AppTextStyles.semiBold14(context),
+                style: AppTextStyles.semiBold14(context).copyWith(
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -193,7 +240,7 @@ class DriverOfferAcceptedScreen extends StatelessWidget {
             Text(
               label,
               style: AppTextStyles.regular10(context).copyWith(
-                color: Colors.grey[500],
+                color: Theme.of(context).hintColor,
               ),
             ),
             Text(

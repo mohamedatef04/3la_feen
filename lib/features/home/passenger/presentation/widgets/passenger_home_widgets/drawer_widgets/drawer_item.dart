@@ -25,14 +25,14 @@ class DrawerItem extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: AppTextStyles.bold18(context).copyWith(
+        style: AppTextStyles.bold16(context).copyWith(
           color: Theme.of(context).colorScheme.primary,
         ),
       ),
       trailing: Icon(
         Icons.arrow_back_ios_new, // Arabic back icon
         color: Theme.of(context).colorScheme.primary,
-        size: 18.sp,
+        size: 16.sp,
       ),
     );
   }

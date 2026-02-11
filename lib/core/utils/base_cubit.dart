@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+﻿import 'package:flutter_bloc/flutter_bloc.dart';
 import '../network/network_info.dart';
 
 abstract class BaseCubit<S> extends Cubit<S> {
@@ -6,13 +6,7 @@ abstract class BaseCubit<S> extends Cubit<S> {
 
   BaseCubit(super.initialState, this.networkInfo);
 
-  /// A safe wrapper for emit that checks if the Cubit is still open.
-  /// This prevents "State error: Cannot emit new states after calling close"
-  void safeEmit(S state) {
-    if (!isClosed) {
-      emit(state);
-    }
-  }
+  // No longer need a manual safeEmit method here as the extension handles it.
 
   /// Manual network check utility
   Future<void> checkNetwork() async {

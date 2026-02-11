@@ -1,10 +1,11 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/auth/data/repos/auth_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
+import 'package:ala_feen/core/utils/safe_emit.dart';
 
 part 'register_state.dart';
 
@@ -19,7 +20,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     File? carPic,
     File? licensePic,
   }) async {
-    emit(RegisterLoading());
+    safeEmit(RegisterLoading());
 
     // 1. Auth Registration
     final result = await authRepo.registerUser(
@@ -30,7 +31,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     await result.fold(
       (failure) async {
         if (!isClosed) {
-          emit(RegisterError(errorMessage: failure.errorMessage));
+          safeEmit(RegisterError(errorMessage: failure.errorMessage));
         }
       },
       (userId) async {
@@ -54,7 +55,7 @@ class RegisterCubit extends Cubit<RegisterState> {
               fileName: getFileName(profilePic, 'profiles'),
             );
             uploadResult.fold(
-              (f) => throw Exception(f.errorMessage),
+              (f) => throw Exception('Profile Upload Error: ${f.errorMessage}'),
               (url) => profilePicUrl = url,
             );
           }
@@ -66,7 +67,7 @@ class RegisterCubit extends Cubit<RegisterState> {
               fileName: getFileName(cardIdPic, 'ids'),
             );
             uploadResult.fold(
-              (f) => throw Exception(f.errorMessage),
+              (f) => throw Exception('ID Card Upload Error: ${f.errorMessage}'),
               (url) => cardIdPicUrl = url,
             );
           }
@@ -78,7 +79,8 @@ class RegisterCubit extends Cubit<RegisterState> {
               fileName: getFileName(carPic, 'cars'),
             );
             uploadResult.fold(
-              (f) => throw Exception(f.errorMessage),
+              (f) =>
+                  throw Exception('Car Image Upload Error: ${f.errorMessage}'),
               (url) => carPicUrl = url,
             );
           }
@@ -90,7 +92,7 @@ class RegisterCubit extends Cubit<RegisterState> {
               fileName: getFileName(licensePic, 'licenses'),
             );
             uploadResult.fold(
-              (f) => throw Exception(f.errorMessage),
+              (f) => throw Exception('License Upload Error: ${f.errorMessage}'),
               (url) => licensePicUrl = url,
             );
           }
@@ -111,14 +113,19 @@ class RegisterCubit extends Cubit<RegisterState> {
           final dbResult = await authRepo.saveUserData(user: updatedUser);
           if (!isClosed) {
             dbResult.fold(
-              (failure) =>
-                  emit(RegisterError(errorMessage: failure.errorMessage)),
-              (_) => emit(RegisterSuccess()),
+              (failure) => safeEmit(
+                RegisterError(
+                  errorMessage: 'DB Save Error: ${failure.errorMessage}',
+                ),
+              ),
+              (_) => safeEmit(RegisterSuccess()),
             );
           }
         } catch (e) {
           if (!isClosed) {
-            emit(RegisterError(errorMessage: e.toString()));
+            safeEmit(
+              RegisterError(errorMessage: 'Step Catch Error: ${e.toString()}'),
+            );
           }
         }
       },

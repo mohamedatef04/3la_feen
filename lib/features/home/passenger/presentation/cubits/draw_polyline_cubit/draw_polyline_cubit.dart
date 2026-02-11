@@ -1,7 +1,8 @@
-import 'package:bloc/bloc.dart';
+﻿import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:ala_feen/core/utils/safe_emit.dart';
 
 part 'draw_polyline_state.dart';
 
@@ -25,7 +26,7 @@ class DrawPolylineCubit extends Cubit<DrawPolylineState> {
         position: points.first,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
         infoWindow: const InfoWindow(
-          title: 'نقطة البداية',
+          title: 'Ù†Ù‚Ø·Ø© Ø§Ù„Ø¨Ø¯Ø§ÙŠØ©',
         ),
       ),
       Marker(
@@ -33,14 +34,14 @@ class DrawPolylineCubit extends Cubit<DrawPolylineState> {
         position: points.last,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         infoWindow: const InfoWindow(
-          title: 'نقطة النهاية',
+          title: 'Ù†Ù‚Ø·Ø© Ø§Ù„Ù†Ù‡Ø§ÙŠØ©',
         ),
       ),
     };
 
     final bounds = _calculateBounds(points);
 
-    emit(
+    safeEmit(
       DrawPolylineState(
         polylines: {polyline},
         markers: markers,
@@ -69,6 +70,7 @@ class DrawPolylineCubit extends Cubit<DrawPolylineState> {
   }
 
   void clearRoute() {
-    emit(const DrawPolylineState(polylines: {}, markers: {}));
+    safeEmit(const DrawPolylineState(polylines: {}, markers: {}));
   }
 }
+

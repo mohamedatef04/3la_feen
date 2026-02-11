@@ -4,6 +4,7 @@ import 'package:ala_feen/features/auth/presentation/widgets/login_widgets/driver
 import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/logo_with_back_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:ala_feen/core/utils/responsive_container.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -21,27 +22,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w),
-            child: Column(
-              spacing: 10.h,
-              children: [
-                const LogoWithBackButton(),
-                DriverAndPassengerToggleWidget(
-                  initialIsPassenger: _isPassenger,
-                  onRoleChanged: (isPassenger) {
-                    setState(() {
-                      _isPassenger = isPassenger;
-                    });
-                  },
-                ),
-                if (_isPassenger)
-                  const RegisterPassengerFormWidget()
-                else
-                  const RegisterDriverFormWidget(),
-                SizedBox(height: 20.h),
-              ],
+        child: ResponsiveContainer(
+          maxWidth: 500,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Column(
+                spacing: 10.h,
+                children: [
+                  const LogoWithBackButton(),
+                  DriverAndPassengerToggleWidget(
+                    initialIsPassenger: _isPassenger,
+                    onRoleChanged: (isPassenger) {
+                      setState(() {
+                        _isPassenger = isPassenger;
+                      });
+                    },
+                  ),
+                  if (_isPassenger)
+                    const RegisterPassengerFormWidget()
+                  else
+                    const RegisterDriverFormWidget(),
+                  SizedBox(height: 20.h),
+                ],
+              ),
             ),
           ),
         ),

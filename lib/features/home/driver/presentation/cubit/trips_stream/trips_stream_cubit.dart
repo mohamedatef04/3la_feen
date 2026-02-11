@@ -1,10 +1,10 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'package:ala_feen/core/network/network_info.dart';
 import 'package:ala_feen/core/utils/base_cubit.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/driver/data/repo/driver_repo.dart';
-import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'trips_stream_state.dart';
+import 'package:ala_feen/core/utils/safe_emit.dart';
 
 class TripsStreamCubit extends BaseCubit<TripsStreamState> {
   final DriverRepo _driverRepo;
@@ -60,3 +60,5 @@ class TripsStreamCubit extends BaseCubit<TripsStreamState> {
     return super.close();
   }
 }
+
+

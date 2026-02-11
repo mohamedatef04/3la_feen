@@ -1,4 +1,3 @@
-import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -34,7 +33,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 18.sp,
       fontWeight: FontWeight.bold,
-      color: Theme.of(context).colorScheme.onSurface,
+      color: Theme.of(context).colorScheme.primary,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -43,7 +42,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 16.sp,
       fontWeight: FontWeight.bold,
-      color: AppColors.white,
+      color: Theme.of(context).colorScheme.onPrimary,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }
@@ -61,7 +60,7 @@ abstract class AppTextStyles {
     return TextStyle(
       fontSize: 12.sp,
       fontWeight: FontWeight.bold,
-      color: Theme.of(context).colorScheme.onSurface,
+      color: Theme.of(context).colorScheme.primary,
       fontFamily: 'IBM Plex Sans Arabic',
     );
   }

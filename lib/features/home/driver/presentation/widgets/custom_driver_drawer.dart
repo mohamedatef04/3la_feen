@@ -3,10 +3,14 @@ import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/account_screen.dart';
-import 'package:ala_feen/features/home/driver/presentation/screens/history_screen.dart';
-import 'package:ala_feen/features/home/driver/presentation/screens/notification_screen.dart';
+
 import 'package:ala_feen/features/home/driver/presentation/screens/rates_screen.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/custom_profile_avatar.dart';
+import 'package:ala_feen/features/auth/presentation/cubits/logout_cubit/logout_cubit.dart';
+import 'package:ala_feen/features/auth/presentation/cubits/logout_cubit/logout_state.dart';
+import 'package:ala_feen/features/auth/presentation/screens/login_screen.dart';
+import 'package:ala_feen/core/di/injection_container.dart';
+import 'package:ala_feen/core/widgets/theme_toggle_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -73,28 +77,36 @@ class CustomDriverDrawer extends StatelessWidget {
                   ),
                   _buildDrawerItem(
                     context,
-                    icon: Icons.notifications_none,
-                    title: AppStrings.notifications,
-                    onTap: () => context.push(NotificationScreen.routeName),
-                  ),
-                  _buildDrawerItem(
-                    context,
                     icon: Icons.star_border,
                     title: AppStrings.ratings,
                     onTap: () => context.push(RatesScreen.routeName),
                   ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.history,
-                    title: AppStrings.history,
-                    onTap: () => context.push(HistoryScreen.routeName),
+                  BlocProvider(
+                    create: (context) => sl<LogoutCubit>(),
+                    child: BlocConsumer<LogoutCubit, LogoutState>(
+                      listener: (context, state) {
+                        if (state is LogoutSuccess) {
+                          context.go(LoginScreen.routeName);
+                        } else if (state is LogoutFailure) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.errorMessage)),
+                          );
+                        }
+                      },
+                      builder: (context, state) {
+                        return _buildDrawerItem(
+                          context,
+                          icon: Icons.logout,
+                          title: AppStrings.logout,
+                          onTap: () {
+                            context.read<LogoutCubit>().logout();
+                          },
+                        );
+                      },
+                    ),
                   ),
-                  _buildDrawerItem(
-                    context,
-                    icon: Icons.logout,
-                    title: AppStrings.logout,
-                    onTap: () {},
-                  ),
+                  const Divider(),
+                  const ThemeToggleItem(),
                 ],
               ),
             ),

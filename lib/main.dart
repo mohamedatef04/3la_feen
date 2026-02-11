@@ -2,6 +2,8 @@
 import 'package:ala_feen/core/cubits/cubit/theme_toggle_cubit.dart';
 import 'package:ala_feen/core/routes/app_routes.dart';
 import 'package:ala_feen/firebase_options.dart';
+import 'package:ala_feen/core/services/chat_notification_service.dart';
+import 'package:ala_feen/core/utils/marker_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +31,13 @@ void main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+
+  // Initialize global chat notification service
+  await ChatNotificationService().init();
+
+  // Initialize custom map markers
+  await MarkerUtils.init();
+
   runApp(const MyApp());
 }
 

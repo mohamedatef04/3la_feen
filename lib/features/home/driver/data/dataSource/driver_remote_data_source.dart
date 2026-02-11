@@ -1,8 +1,6 @@
 import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
-import 'package:ala_feen/features/home/driver/data/models/offer_model.dart';
 import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
-import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class DriverRemoteDataSource {
@@ -15,6 +13,7 @@ abstract class DriverRemoteDataSource {
     required String tripId,
     required String status,
   });
+  Future<UserModel?> getPassengerData(String passengerId);
 }
 
 class DriverRemoteDataSourceImpl implements DriverRemoteDataSource {
@@ -29,7 +28,23 @@ class DriverRemoteDataSourceImpl implements DriverRemoteDataSource {
           .select()
           .eq('id', supabaseClient.auth.currentUser!.id)
           .single();
-      return UserModel.fromJson(data);
+
+      // Fetch average rating
+      final ratingsResponse = await supabaseClient
+          .from('trip_ratings')
+          .select('rating')
+          .eq('driver_id', supabaseClient.auth.currentUser!.id);
+
+      double? averageRating;
+      if (ratingsResponse.isNotEmpty) {
+        final totalRating = ratingsResponse.fold<int>(
+          0,
+          (sum, item) => sum + (item['rating'] as int),
+        );
+        averageRating = totalRating / ratingsResponse.length;
+      }
+
+      return UserModel.fromJson(data).copyWith(rating: averageRating);
     } catch (e) {
       rethrow;
     }
@@ -90,9 +105,11 @@ class DriverRemoteDataSourceImpl implements DriverRemoteDataSource {
           .map((data) {
             if (data.isEmpty) return null;
 
+            // Active statuses: accepted, driver_arrived, started
+            final activeStatuses = ['accepted', 'driver_arrived', 'started'];
             final activeTrips = data.where((e) {
-              final status = e['status'] == "accepted";
-              return status;
+              final status = e['status']?.toString();
+              return activeStatuses.contains(status);
             });
 
             if (activeTrips.isEmpty) return null;
@@ -114,6 +131,20 @@ class DriverRemoteDataSourceImpl implements DriverRemoteDataSource {
           .from('trips')
           .update({'status': status})
           .eq('id', tripId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<UserModel?> getPassengerData(String passengerId) async {
+    try {
+      final data = await supabaseClient
+          .from('users')
+          .select()
+          .eq('id', passengerId)
+          .single();
+      return UserModel.fromJson(data);
     } catch (e) {
       rethrow;
     }

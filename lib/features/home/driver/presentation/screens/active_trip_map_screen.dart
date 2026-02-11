@@ -1,20 +1,26 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:ui' as ui;
 import 'package:ala_feen/core/utils/decode_polykine.dart';
+import 'package:ala_feen/core/utils/marker_utils.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/active_trip/active_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/active_trip/active_trip_state.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/active_trip_banner.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/get_passenger_data/get_passenger_details_cubit.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/get_passenger_data/get_passenger_details_state.dart';
+import 'package:ala_feen/features/home/driver/presentation/screens/driver_trip_completed_screen.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyline_cubit/draw_polyline_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_route_cubit/get_route_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:ala_feen/core/di/injection_container.dart';
+import 'package:ala_feen/features/home/driver/data/services/driver_tracking_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ActiveTripMapScreen extends StatefulWidget {
   static const String routeName = '/active-trip-map';
@@ -34,6 +40,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   bool _showStartTripDialog = false;
   double? _remainingDistance;
   late TripModel currentTrip;
+  bool _isMapLoading = true;
 
   // Simulation variables
   Timer? _simulationTimer;
@@ -41,71 +48,61 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   int _simulationIndex = 0;
   bool _isSimulating = false;
   bool _autoResumeSimulation = false;
-  BitmapDescriptor? _carIcon;
   DateTime? _lastCameraUpdate;
+  DateTime? _lastSupabaseUpdate;
 
   @override
   void initState() {
     super.initState();
     currentTrip = widget.trip;
     _initMarkers();
-    _loadCustomMarker();
-  }
-
-  Future<void> _loadCustomMarker() async {
-    _carIcon = await _getEmojiMarker('🚘');
-  }
-
-  Future<BitmapDescriptor> _getEmojiMarker(String emoji) async {
-    final TextPainter textPainter = TextPainter(
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.text = TextSpan(
-      text: emoji,
-      style: TextStyle(fontSize: 50.sp),
-    );
-    textPainter.layout();
-
-    final ui.PictureRecorder recorder = ui.PictureRecorder();
-    final Canvas canvas = Canvas(recorder);
-    textPainter.paint(canvas, Offset.zero);
-
-    final ui.Picture picture = recorder.endRecording();
-    final ui.Image img = await picture.toImage(
-      textPainter.width.toInt(),
-      textPainter.height.toInt(),
-    );
-    final ByteData? byteData = await img.toByteData(
-      format: ui.ImageByteFormat.png,
-    );
-
-    return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
   }
 
   void _initMarkers() {
     markers.clear();
-    markers.add(
-      Marker(
-        markerId: const MarkerId('pickup'),
-        position: LatLng(
-          double.parse(currentTrip.originLat ?? '0'),
-          double.parse(currentTrip.originLng ?? '0'),
-        ),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        infoWindow: const InfoWindow(title: 'نقطة الانطلاق'),
-      ),
-    );
-    markers.add(
-      Marker(
-        markerId: const MarkerId('destination'),
-        position: LatLng(
-          double.parse(currentTrip.distLat ?? '0'),
-          double.parse(currentTrip.distLng ?? '0'),
-        ),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        infoWindow: const InfoWindow(title: 'نقطة الوصول'),
-      ),
-    );
+    // Passenger pickup location (person marker)
+    try {
+      final pickupLat = _safeParseDouble(currentTrip.originLat);
+      final pickupLng = _safeParseDouble(currentTrip.originLng);
+
+      if (pickupLat != 0 && pickupLng != 0) {
+        markers.add(
+          Marker(
+            markerId: const MarkerId('pickup'),
+            position: LatLng(pickupLat, pickupLng),
+            icon: MarkerUtils.personMarker,
+            infoWindow: const InfoWindow(title: 'موقع الراكب'),
+          ),
+        );
+      }
+
+      // Destination (station marker)
+      final destLat = _safeParseDouble(currentTrip.distLat);
+      final destLng = _safeParseDouble(currentTrip.distLng);
+
+      if (destLat != 0 && destLng != 0) {
+        markers.add(
+          Marker(
+            markerId: const MarkerId('destination'),
+            position: LatLng(destLat, destLng),
+            icon: MarkerUtils.stationMarker,
+            infoWindow: const InfoWindow(title: 'الوجهة'),
+          ),
+        );
+      }
+    } catch (e) {
+      debugPrint('Error initializing markers: $e');
+    }
+  }
+
+  double _safeParseDouble(String? value) {
+    if (value == null || value.isEmpty) return 0.0;
+    try {
+      return double.parse(value);
+    } catch (e) {
+      debugPrint('Error parsing double: $value');
+      return 0.0;
+    }
   }
 
   double _calculateDistance(
@@ -132,15 +129,30 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
         Marker(
           markerId: const MarkerId('driver_location'),
           position: driverPos,
-          icon: _isSimulating && _carIcon != null
-              ? _carIcon!
-              : BitmapDescriptor.defaultMarkerWithHue(
-                  BitmapDescriptor.hueAzure,
-                ),
+          icon: MarkerUtils.carMarker,
           infoWindow: const InfoWindow(title: 'موقعي'),
         ),
       );
     });
+
+    // Update location in Supabase for passenger tracking (Throttled: max once per 1s)
+    try {
+      final now = DateTime.now();
+      if (_lastSupabaseUpdate == null ||
+          now.difference(_lastSupabaseUpdate!).inSeconds >= 1) {
+        final driverId = Supabase.instance.client.auth.currentUser?.id;
+        if (driverId != null) {
+          sl<DriverTrackingService>().updateLocation(
+            driverId: driverId,
+            lat: driverPos.latitude,
+            lng: driverPos.longitude,
+          );
+          _lastSupabaseUpdate = now;
+        }
+      }
+    } catch (e) {
+      // Ignore errors
+    }
 
     // Always track driver position with camera if it's the first time
     if (isFirstLocationUpdate) {
@@ -148,18 +160,27 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
       isFirstLocationUpdate = false;
       _fetchInitialRoute(driverPos);
     } else {
-      // Throttled camera update (every 1 second or significant distance)
+      // Throttled camera update (every 500ms or significant distance)
       final now = DateTime.now();
       if (_lastCameraUpdate == null ||
-          now.difference(_lastCameraUpdate!).inMilliseconds > 1000) {
+          now.difference(_lastCameraUpdate!).inMilliseconds > 500) {
         mapController?.animateCamera(CameraUpdate.newLatLng(driverPos));
         _lastCameraUpdate = now;
       }
     }
 
     // Proximity detection for starting trip (Stage 1) or finishing trip (Stage 2)
+    debugPrint(
+      '[ActiveTrip] Proximity check: _showStartTripDialog=$_showStartTripDialog, status=${currentTrip.status}',
+    );
+
     if (!_showStartTripDialog) {
-      if (currentTrip.status == 'accepted') {
+      // Check for pre-arrival statuses (driver on the way to pickup)
+      final isPreArrival =
+          currentTrip.status == 'accepted' ||
+          currentTrip.status == 'searching' ||
+          currentTrip.status == 'pending';
+      if (isPreArrival) {
         final pickupLat = double.parse(currentTrip.originLat ?? '0');
         final pickupLng = double.parse(currentTrip.originLng ?? '0');
         final distance = _calculateDistance(
@@ -169,7 +190,18 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
           pickupLng,
         );
 
+        debugPrint(
+          '[ActiveTrip] Driver at (${driverPos.latitude}, ${driverPos.longitude})',
+        );
+        debugPrint('[ActiveTrip] Pickup at ($pickupLat, $pickupLng)');
+        debugPrint(
+          '[ActiveTrip] Distance to pickup: ${distance.toStringAsFixed(1)}m',
+        );
+
         if (distance < 100) {
+          debugPrint(
+            '[ActiveTrip] ✅ Within 100m! Updating status to driver_arrived',
+          );
           if (_isSimulating) {
             _autoResumeSimulation = true;
           }
@@ -177,7 +209,11 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
           setState(() {
             _showStartTripDialog = true;
           });
-          _showStartTripConfirmation();
+          // Update trip status to driver_arrived for passenger notification
+          context.read<ActiveTripMonitorCubit>().updateTripStatus(
+            currentTrip.tripId!,
+            'driver_arrived',
+          );
         }
       } else if (currentTrip.status == 'started') {
         final destLat = double.parse(currentTrip.distLat ?? '0');
@@ -199,6 +235,15 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
 
   void _fetchInitialRoute(LatLng driverPos) {
     bool isStarted = currentTrip.status == 'started';
+
+    // If started, start from Pickup (Origin). Otherwise, start from Driver's current position.
+    final startLat = isStarted
+        ? double.parse(currentTrip.originLat ?? '0')
+        : driverPos.latitude;
+    final startLng = isStarted
+        ? double.parse(currentTrip.originLng ?? '0')
+        : driverPos.longitude;
+
     final targetLat = double.parse(
       isStarted ? (currentTrip.distLat ?? '0') : (currentTrip.originLat ?? '0'),
     );
@@ -207,16 +252,16 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
     );
 
     context.read<GetRouteCubit>().getRoute(
-      startLat: driverPos.latitude,
-      startLng: driverPos.longitude,
+      startLat: startLat,
+      startLng: startLng,
       endLat: targetLat,
       endLng: targetLng,
-      startLocation: 'موقعي',
+      startLocation: isStarted ? 'الراكب' : 'موقعي',
       endLocation: isStarted ? 'الوجهة' : 'الراكب',
     );
   }
 
-  void _showStartTripConfirmation() {
+  void showStartTripConfirmation() {
     final monitorCubit = context.read<ActiveTripMonitorCubit>();
     showDialog(
       context: context,
@@ -251,6 +296,15 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
 
   void _showArrivalConfirmation() {
     final monitorCubit = context.read<ActiveTripMonitorCubit>();
+    String passengerName = 'الراكب'; // Fallback
+
+    // Try to get name from any existing GetPassengerDetailsCubit state in context if available
+    // or we'll just use a generic one if we don't want to block
+    final passengerState = context.read<GetPassengerDetailsCubit>().state;
+    if (passengerState is GetPassengerDetailsSuccess) {
+      passengerName = passengerState.passengerModel.name ?? 'الراكب';
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -269,7 +323,16 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
                 'completed',
               );
               Navigator.pop(dialogContext);
-              context.pop(); // Go back home
+              // Navigate to Trip Completed Screen
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => DriverTripCompletedScreen(
+                    trip: currentTrip,
+                    passengerName: passengerName,
+                  ),
+                ),
+              );
             },
             child: const Text('إنهاء الرحلة'),
           ),
@@ -278,24 +341,51 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
     );
   }
 
+  bool _pendingSimulationStart = false;
+
   void _startSimulation() {
-    if (_currentRoutePoints.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('يرجى انتظار تحميل المسار أولاً')),
-      );
-      return;
+    // 1. Get current driver location (from markers or cubit)
+    // We prefer the actual marker location if available (visual consistency)
+    LatLng? currentDriverPos;
+    final driverMarker = markers
+        .where((m) => m.markerId.value == 'driver_location')
+        .firstOrNull;
+    if (driverMarker != null) {
+      currentDriverPos = driverMarker.position;
     }
 
-    setState(() {
-      _isSimulating = true;
-      _simulationIndex = 0;
-    });
+    if (currentDriverPos != null) {
+      // 2. Fetch new route from HERE to target
+      _pendingSimulationStart = true;
+      _fetchInitialRoute(currentDriverPos);
 
-    // Realistic Speed: Step 1 with 200ms interval
-    final stepSize = 1;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('جاري تحديث المسار للمحاكاة...')),
+      );
+    } else {
+      // Fallback if no driver location found (likely first load)
+      if (_currentRoutePoints.isNotEmpty) {
+        setState(() {
+          _isSimulating = true;
+          _simulationIndex = 0;
+        });
+        _runSimulationLoop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('يرجى انتظار تحديد الموقع...')),
+        );
+      }
+    }
+  }
+
+  void _runSimulationLoop() {
+    // Semantic Speed: Update every 1 second (1000ms) for realistic movement
+    // and to match throttled updates better
+    final stepSize =
+        1; // Move 1 point at a time for smoother, slower simulation
 
     _simulationTimer?.cancel();
-    _simulationTimer = Timer.periodic(const Duration(milliseconds: 200), (
+    _simulationTimer = Timer.periodic(const Duration(milliseconds: 1000), (
       timer,
     ) {
       if (_simulationIndex >= _currentRoutePoints.length) {
@@ -305,6 +395,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
       }
 
       _handleLocationUpdate(_currentRoutePoints[_simulationIndex]);
+
       _simulationIndex += stepSize;
 
       // Ensure we hit the last point
@@ -320,6 +411,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
     setState(() {
       _isSimulating = false;
       _autoResumeSimulation = false;
+      _pendingSimulationStart = false; // Cancel pending start
     });
   }
 
@@ -337,18 +429,81 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
         : 'assets/map_styles/light_map_style.json';
 
     try {
-      final style = await rootBundle.loadString(stylePath);
+      final style = await DefaultAssetBundle.of(context).loadString(stylePath);
       await mapController!.setMapStyle(style);
     } catch (e) {
       debugPrint('Error loading map style: $e');
     }
   }
 
+  void _recenterMap() {
+    if (mapController == null) return;
+
+    LatLng? target;
+    if (currentTrip.status == 'started') {
+      // If started, focus on destination
+      if (currentTrip.distLat != null && currentTrip.distLng != null) {
+        target = LatLng(
+          double.tryParse(currentTrip.distLat!) ?? 0,
+          double.tryParse(currentTrip.distLng!) ?? 0,
+        );
+      }
+    } else {
+      // If not started (accepted), focus on pickup
+      if (currentTrip.originLat != null && currentTrip.originLng != null) {
+        target = LatLng(
+          double.tryParse(currentTrip.originLat!) ?? 0,
+          double.tryParse(currentTrip.originLng!) ?? 0,
+        );
+      }
+    }
+
+    if (target != null && target.latitude != 0 && target.longitude != 0) {
+      // Calculate bounds to include driver and target
+      context.read<TrackMyLocationCubit>().getCurrentLocation((location) {
+        if (location.latitude != null && location.longitude != null) {
+          LatLng driverPos = LatLng(location.latitude!, location.longitude!);
+          LatLngBounds bounds = _getBounds([driverPos, target!]);
+          mapController?.animateCamera(
+            CameraUpdate.newLatLngBounds(bounds, 50),
+          );
+        } else {
+          mapController?.animateCamera(CameraUpdate.newLatLngZoom(target!, 15));
+        }
+      });
+    }
+  }
+
+  LatLngBounds _getBounds(List<LatLng> positions) {
+    double minLat = 90.0;
+    double minLng = 180.0;
+    double maxLat = -90.0;
+    double maxLng = -180.0;
+
+    for (final pos in positions) {
+      minLat = min(minLat, pos.latitude);
+      minLng = min(minLng, pos.longitude);
+      maxLat = max(maxLat, pos.latitude);
+      maxLng = max(maxLng, pos.longitude);
+    }
+
+    return LatLngBounds(
+      southwest: LatLng(minLat, minLng),
+      northeast: LatLng(maxLat, maxLng),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<ActiveTripMonitorCubit, ActiveTripState>(
       listener: (context, state) {
-        if (state.status == ActiveTripStatus.active &&
+        if (state.status == ActiveTripStatus.cancelled) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('تم إلغاء الرحلة')),
+          );
+          // Navigate back to Driver Home and clear stack to prevent going back to map
+          context.go('/driver-home');
+        } else if (state.status == ActiveTripStatus.active &&
             state.activeTrip != null) {
           final oldStatus = currentTrip.status;
           setState(() {
@@ -381,11 +536,19 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
                 _currentRoutePoints = decodedPoints; // Store for simulation
               });
 
-              // Auto-resume simulation if it was active before Stage 2
-              if (_autoResumeSimulation && currentTrip.status == 'started') {
+              // Auto-resume simulation if it was active before Stage 2 OR we requested a start
+              if ((_autoResumeSimulation && currentTrip.status == 'started') ||
+                  _pendingSimulationStart) {
                 _autoResumeSimulation = false;
+                _pendingSimulationStart = false;
                 Future.delayed(const Duration(seconds: 1), () {
-                  if (mounted) _startSimulation();
+                  if (mounted) {
+                    setState(() {
+                      _isSimulating = true;
+                      _simulationIndex = 0;
+                    });
+                    _runSimulationLoop();
+                  }
                 });
               }
 
@@ -404,36 +567,59 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
             return Scaffold(
               body: Stack(
                 children: [
-                  GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        double.parse(currentTrip.originLat ?? '0'),
-                        double.parse(currentTrip.originLng ?? '0'),
+                  Stack(
+                    children: [
+                      GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(
+                            _safeParseDouble(currentTrip.originLat),
+                            _safeParseDouble(currentTrip.originLng),
+                          ),
+                          zoom: 14,
+                        ),
+                        onMapCreated: (controller) {
+                          mapController = controller;
+                          _setMapStyle();
+                          context.read<TrackMyLocationCubit>().getCurrentLocation((
+                            locationData,
+                          ) {
+                            if (locationData.latitude != null &&
+                                locationData.longitude != null) {
+                              _handleLocationUpdate(
+                                LatLng(
+                                  locationData.latitude!,
+                                  locationData.longitude!,
+                                ),
+                              );
+
+                              // Once we have location and map is ready, stop loading
+                              setState(() {
+                                _isMapLoading = false;
+                              });
+                            } else {
+                              // Fallback: if we got a callback but no lat/lng, still stop skeleton
+                              setState(() {
+                                _isMapLoading = false;
+                              });
+                            }
+                          });
+                        },
+                        markers: {...markers, ...polyState.markers},
+                        polylines: polyState.polylines,
+                        myLocationEnabled: !_isSimulating,
+                        myLocationButtonEnabled: false,
+                        zoomControlsEnabled: false,
                       ),
-                      zoom: 14,
-                    ),
-                    onMapCreated: (controller) {
-                      mapController = controller;
-                      _setMapStyle();
-                      context.read<TrackMyLocationCubit>().getCurrentLocation((
-                        locationData,
-                      ) {
-                        if (locationData.latitude != null &&
-                            locationData.longitude != null) {
-                          _handleLocationUpdate(
-                            LatLng(
-                              locationData.latitude!,
-                              locationData.longitude!,
+                      if (_isMapLoading)
+                        Positioned.fill(
+                          child: Skeletonizer(
+                            enabled: true,
+                            child: Container(
+                              color: Colors.grey[300],
                             ),
-                          );
-                        }
-                      });
-                    },
-                    markers: {...markers, ...polyState.markers},
-                    polylines: polyState.polylines,
-                    myLocationEnabled: !_isSimulating,
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
+                          ),
+                        ),
+                    ],
                   ),
                   Positioned(
                     bottom: 20,
@@ -442,36 +628,58 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
                     child: ActiveTripBanner(
                       trip: currentTrip,
                       remainingDistance: _remainingDistance,
+                      showStartTripButton:
+                          _showStartTripDialog ||
+                          currentTrip.status == 'driver_arrived',
                     ),
                   ),
                   Positioned(
                     top: 40,
                     left: 20,
                     child: CircleAvatar(
-                      backgroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).cardColor,
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.black),
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
                         onPressed: () => context.pop(),
                       ),
                     ),
                   ),
                   Positioned(
-                    top: 40,
+                    top: 100,
                     right: 20,
-                    child: ElevatedButton.icon(
-                      onPressed: _isSimulating
-                          ? _stopSimulation
-                          : _startSimulation,
-                      icon: Icon(_isSimulating ? Icons.stop : Icons.play_arrow),
-                      label: Text(
-                        _isSimulating ? 'إيقاف المحاكاة' : 'بدء المحاكاة',
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _isSimulating
-                            ? Colors.red
-                            : Colors.green,
-                        foregroundColor: Colors.white,
-                      ),
+                    child: Column(
+                      children: [
+                        FloatingActionButton(
+                          heroTag: 'navigate_btn',
+                          onPressed: _recenterMap,
+                          backgroundColor: Theme.of(context).cardColor,
+                          child: Icon(
+                            Icons.center_focus_strong,
+                            color: Theme.of(context).iconTheme.color,
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        ElevatedButton.icon(
+                          onPressed: _isSimulating
+                              ? _stopSimulation
+                              : _startSimulation,
+                          icon: Icon(
+                            _isSimulating ? Icons.stop : Icons.play_arrow,
+                          ),
+                          label: Text(
+                            _isSimulating ? 'إيقاف المحاكاة' : 'بدء المحاكاة',
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isSimulating
+                                ? Colors.red
+                                : Colors.green,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   if (context.watch<GetRouteCubit>().state is GetRouteLoading)

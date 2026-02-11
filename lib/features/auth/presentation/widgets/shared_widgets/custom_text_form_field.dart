@@ -13,10 +13,7 @@ class CustomTextFormField extends StatelessWidget {
     this.controller,
     this.keyboardType,
     this.onChanged,
-    this.contentPadding = const EdgeInsets.symmetric(
-      horizontal: 20,
-      vertical: 20,
-    ),
+    this.contentPadding,
     this.maxLines = 1,
     this.fillColor,
     this.enabled = true,
@@ -56,9 +53,15 @@ class CustomTextFormField extends StatelessWidget {
       obscureText: obscureText,
       decoration: InputDecoration(
         hintText: hintText,
-        contentPadding: contentPadding,
+        contentPadding:
+            contentPadding ??
+            EdgeInsets.symmetric(
+              horizontal: 20.w,
+              vertical: 20.h,
+            ),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
+
         fillColor:
             fillColor ?? Theme.of(context).colorScheme.surfaceContainerLow,
         filled: true,

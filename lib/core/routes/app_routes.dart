@@ -28,6 +28,7 @@ import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_driver_data_cubit/get_driver_data_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_offers_stream_cubit/get_prices_offers_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/passenger_trip_monitor_cubit/passenger_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_trip_details_cubit/get_trip_details_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyline_cubit/draw_polyline_cubit.dart';
@@ -183,6 +184,9 @@ final router = GoRouter(
           BlocProvider(create: (context) => sl.get<GetRouteCubit>()),
           BlocProvider(create: (context) => sl.get<SendTripRequestCubit>()),
           BlocProvider(
+            create: (context) => sl.get<PassengerTripMonitorCubit>(),
+          ),
+          BlocProvider(
             create: (context) =>
                 sl.get<GetPassengerDataCubit>()..getPassengerData(),
           ),
@@ -201,6 +205,9 @@ final router = GoRouter(
                   sl.get<GetPassengerDataCubit>()..getPassengerData(),
             ),
             BlocProvider(create: (context) => sl.get<GetPricesOffersCubit>()),
+            BlocProvider(
+              create: (context) => sl.get<PassengerTripMonitorCubit>(),
+            ),
           ],
           child: SearchingForDriversScreen(tripModel: tripModel),
         );
@@ -259,6 +266,9 @@ Future<Widget> _getHomeScreenForUser(String userId) async {
               BlocProvider(create: (context) => sl.get<GetPlacesCubit>()),
               BlocProvider(create: (context) => sl.get<GetRouteCubit>()),
               BlocProvider(create: (context) => sl.get<SendTripRequestCubit>()),
+              BlocProvider(
+                create: (context) => sl.get<PassengerTripMonitorCubit>(),
+              ),
               BlocProvider(
                 create: (context) =>
                     sl.get<GetPassengerDataCubit>()..getPassengerData(),

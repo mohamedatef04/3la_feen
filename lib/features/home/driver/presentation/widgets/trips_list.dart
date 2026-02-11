@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/functions/show_snack_bar.dart';
+import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_state.dart';
@@ -11,6 +12,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:ala_feen/core/utils/responsive.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TripsList extends StatelessWidget {
   const TripsList({super.key});
@@ -42,21 +46,39 @@ class TripsList extends StatelessWidget {
         builder: (context, state) {
           if (state.status == TripsStreamStatus.loading &&
               (state.trips == null || state.trips!.isEmpty)) {
-            return const Center(child: CircularProgressIndicator());
+            // Show skeleton loading
+            return _buildResponsiveList(
+              itemCount: 5,
+              itemBuilder: (context, index) => Skeletonizer(
+                enabled: true,
+                child: TripCard(
+                  passengerId: 'dummy_id',
+                  pickupLocation: 'موقع الانطلاق المتوقع',
+                  dropoffLocation: 'الوجهة المتوقعة للرحلة',
+                  price: '150',
+                  onAccept: () {},
+                  onNegotiate: (_) {},
+                ),
+              ),
+            );
           }
 
           if (state.trips == null || state.trips!.isEmpty) {
-            return const Center(child: Text('No trips available'));
+            return Center(
+              child: Text(
+                'لا توجد رحلات متاحة',
+                style: AppTextStyles.bold14(context),
+              ),
+            );
           }
 
-          return ListView.builder(
-            padding: EdgeInsets.zero,
-            itemCount: state.trips?.length ?? 0,
+          return _buildResponsiveList(
+            itemCount: state.trips!.length,
             itemBuilder: (context, index) {
               final trip = state.trips![index];
               return FadeInRight(
                 child: TripCard(
-                  phoneNumber: trip.passengerPhoneNumber ?? '',
+                  passengerId: trip.passengerId ?? '',
                   pickupLocation: trip.originAddress ?? '',
                   dropoffLocation: trip.distAddress ?? '',
                   price: trip.tripPrice.toString(),
@@ -95,6 +117,30 @@ class TripsList extends StatelessWidget {
             },
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildResponsiveList({
+    required int itemCount,
+    required Widget Function(BuildContext, int) itemBuilder,
+  }) {
+    return Responsive(
+      mobile: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemCount: itemCount,
+        itemBuilder: itemBuilder,
+      ),
+      tablet: GridView.builder(
+        padding: EdgeInsets.all(16.w),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1.2,
+          crossAxisSpacing: 16.w,
+          mainAxisSpacing: 16.h,
+        ),
+        itemCount: itemCount,
+        itemBuilder: itemBuilder,
       ),
     );
   }

@@ -1,7 +1,8 @@
-import 'package:ala_feen/core/di/injection_container.dart';
+﻿import 'package:ala_feen/core/di/injection_container.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:ala_feen/core/utils/safe_emit.dart';
 
 part 'accept_offer_state.dart';
 
@@ -11,16 +12,17 @@ class AcceptOfferCubit extends Cubit<AcceptOfferState> {
 
   Future<void> acceptOffer(String offerId) async {
     try {
-      emit(AcceptOfferLoading());
+      safeEmit(AcceptOfferLoading());
 
       await supabaseClient.rpc(
         'accept_offer',
         params: {'p_offer_id': offerId},
       );
 
-      emit(AcceptOfferSuccess());
+      safeEmit(AcceptOfferSuccess());
     } catch (e) {
-      emit(AcceptOfferFailure(errorMessage: e.toString()));
+      safeEmit(AcceptOfferFailure(errorMessage: e.toString()));
     }
   }
 }
+

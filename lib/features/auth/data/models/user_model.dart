@@ -9,6 +9,7 @@ class UserModel {
   final String? carPic;
   final String? licensePic;
   final String? role;
+  final double? rating;
 
   UserModel({
     this.id,
@@ -21,6 +22,7 @@ class UserModel {
     this.carPic,
     this.licensePic,
     this.role,
+    this.rating,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -33,6 +35,7 @@ class UserModel {
     carPic: json['car_pic'] as String?,
     licensePic: json['license_pic'] as String?,
     role: json['role'] as String?,
+    rating: (json['rating'] as num?)?.toDouble(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -46,4 +49,32 @@ class UserModel {
     'license_pic': licensePic,
     'role': role,
   };
+
+  UserModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? phone,
+    String? password,
+    String? profilePic,
+    String? cardIdPic,
+    String? carPic,
+    String? licensePic,
+    String? role,
+    double? rating,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      password: password ?? this.password,
+      profilePic: profilePic ?? this.profilePic,
+      cardIdPic: cardIdPic ?? this.cardIdPic,
+      carPic: carPic ?? this.carPic,
+      licensePic: licensePic ?? this.licensePic,
+      role: role ?? this.role,
+      rating: rating ?? this.rating,
+    );
+  }
 }

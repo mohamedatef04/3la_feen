@@ -142,6 +142,18 @@ class AuthRepoImpl implements AuthRepo {
     }
   }
 
+  @override
+  Future<Either<Failures, void>> logout() async {
+    try {
+      await authDataSource.logout();
+      return const Right(null);
+    } catch (e) {
+      return Left(
+        ServerFailure(errorMessage: translateErrorMessage(e.toString())),
+      );
+    }
+  }
+
   String translateFailureMessage(String error) {
     return translateErrorMessage(error);
   }

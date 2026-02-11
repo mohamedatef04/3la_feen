@@ -34,4 +34,5 @@ abstract class AuthRepo {
   Future<Either<Failures, String>> getUserRole({
     required String userId,
   });
+  Future<Either<Failures, void>> logout();
 }

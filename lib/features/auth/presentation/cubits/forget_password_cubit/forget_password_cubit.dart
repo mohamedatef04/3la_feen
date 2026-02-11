@@ -1,6 +1,7 @@
-import 'package:ala_feen/features/auth/data/repos/auth_repo.dart';
+﻿import 'package:ala_feen/features/auth/data/repos/auth_repo.dart';
 import 'package:ala_feen/features/auth/presentation/cubits/forget_password_cubit/forget_password_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ala_feen/core/utils/safe_emit.dart';
 
 class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
   final AuthRepo authRepo;
@@ -10,7 +11,7 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
   Future<void> logInForForgotPassword({
     required String email,
   }) async {
-    emit(ForgetPasswordLoading());
+    safeEmit(ForgetPasswordLoading());
 
     final result = await authRepo.resetPassword(
       email: email,
@@ -18,9 +19,10 @@ class ForgetPasswordCubit extends Cubit<ForgetPasswordState> {
     if (!isClosed) {
       result.fold(
         (failure) =>
-            emit(ForgetPasswordFailure(errorMessage: failure.errorMessage)),
-        (_) => emit(ForgetPasswordSuccess()),
+            safeEmit(ForgetPasswordFailure(errorMessage: failure.errorMessage)),
+        (_) => safeEmit(ForgetPasswordSuccess()),
       );
     }
   }
 }
+

@@ -2,13 +2,14 @@ import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
+import 'package:ala_feen/features/home/driver/presentation/widgets/passenger_info_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TripCard extends StatelessWidget {
   const TripCard({
     super.key,
-    required this.phoneNumber,
+    required this.passengerId,
     required this.pickupLocation,
     required this.dropoffLocation,
     required this.price,
@@ -16,7 +17,7 @@ class TripCard extends StatelessWidget {
     required this.onNegotiate,
   });
 
-  final String phoneNumber;
+  final String passengerId;
   final String pickupLocation;
   final String dropoffLocation;
   final String price;
@@ -30,11 +31,11 @@ class TripCard extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12.r),
           boxShadow: [
             BoxShadow(
-              color: AppColors.black.withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -47,13 +48,8 @@ class TripCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Phone Number (Aligned to start in RTL is right)
-                  Text(
-                    phoneNumber,
-                    style: AppTextStyles.bold20(context).copyWith(
-                      color: AppColors.primary,
-                    ),
-                  ),
+                  // Passenger Info (Name and Photo)
+                  PassengerInfoWidget(passengerId: passengerId),
                   SizedBox(height: 12.h),
                   // Locations Row
                   Row(
@@ -152,7 +148,7 @@ class TripCard extends StatelessWidget {
                           _showNegotiateDialog(context);
                         },
                         child: Text(
-                          "تفاوض الان",
+                          "تفاوض",
                           style: AppTextStyles.bold14(context),
                         ),
                       ),

@@ -1,9 +1,10 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'package:ala_feen/core/network/network_info.dart';
 import 'package:ala_feen/core/utils/base_cubit.dart';
 import 'package:ala_feen/features/home/driver/data/repo/driver_repo.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'active_trip_state.dart';
+import 'package:ala_feen/core/utils/safe_emit.dart';
 
 class ActiveTripMonitorCubit extends BaseCubit<ActiveTripState> {
   final DriverRepo driverRepo;
@@ -64,3 +65,5 @@ class ActiveTripMonitorCubit extends BaseCubit<ActiveTripState> {
     return super.close();
   }
 }
+
+

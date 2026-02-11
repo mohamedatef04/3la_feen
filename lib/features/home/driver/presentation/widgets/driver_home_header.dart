@@ -1,6 +1,9 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/custom_profile_avatar.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DriverHomeHeader extends StatelessWidget {
@@ -45,7 +48,49 @@ class DriverHomeHeader extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const CustomProfileAvatar(isDrawer: false),
+                  BlocBuilder<HomeDriverCubit, HomeDriverState>(
+                    builder: (context, state) {
+                      final user = state.userModel;
+                      return Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                user?.name ?? 'الكابتن',
+                                style: TextStyle(
+                                  color: AppColors.white,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              if (user?.rating != null)
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                      size: 16.sp,
+                                    ),
+                                    SizedBox(width: 4.w),
+                                    Text(
+                                      user!.rating!.toStringAsFixed(1),
+                                      style: TextStyle(
+                                        color: AppColors.white,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          SizedBox(width: 12.w),
+                          const CustomProfileAvatar(isDrawer: false),
+                        ],
+                      );
+                    },
+                  ),
                 ],
               ),
             ],
