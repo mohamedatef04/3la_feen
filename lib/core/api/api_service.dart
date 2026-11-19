@@ -1,14 +1,21 @@
 import 'dart:async';
 
+import 'package:ala_feen/core/network/api_constantas.dart';
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class ApiService {
-  final Dio dio;
+  final dio = Dio();
 
-  ApiService(this.dio) {
-    dio.options.baseUrl = '';
-    dio.options.headers = {'accept': 'application/json'};
+  ApiService() {
+    dio.options.baseUrl = ApiConstants.baseUrl;
+    dio.options.headers = {
+      'apikey': ApiConstants.anonKey,
+      'Authorization': 'Bearer ${ApiConstants.anonKey}',
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+      'accept': 'application/json',
+    };
 
     dio.interceptors.add(
       PrettyDioLogger(
@@ -19,13 +26,6 @@ class ApiService {
         error: true,
         compact: true,
         maxWidth: 90,
-      ),
-    );
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          return handler.next(options);
-        },
       ),
     );
   }

@@ -1,0 +1,73 @@
+import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:ala_feen/core/theme/app_text_styles.dart';
+import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:ala_feen/core/widgets/logo_widget.dart';
+import 'package:ala_feen/core/utils/responsive_container.dart';
+import 'package:ala_feen/features/auth/presentation/screens/login_screen.dart';
+import 'package:ala_feen/features/auth/presentation/screens/register_screen.dart';
+import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+
+class GetStartedView extends StatelessWidget {
+  const GetStartedView({super.key});
+  static const String routeName = '/';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: ResponsiveContainer(
+          maxWidth: 500,
+          child: Column(
+            children: [
+              Expanded(
+                child: LogoWidget(
+                  height: 100.h,
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  spacing: 20.h,
+                  children: [
+                    CustomButtonWidget(
+                      onPressed: () {
+                        context.push(RegisterScreen.routeName);
+                      },
+                      backgroundColor: AppColors.primary,
+                      child: Center(
+                        child: Text(
+                          AppStrings.newUser,
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.bold16(context),
+                        ),
+                      ),
+                    ),
+                    CustomButtonWidget(
+                      onPressed: () {
+                        context.push(LoginScreen.routeName);
+                      },
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer,
+                      borderSide: const BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                      child: Text(
+                        AppStrings.login,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.semiBold16(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

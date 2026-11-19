@@ -1,4 +1,6 @@
+import 'package:ala_feen/core/functions/show_snack_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// String Extensions
 extension StringExtension on String {
@@ -72,36 +74,18 @@ extension ContextExtension on BuildContext {
   bool get isKeyboardVisible => MediaQuery.of(this).viewInsets.bottom > 0;
 
   /// Shows snackbar with message
-  void showSnackBar(
-    String message, {
-    Duration duration = const Duration(seconds: 3),
-    SnackBarAction? action,
-  }) {
-    ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(content: Text(message), duration: duration, action: action),
-    );
+  void showSnackBar(String message) {
+    showCustomSnackBar(this, message);
   }
 
   /// Shows error snackbar
   void showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: colorScheme.error,
-        duration: const Duration(seconds: 4),
-      ),
-    );
+    showCustomSnackBar(this, message, isError: true);
   }
 
   /// Shows success snackbar
   void showSuccessSnackBar(String message) {
-    ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 3),
-      ),
-    );
+    showCustomSnackBar(this, message);
   }
 
   /// Hides keyboard
@@ -193,4 +177,10 @@ extension NumExtension on num {
     }
     return '${(this / (1024 * 1024 * 1024)).toStringAsFixed(2)} GB';
   }
+
+  /// Adds responsive vertical space
+  Widget get verticalSpace => SizedBox(height: toDouble().h);
+
+  /// Adds responsive horizontal space
+  Widget get horizontalSpace => SizedBox(width: toDouble().w);
 }
