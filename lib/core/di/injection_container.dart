@@ -39,6 +39,8 @@ import 'package:ala_feen/features/chat/presentation/cubits/chat_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/passenger_trip_monitor_cubit/passenger_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/rating_cubit/rating_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:ala_feen/core/cubits/notifications/notifications_cubit.dart';
+import 'package:ala_feen/core/repos/notifications_repo.dart';
 import 'package:ala_feen/features/chat/data/data_source/chat_data_source.dart';
 import 'package:ala_feen/features/chat/data/repos/chat_repo.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/driver_ratings/driver_ratings_cubit.dart';
@@ -189,6 +191,14 @@ Future<void> init() async {
   );
   sl.registerFactory<RatingCubit>(
     () => RatingCubit(sl.get<PassengerTripRepo>()),
+  );
+
+  //* notifications
+  sl.registerLazySingleton<NotificationsRepo>(
+    () => NotificationsRepoImpl(sl.get<SupabaseClient>()),
+  );
+  sl.registerFactory<NotificationsCubit>(
+    () => NotificationsCubit(sl.get<NotificationsRepo>()),
   );
 
   //* chat
