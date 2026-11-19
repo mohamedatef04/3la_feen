@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/utils/map_style.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:ala_feen/core/utils/decode_polykine.dart';
@@ -20,7 +21,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:ala_feen/core/di/injection_container.dart';
 import 'package:ala_feen/features/home/driver/data/services/driver_tracking_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ActiveTripMapScreen extends StatefulWidget {
   static const String routeName = '/active-trip-map';
@@ -34,6 +34,7 @@ class ActiveTripMapScreen extends StatefulWidget {
 
 class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   GoogleMapController? mapController;
+  String? _mapStyle;
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
   bool isFirstLocationUpdate = true;
@@ -49,7 +50,6 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   bool _isSimulating = false;
   bool _autoResumeSimulation = false;
   DateTime? _lastCameraUpdate;
-  DateTime? _lastSupabaseUpdate;
 
   @override
   void initState() {
@@ -135,24 +135,11 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
       );
     });
 
-    // Update location in Supabase for passenger tracking (Throttled: max once per 1s)
-    try {
-      final now = DateTime.now();
-      if (_lastSupabaseUpdate == null ||
-          now.difference(_lastSupabaseUpdate!).inSeconds >= 1) {
-        final driverId = Supabase.instance.client.auth.currentUser?.id;
-        if (driverId != null) {
-          sl<DriverTrackingService>().updateLocation(
-            driverId: driverId,
-            lat: driverPos.latitude,
-            lng: driverPos.longitude,
-          );
-          _lastSupabaseUpdate = now;
-        }
-      }
-    } catch (e) {
-      // Ignore errors
-    }
+    // Share the position with the passenger (throttled inside the service).
+    sl<DriverTrackingService>().updateMyLocation(
+      lat: driverPos.latitude,
+      lng: driverPos.longitude,
+    );
 
     // Always track driver position with camera if it's the first time
     if (isFirstLocationUpdate) {
@@ -381,7 +368,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   void _runSimulationLoop() {
     // Semantic Speed: Update every 1 second (1000ms) for realistic movement
     // and to match throttled updates better
-    final stepSize =
+    const stepSize =
         1; // Move 1 point at a time for smoother, slower simulation
 
     _simulationTimer?.cancel();
@@ -422,18 +409,8 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   }
 
   Future<void> _setMapStyle() async {
-    if (mapController == null) return;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final stylePath = isDarkMode
-        ? 'assets/map_styles/dark_map_style.json'
-        : 'assets/map_styles/light_map_style.json';
-
-    try {
-      final style = await DefaultAssetBundle.of(context).loadString(stylePath);
-      await mapController!.setMapStyle(style);
-    } catch (e) {
-      debugPrint('Error loading map style: $e');
-    }
+    final style = await MapStyle.load(Theme.of(context).brightness);
+    if (mounted) setState(() => _mapStyle = style);
   }
 
   void _recenterMap() {
@@ -570,6 +547,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
                   Stack(
                     children: [
                       GoogleMap(
+                        style: _mapStyle,
                         initialCameraPosition: CameraPosition(
                           target: LatLng(
                             _safeParseDouble(currentTrip.originLat),

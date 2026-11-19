@@ -33,7 +33,7 @@ import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_lo
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_trip_details_cubit/get_trip_details_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyline_cubit/draw_polyline_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_passenger_data_cubit/get_passenger_data_cubit.dart';
-import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_items.dart/get_places_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_cubit/get_places_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_route_cubit/get_route_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/send_trip_cubit/send_trip_request_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/screens/passenger_home_screen.dart';
@@ -236,7 +236,7 @@ Future<Widget> _getHomeScreenForUser(String userId) async {
     final authRepo = sl.get<AuthRepo>();
     final roleResult = await authRepo.getUserRole(userId: userId);
 
-    return roleResult.fold(
+    return await roleResult.fold(
       (failure) {
         return const GetStartedView();
       },

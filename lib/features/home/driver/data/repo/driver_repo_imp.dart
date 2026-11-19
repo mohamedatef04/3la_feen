@@ -1,3 +1,7 @@
+import 'package:ala_feen/core/errors/custom_exeption.dart';
+import 'package:ala_feen/core/errors/error_handler.dart';
+import 'package:ala_feen/core/errors/failures.dart';
+import 'package:dartz/dartz.dart';
 import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/home/driver/data/dataSource/driver_remote_data_source.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
@@ -8,6 +12,18 @@ class DriverRepoImp implements DriverRepo {
   final DriverRemoteDataSource remoteDataSource;
 
   DriverRepoImp(this.remoteDataSource);
+
+  @override
+  Future<Either<Failures, List<Map<String, dynamic>>>> getMyRatings() async {
+    try {
+      return Right(await remoteDataSource.getMyRatings());
+    } on CustomExeption catch (e) {
+      return Left(ServerFailure(errorMessage: e.errorMessage));
+    } catch (e) {
+      return Left(ServerFailure(errorMessage: ErrorHandler.getMessage(e)));
+    }
+  }
+
   @override
   Future<UserModel?> getDriverData() {
     try {

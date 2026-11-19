@@ -43,7 +43,7 @@ class ThemeToggleItem extends StatelessWidget {
                 onChanged: (value) {
                   context.read<ThemeToggleCubit>().toggleTheme();
                 },
-                activeColor: Theme.of(context).colorScheme.primary,
+                activeThumbColor: Theme.of(context).colorScheme.primary,
               ),
             ],
           ),

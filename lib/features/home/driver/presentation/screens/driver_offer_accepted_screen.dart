@@ -56,11 +56,11 @@ class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
                   color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16.r),
                   border: Border.all(
-                    color: Theme.of(context).dividerColor.withOpacity(0.1),
+                    color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 15,
                       offset: const Offset(0, 5),
                     ),
@@ -133,13 +133,13 @@ class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
                         // Small delay to ensure the indicator is visible before the heavy map build
                         await Future.delayed(const Duration(milliseconds: 100));
 
-                        if (!mounted) return;
+                        if (!context.mounted) return;
 
                         context.read<ActiveTripMonitorCubit>().setActiveTrip(
                           widget.trip,
                         );
 
-                        if (mounted) {
+                        if (context.mounted) {
                           context.pushReplacement(
                             ActiveTripMapScreen.routeName,
                             extra: widget.trip,
@@ -191,7 +191,7 @@ class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
         Container(
           padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: color, size: 20.w),

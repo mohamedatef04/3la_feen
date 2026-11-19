@@ -53,7 +53,8 @@ void main() {
 
     blocTest<LoginCubit, LoginState>(
       'emits [loading, failure] and skips the role lookup when login fails',
-      setUp: () => stubLogin(Left(ServerFailure(errorMessage: 'Invalid credentials'))),
+      setUp: () =>
+          stubLogin(Left(ServerFailure(errorMessage: 'Invalid credentials'))),
       build: () => LoginCubit(authRepo),
       act: (cubit) => cubit.loginUser(email: email, password: password),
       expect: () => [

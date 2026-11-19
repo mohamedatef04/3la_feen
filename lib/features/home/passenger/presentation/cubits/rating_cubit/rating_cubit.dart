@@ -1,14 +1,14 @@
-﻿import 'package:bloc/bloc.dart';
+﻿import 'package:ala_feen/core/utils/safe_emit.dart';
+import 'package:ala_feen/features/home/passenger/data/repos/passenger_trip_repo.dart';
+import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ala_feen/core/utils/safe_emit.dart';
 
 part 'rating_state.dart';
 
 class RatingCubit extends Cubit<RatingState> {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  RatingCubit(this._repo) : super(RatingInitial());
 
-  RatingCubit() : super(RatingInitial());
+  final PassengerTripRepo _repo;
 
   Future<void> submitRating({
     required String tripId,
@@ -18,25 +18,16 @@ class RatingCubit extends Cubit<RatingState> {
     String? comment,
   }) async {
     safeEmit(RatingLoading());
-
-    try {
-      final currentUserId = _supabase.auth.currentUser?.id;
-      if (currentUserId == null) {
-        safeEmit(const RatingFailure(errorMessage: 'User not authenticated'));
-        return;
-      }
-
-      await _supabase.from('trip_ratings').insert({
-        'trip_id': tripId,
-        'driver_id': driverId,
-        'passenger_id': passengerId,
-        'rating': rating,
-        'comment': comment,
-      });
-
-      safeEmit(RatingSuccess());
-    } catch (e) {
-      safeEmit(RatingFailure(errorMessage: e.toString()));
-    }
+    final result = await _repo.submitRating(
+      tripId: tripId,
+      driverId: driverId,
+      passengerId: passengerId,
+      rating: rating,
+      comment: comment,
+    );
+    result.fold(
+      (failure) => safeEmit(RatingFailure(errorMessage: failure.errorMessage)),
+      (_) => safeEmit(RatingSuccess()),
+    );
   }
 }

@@ -1,4 +1,3 @@
-// ignore_for_file: depend_on_referenced_packages
 import 'package:ala_feen/core/cubits/cubit/theme_toggle_cubit.dart';
 import 'package:ala_feen/core/routes/app_routes.dart';
 import 'package:ala_feen/firebase_options.dart';
@@ -11,8 +10,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/di/injection_container.dart' as di;
-import 'package:ala_feen/core/utils/notifcations.dart/fcm.dart';
-import 'package:ala_feen/core/utils/notifcations.dart/local.dart';
+import 'package:ala_feen/core/utils/notifications/fcm.dart';
+import 'package:ala_feen/core/utils/notifications/local.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
