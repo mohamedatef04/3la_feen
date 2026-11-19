@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 
 import 'package:ala_feen/core/functions/show_snack_bar.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
@@ -194,14 +195,15 @@ class _RideLocationPopupState extends State<RideLocationPopup> {
                       onTap: () {
                         if (myCurrentLocation != null) {
                           setState(() {
-                            fromController.text = 'الموقع الحالي';
+                            fromController.text = 'passenger.current_location'
+                                .tr();
                             fromLat = myCurrentLocation!.latitude;
                             fromLng = myCurrentLocation!.longitude;
                           });
                         } else {
                           showCustomSnackBar(
                             context,
-                            'جاري تحديد موقعك، يرجى الانتظار...',
+                            'passenger.locating_wait'.tr(),
                           );
                           _initLocationTracking();
                         }
@@ -266,7 +268,7 @@ class _RideLocationPopupState extends State<RideLocationPopup> {
                                   ).colorScheme.onPrimary,
                                 )
                               : Text(
-                                  'بحث',
+                                  'common.search'.tr(),
                                   style: AppTextStyles.bold16(context),
                                 ),
                         ),

@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,14 +49,14 @@ class EstimatedArrivalCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'الوصول المتوقع',
+                  'passenger.estimated_arrival'.tr(),
                   style: AppTextStyles.regular12(context).copyWith(
                     color: Colors.white.withValues(alpha: 0.9),
                   ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  '٥ دقائق',
+                  'units.minutes'.tr(namedArgs: {'value': '5'}),
                   style: AppTextStyles.bold20(context).copyWith(
                     color: Colors.white,
                   ),
@@ -70,7 +71,7 @@ class EstimatedArrivalCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Text(
-              'تتبع',
+              'common.track'.tr(),
               style: AppTextStyles.bold14(context).copyWith(
                 color: AppColors.primary,
               ),

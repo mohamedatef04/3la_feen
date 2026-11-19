@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/cancel_trip_cubit/cancel_trip_cubit.dart';
@@ -59,8 +60,8 @@ class _BottomActionButtonsState extends State<BottomActionButtons> {
                     listener: (context, state) {
                       if (state is CancelTripSuccess) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('تم إلغاء الرحلة بنجاح'),
+                          SnackBar(
+                            content: Text('trip.cancelled_success'.tr()),
                           ),
                         );
                         // Navigation will be handled by the trip monitor listener in the parent widget
@@ -89,15 +90,15 @@ class _BottomActionButtonsState extends State<BottomActionButtons> {
                                 showDialog(
                                   context: context,
                                   builder: (dialogContext) => AlertDialog(
-                                    title: const Text('إلغاء الرحلة'),
-                                    content: const Text(
-                                      'هل أنت متأكد من إلغاء الرحلة؟',
+                                    title: Text('trip.cancel'.tr()),
+                                    content: Text(
+                                      'trip.cancel_confirm'.tr(),
                                     ),
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(dialogContext),
-                                        child: const Text('لا'),
+                                        child: Text('common.no'.tr()),
                                       ),
                                       TextButton(
                                         onPressed: () {
@@ -108,9 +109,11 @@ class _BottomActionButtonsState extends State<BottomActionButtons> {
                                                 tripId: widget.trip!.tripId!,
                                               );
                                         },
-                                        child: const Text(
-                                          'نعم، إلغاء',
-                                          style: TextStyle(color: Colors.red),
+                                        child: Text(
+                                          'common.yes_cancel'.tr(),
+                                          style: const TextStyle(
+                                            color: Colors.red,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -121,7 +124,7 @@ class _BottomActionButtonsState extends State<BottomActionButtons> {
                             borderRadius: BorderRadius.circular(16.r),
                             child: Center(
                               child: Text(
-                                'إلغاء الرحلة',
+                                'trip.cancel'.tr(),
                                 style: AppTextStyles.bold14(context).copyWith(
                                   color: Colors.red,
                                 ),
@@ -214,8 +217,8 @@ class _BottomActionButtonsState extends State<BottomActionButtons> {
                             }
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('جارٍ تحميل تفاصيل الرحلة...'),
+                              SnackBar(
+                                content: Text('trip.loading_details'.tr()),
                               ),
                             );
                           }
@@ -232,7 +235,7 @@ class _BottomActionButtonsState extends State<BottomActionButtons> {
                               ),
                               SizedBox(width: 8.w),
                               Text(
-                                'تتبع الكابتن',
+                                'passenger.track_captain'.tr(),
                                 style: AppTextStyles.bold14(context).copyWith(
                                   color: Colors.white,
                                 ),

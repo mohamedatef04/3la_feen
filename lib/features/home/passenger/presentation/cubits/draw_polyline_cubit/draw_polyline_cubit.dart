@@ -1,5 +1,6 @@
-﻿import 'package:bloc/bloc.dart';
+import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:ala_feen/core/utils/safe_emit.dart';
@@ -25,16 +26,16 @@ class DrawPolylineCubit extends Cubit<DrawPolylineState> {
         markerId: const MarkerId('start'),
         position: points.first,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        infoWindow: const InfoWindow(
-          title: 'نقطة البداية',
+        infoWindow: InfoWindow(
+          title: 'map.start_point'.tr(),
         ),
       ),
       Marker(
         markerId: const MarkerId('end'),
         position: points.last,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        infoWindow: const InfoWindow(
-          title: 'نقطة النهاية',
+        infoWindow: InfoWindow(
+          title: 'map.end_point'.tr(),
         ),
       ),
     };
@@ -73,4 +74,3 @@ class DrawPolylineCubit extends Cubit<DrawPolylineState> {
     safeEmit(const DrawPolylineState(polylines: {}, markers: {}));
   }
 }
-

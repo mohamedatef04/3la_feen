@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/di/injection_container.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/cubits/notifications/notifications_cubit.dart';
 import 'package:ala_feen/core/models/notification_model.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
@@ -7,7 +8,6 @@ import 'package:ala_feen/features/home/driver/presentation/widgets/driver_detail
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class NotificationScreen extends StatelessWidget {
@@ -23,8 +23,8 @@ class NotificationScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: Column(
           children: [
-            const DriverDetailsHeader(
-              title: 'الاشعارات',
+            DriverDetailsHeader(
+              title: 'notifications.title'.tr(),
             ),
             Expanded(
               child: BlocBuilder<NotificationsCubit, NotificationsState>(
@@ -42,9 +42,8 @@ class NotificationScreen extends StatelessWidget {
                             context,
                             NotificationModel(
                               id: '1',
-                              title: 'عنوان الاشعار التجريبي',
-                              body:
-                                  'هذا مجرد نص تجريبي لعرض شكل الاشعار أثناء التحميل',
+                              title: 'placeholder.title'.tr(),
+                              body: 'placeholder.body'.tr(),
                               createdAt: DateTime.now(),
                               isRead: false,
                               type: 'system',
@@ -67,7 +66,7 @@ class NotificationScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 16.h),
                           Text(
-                            'حدث خطأ في تحميل الاشعارات',
+                            'errors.load_notifications'.tr(),
                             style: AppTextStyles.regular14(context).copyWith(
                               color: AppColors.greyColor,
                             ),
@@ -80,7 +79,7 @@ class NotificationScreen extends StatelessWidget {
                                   .getNotifications();
                             },
                             child: Text(
-                              'إعادة المحاولة',
+                              'common.retry'.tr(),
                               style: AppTextStyles.bold14(context).copyWith(
                                 color: AppColors.primary,
                               ),
@@ -104,7 +103,7 @@ class NotificationScreen extends StatelessWidget {
                             ),
                             SizedBox(height: 16.h),
                             Text(
-                              'لا توجد اشعارات',
+                              'notifications.empty'.tr(),
                               style: AppTextStyles.regular14(context).copyWith(
                                 color: AppColors.greyColor,
                               ),
@@ -196,7 +195,8 @@ class NotificationScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        notification.title ?? 'اشعار',
+                        notification.title ??
+                            'notifications.default_title'.tr(),
                         style: AppTextStyles.bold14(context).copyWith(
                           color: AppColors.primary,
                         ),
@@ -265,13 +265,15 @@ class NotificationScreen extends StatelessWidget {
     final difference = now.difference(dateTime);
 
     if (difference.inMinutes < 1) {
-      return 'الآن';
+      return 'time_ago.now'.tr();
     } else if (difference.inMinutes < 60) {
-      return 'منذ ${difference.inMinutes} دقيقة';
+      return 'time_ago.minutes'.tr(
+        namedArgs: {'count': '${difference.inMinutes}'},
+      );
     } else if (difference.inHours < 24) {
-      return 'منذ ${difference.inHours} ساعة';
+      return 'time_ago.hours'.tr(namedArgs: {'count': '${difference.inHours}'});
     } else if (difference.inDays < 7) {
-      return 'منذ ${difference.inDays} يوم';
+      return 'time_ago.days'.tr(namedArgs: {'count': '${difference.inDays}'});
     } else {
       return DateFormat('yyyy/MM/dd').format(dateTime);
     }

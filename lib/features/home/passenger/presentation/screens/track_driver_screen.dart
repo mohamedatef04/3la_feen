@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/utils/map_style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/utils/marker_utils.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
@@ -81,7 +82,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
           double.parse(widget.trip.originLng ?? '0'),
         ),
         icon: MarkerUtils.personMarker,
-        infoWindow: const InfoWindow(title: 'موقعي'),
+        infoWindow: InfoWindow(title: 'map.my_location'.tr()),
       ),
     );
     // Destination (station marker)
@@ -93,7 +94,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
           double.parse(widget.trip.distLng ?? '0'),
         ),
         icon: MarkerUtils.stationMarker,
-        infoWindow: const InfoWindow(title: 'الوجهة'),
+        infoWindow: InfoWindow(title: 'trip.destination'.tr()),
       ),
     );
 
@@ -182,15 +183,21 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
         driverLocation = position;
 
         if (distanceInKm < 1) {
-          distanceText = '${(distanceInKm * 1000).toStringAsFixed(0)} م';
+          distanceText = 'units.meters'.tr(
+            namedArgs: {'value': (distanceInKm * 1000).toStringAsFixed(0)},
+          );
         } else {
-          distanceText = '${distanceInKm.toStringAsFixed(1)} كم';
+          distanceText = 'units.kilometers'.tr(
+            namedArgs: {'value': distanceInKm.toStringAsFixed(1)},
+          );
         }
 
         if (timeInMinutes < 1) {
-          durationText = 'أقل من دقيقة';
+          durationText = 'units.less_than_minute'.tr();
         } else {
-          durationText = '$timeInMinutes دقيقة';
+          durationText = 'units.minutes'.tr(
+            namedArgs: {'value': '$timeInMinutes'},
+          );
         }
 
         markers.removeWhere((m) => m.markerId.value == 'driver');
@@ -200,7 +207,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
             position: position,
             icon: MarkerUtils.carMarker,
             infoWindow: InfoWindow(
-              title: 'الكابتن',
+              title: 'common.captain'.tr(),
               snippet: '$distanceText - $durationText',
             ),
           ),
@@ -222,7 +229,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
       MaterialPageRoute(
         builder: (_) => TripCompletedScreen(
           trip: currentTrip,
-          driverName: widget.driverName ?? 'الكابتن',
+          driverName: widget.driverName ?? 'common.captain'.tr(),
         ),
       ),
     );
@@ -235,7 +242,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
         MaterialPageRoute(
           builder: (_) => ChatScreen(
             tripId: widget.trip.tripId!,
-            otherUserName: widget.driverName ?? 'الكابتن',
+            otherUserName: widget.driverName ?? 'common.captain'.tr(),
           ),
         ),
       );
@@ -252,17 +259,17 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
   String _getStatusText(PassengerTripStatus status) {
     switch (status) {
       case PassengerTripStatus.accepted:
-        return 'الكابتن في الطريق إليك';
+        return 'passenger.captain_on_way'.tr();
       case PassengerTripStatus.driverArrived:
-        return 'الكابتن وصل!';
+        return 'passenger.captain_arrived'.tr();
       case PassengerTripStatus.started:
-        return 'الرحلة بدأت';
+        return 'passenger.trip_started'.tr();
       case PassengerTripStatus.completed:
-        return 'الرحلة انتهت';
+        return 'passenger.trip_ended'.tr();
       case PassengerTripStatus.cancelled:
-        return 'تم إلغاء الرحلة';
+        return 'trip.cancelled'.tr();
       default:
-        return 'جاري التتبع...';
+        return 'passenger.tracking'.tr();
     }
   }
 
@@ -291,17 +298,19 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
                     _navigateToTripCompleted();
                   } else if (state.status == PassengerTripStatus.cancelled) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('تم إلغاء الرحلة')),
+                      SnackBar(content: Text('trip.cancelled'.tr())),
                     );
                     context.go('/passenger-home');
                   } else if (state.status ==
                       PassengerTripStatus.driverArrived) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('الكابتن وصل!')),
+                      SnackBar(content: Text('passenger.captain_arrived'.tr())),
                     );
                   } else if (state.status == PassengerTripStatus.started) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('الرحلة بدأت!')),
+                      SnackBar(
+                        content: Text('passenger.trip_started_excl'.tr()),
+                      ),
                     );
                     // Refresh route to show Pickup -> Destination
                     _initMarkers();
@@ -312,7 +321,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
                 listener: (context, state) {
                   if (state is CancelTripSuccess) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('تم إلغاء الرحلة')),
+                      SnackBar(content: Text('trip.cancelled'.tr())),
                     );
                     context.go('/passenger-home');
                   } else if (state is CancelTripFailure) {
@@ -471,225 +480,247 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
             bottom: 20.h,
             left: 20.w,
             right: 20.w,
-            child: BlocBuilder<PassengerTripMonitorCubit, PassengerTripMonitorState>(
-              builder: (context, tripState) {
-                return Container(
-                  padding: EdgeInsets.all(16.w),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(10.w),
-                            decoration: BoxDecoration(
-                              color: _getStatusColor(
-                                tripState.status,
-                              ).withValues(alpha: 0.1),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              _getStatusIcon(tripState.status),
-                              color: _getStatusColor(tripState.status),
-                            ),
+            child:
+                BlocBuilder<
+                  PassengerTripMonitorCubit,
+                  PassengerTripMonitorState
+                >(
+                  builder: (context, tripState) {
+                    return Container(
+                      padding: EdgeInsets.all(16.w),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(16.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
                           ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  _getStatusText(tripState.status),
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.sp,
-                                  ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(10.w),
+                                decoration: BoxDecoration(
+                                  color: _getStatusColor(
+                                    tripState.status,
+                                  ).withValues(alpha: 0.1),
+                                  shape: BoxShape.circle,
                                 ),
-                                if (driverLocation != null)
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'يبعد عنك: ${distanceText ?? "..."}',
-                                        style: TextStyle(
-                                          color: Theme.of(
-                                            context,
-                                          ).textTheme.bodyMedium?.color,
-                                          fontSize: 13.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                child: Icon(
+                                  _getStatusIcon(tripState.status),
+                                  color: _getStatusColor(tripState.status),
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _getStatusText(tripState.status),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.sp,
                                       ),
+                                    ),
+                                    if (driverLocation != null)
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'passenger.distance_away'.tr(
+                                              namedArgs: {
+                                                'distance':
+                                                    distanceText ?? '...',
+                                              },
+                                            ),
+                                            style: TextStyle(
+                                              color: Theme.of(
+                                                context,
+                                              ).textTheme.bodyMedium?.color,
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          Text(
+                                            'passenger.eta'.tr(
+                                              namedArgs: {
+                                                'duration':
+                                                    durationText ?? '...',
+                                              },
+                                            ),
+                                            style: TextStyle(
+                                              color: Theme.of(
+                                                context,
+                                              ).hintColor,
+                                              fontSize: 12.sp,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    else
                                       Text(
-                                        'الوقت المقدر: ${durationText ?? "..."}',
+                                        'passenger.locating'.tr(),
                                         style: TextStyle(
                                           color: Theme.of(context).hintColor,
                                           fontSize: 12.sp,
                                         ),
                                       ),
-                                    ],
-                                  )
-                                else
-                                  Text(
-                                    'جاري تحديد الموقع...',
-                                    style: TextStyle(
-                                      color: Theme.of(context).hintColor,
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      BlocBuilder<GetDriverDataCubit, GetDriverDataState>(
-                        builder: (context, driverState) {
-                          final name =
-                              widget.driverName ??
-                              (driverState is GetDriverDataSuccess
-                                  ? driverState.driverModel.name
-                                  : null);
-                          final phone =
-                              widget.driverPhone ??
-                              (driverState is GetDriverDataSuccess
-                                  ? driverState.driverModel.phone
-                                  : null);
-
-                          if (name == null) return const SizedBox.shrink();
-
-                          return Column(
-                            children: [
-                              SizedBox(height: 12.h),
-                              Divider(
-                                height: 1,
-                                color: Theme.of(context).dividerColor,
-                              ),
-                              SizedBox(height: 12.h),
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 20.r,
-                                    backgroundColor: Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
-                                    child: Icon(
-                                      Icons.person,
-                                      color: Theme.of(context).iconTheme.color,
-                                    ),
-                                  ),
-                                  SizedBox(width: 12.w),
-                                  Expanded(
-                                    child: Text(
-                                      name,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14.sp,
-                                      ),
-                                    ),
-                                  ),
-                                  // Quick action buttons
-                                  IconButton(
-                                    onPressed: _openChat,
-                                    icon: const Icon(
-                                      Icons.message,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                  if (phone != null)
-                                    IconButton(
-                                      onPressed: () => _makePhoneCall(phone),
-                                      icon: const Icon(
-                                        Icons.phone,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ],
-                          );
-                        },
-                      ),
-                      // Cancel Trip button for passenger (always visible until started)
-                      if (tripState.status != PassengerTripStatus.started &&
-                          tripState.status !=
-                              PassengerTripStatus.completed) ...[
-                        SizedBox(height: 12.h),
-                        Divider(
-                          height: 1,
-                          color: Theme.of(context).dividerColor,
-                        ),
-                        SizedBox(height: 8.h),
-                        BlocBuilder<CancelTripCubit, CancelTripState>(
-                          builder: (context, cancelState) {
-                            if (cancelState is CancelTripLoading) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            }
-                            return TextButton(
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (dialogContext) => AlertDialog(
-                                    title: const Text('إلغاء الرحلة'),
-                                    content: const Text(
-                                      'هل أنت متأكد من إلغاء الرحلة؟',
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(dialogContext),
-                                        child: const Text('لا'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(dialogContext);
-                                          if (currentTrip.tripId != null) {
-                                            context
-                                                .read<CancelTripCubit>()
-                                                .cancelTrip(
-                                                  tripId: currentTrip.tripId!,
-                                                );
-                                          }
-                                        },
-                                        child: const Text(
-                                          'نعم، إلغاء',
-                                          style: TextStyle(color: Colors.red),
+                          ),
+                          BlocBuilder<GetDriverDataCubit, GetDriverDataState>(
+                            builder: (context, driverState) {
+                              final name =
+                                  widget.driverName ??
+                                  (driverState is GetDriverDataSuccess
+                                      ? driverState.driverModel.name
+                                      : null);
+                              final phone =
+                                  widget.driverPhone ??
+                                  (driverState is GetDriverDataSuccess
+                                      ? driverState.driverModel.phone
+                                      : null);
+
+                              if (name == null) return const SizedBox.shrink();
+
+                              return Column(
+                                children: [
+                                  SizedBox(height: 12.h),
+                                  Divider(
+                                    height: 1,
+                                    color: Theme.of(context).dividerColor,
+                                  ),
+                                  SizedBox(height: 12.h),
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20.r,
+                                        backgroundColor: Theme.of(
+                                          context,
+                                        ).colorScheme.surfaceContainerHighest,
+                                        child: Icon(
+                                          Icons.person,
+                                          color: Theme.of(
+                                            context,
+                                          ).iconTheme.color,
                                         ),
                                       ),
+                                      SizedBox(width: 12.w),
+                                      Expanded(
+                                        child: Text(
+                                          name,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14.sp,
+                                          ),
+                                        ),
+                                      ),
+                                      // Quick action buttons
+                                      IconButton(
+                                        onPressed: _openChat,
+                                        icon: const Icon(
+                                          Icons.message,
+                                          color: AppColors.primary,
+                                        ),
+                                      ),
+                                      if (phone != null)
+                                        IconButton(
+                                          onPressed: () =>
+                                              _makePhoneCall(phone),
+                                          icon: const Icon(
+                                            Icons.phone,
+                                            color: Colors.green,
+                                          ),
+                                        ),
                                     ],
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                          // Cancel Trip button for passenger (always visible until started)
+                          if (tripState.status != PassengerTripStatus.started &&
+                              tripState.status !=
+                                  PassengerTripStatus.completed) ...[
+                            SizedBox(height: 12.h),
+                            Divider(
+                              height: 1,
+                              color: Theme.of(context).dividerColor,
+                            ),
+                            SizedBox(height: 8.h),
+                            BlocBuilder<CancelTripCubit, CancelTripState>(
+                              builder: (context, cancelState) {
+                                if (cancelState is CancelTripLoading) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                return TextButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (dialogContext) => AlertDialog(
+                                        title: Text('trip.cancel'.tr()),
+                                        content: Text(
+                                          'trip.cancel_confirm'.tr(),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(dialogContext),
+                                            child: Text('common.no'.tr()),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(dialogContext);
+                                              if (currentTrip.tripId != null) {
+                                                context
+                                                    .read<CancelTripCubit>()
+                                                    .cancelTrip(
+                                                      tripId:
+                                                          currentTrip.tripId!,
+                                                    );
+                                              }
+                                            },
+                                            child: Text(
+                                              'common.yes_cancel'.tr(),
+                                              style: const TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    'trip.cancel'.tr(),
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.sp,
+                                    ),
                                   ),
                                 );
                               },
-                              child: Text(
-                                'إلغاء الرحلة',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ],
-                  ),
-                );
-              },
-            ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    );
+                  },
+                ),
           ),
         ],
       ),

@@ -1,4 +1,6 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/active_trip/active_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
@@ -36,11 +38,11 @@ class ActiveTripBanner extends StatelessWidget {
       },
       child: BlocBuilder<GetPassengerDetailsCubit, GetPassengerDetailsState>(
         builder: (context, state) {
-          String passengerName = 'العميل';
+          String passengerName = 'common.customer'.tr();
           String? passengerPhoto;
 
           if (state is GetPassengerDetailsSuccess) {
-            passengerName = state.passengerModel.name ?? 'العميل';
+            passengerName = state.passengerModel.name ?? 'common.customer'.tr();
             passengerPhoto = state.passengerModel.profilePic;
           }
 
@@ -51,10 +53,15 @@ class ActiveTripBanner extends StatelessWidget {
           String distanceText = '';
           if (remainingDistance != null) {
             if (remainingDistance! < 1000) {
-              distanceText = '${remainingDistance!.toStringAsFixed(0)} متر';
+              distanceText = 'units.meters_long'.tr(
+                namedArgs: {'value': remainingDistance!.toStringAsFixed(0)},
+              );
             } else {
-              distanceText =
-                  '${(remainingDistance! / 1000).toStringAsFixed(1)} كم';
+              distanceText = 'units.kilometers'.tr(
+                namedArgs: {
+                  'value': (remainingDistance! / 1000).toStringAsFixed(1),
+                },
+              );
             }
           }
 
@@ -104,7 +111,7 @@ class ActiveTripBanner extends StatelessWidget {
                         children: [
                           Text(
                             state is GetPassengerDetailsLoading
-                                ? 'جاري التحميل...'
+                                ? 'common.loading'.tr()
                                 : passengerName,
                             style: AppTextStyles.bold16(context).copyWith(
                               color: Theme.of(context).colorScheme.onSurface,
@@ -141,7 +148,7 @@ class ActiveTripBanner extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20.r),
                       ),
                       child: Text(
-                        '${trip.tripPrice} ج.م',
+                        AppStrings.price(trip.tripPrice),
                         style: AppTextStyles.bold14(
                           context,
                         ).copyWith(color: Colors.green),
@@ -210,7 +217,7 @@ class ActiveTripBanner extends StatelessWidget {
                         const Icon(Icons.check_circle, color: Colors.white),
                         SizedBox(width: 8.w),
                         Text(
-                          'إنهاء الرحلة',
+                          'trip.end'.tr(),
                           style: AppTextStyles.semiBold14(
                             context,
                           ).copyWith(color: Colors.white),
@@ -240,7 +247,7 @@ class ActiveTripBanner extends StatelessWidget {
                         const Icon(Icons.play_arrow, color: Colors.white),
                         SizedBox(width: 8.w),
                         Text(
-                          'بدء الرحلة',
+                          'trip.start'.tr(),
                           style: AppTextStyles.semiBold14(
                             context,
                           ).copyWith(color: Colors.white),
@@ -269,7 +276,7 @@ class ActiveTripBanner extends StatelessWidget {
                         ),
                         SizedBox(width: 8.w),
                         Text(
-                          'توجه إلى نقطة الانطلاق',
+                          'driver.go_to_pickup'.tr(),
                           style:
                               AppTextStyles.bold14(
                                 context,
@@ -301,12 +308,12 @@ class ActiveTripBanner extends StatelessWidget {
                       showDialog(
                         context: context,
                         builder: (dialogContext) => AlertDialog(
-                          title: const Text('إلغاء الرحلة'),
-                          content: const Text('هل أنت متأكد من إلغاء الرحلة؟'),
+                          title: Text('trip.cancel'.tr()),
+                          content: Text('trip.cancel_confirm'.tr()),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(dialogContext),
-                              child: const Text('لا'),
+                              child: Text('common.no'.tr()),
                             ),
                             TextButton(
                               onPressed: () {
@@ -318,9 +325,9 @@ class ActiveTripBanner extends StatelessWidget {
                                       'cancelled',
                                     );
                               },
-                              child: const Text(
-                                'نعم، إلغاء',
-                                style: TextStyle(color: Colors.red),
+                              child: Text(
+                                'common.yes_cancel'.tr(),
+                                style: const TextStyle(color: Colors.red),
                               ),
                             ),
                           ],
@@ -328,7 +335,7 @@ class ActiveTripBanner extends StatelessWidget {
                       );
                     },
                     child: Text(
-                      'إلغاء الرحلة',
+                      'trip.cancel'.tr(),
                       style: AppTextStyles.bold14(context).copyWith(
                         color: Colors.red,
                       ),

@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
@@ -148,7 +149,7 @@ class TripCard extends StatelessWidget {
                           _showNegotiateDialog(context);
                         },
                         child: Text(
-                          "تفاوض",
+                          'driver.negotiate'.tr(),
                           style: AppTextStyles.bold14(context),
                         ),
                       ),
@@ -178,20 +179,20 @@ class TripCard extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("تفاوض على السعر", textAlign: TextAlign.right),
+        title: Text('driver.negotiate_price'.tr(), textAlign: TextAlign.right),
         content: TextField(
           controller: controller,
           keyboardType: TextInputType.number,
           textAlign: TextAlign.right,
-          decoration: const InputDecoration(
-            hintText: "أدخل السعر المقترح",
-            suffixText: "ج.م",
+          decoration: InputDecoration(
+            hintText: 'driver.enter_offer_price'.tr(),
+            suffixText: 'units.egp'.tr(),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("إلغاء"),
+            child: Text('common.cancel'.tr()),
           ),
           ElevatedButton(
             onPressed: () {
@@ -200,7 +201,7 @@ class TripCard extends StatelessWidget {
                 Navigator.pop(context);
               }
             },
-            child: const Text("إرسال العرض"),
+            child: Text('driver.send_offer'.tr()),
           ),
         ],
       ),

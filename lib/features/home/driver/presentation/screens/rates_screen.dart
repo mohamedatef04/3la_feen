@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_text_styles.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/driver_ratings/driver_ratings_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/driver_details_header.dart';
 import 'package:ala_feen/core/cubits/cubit/user_data_cubit.dart';
@@ -8,7 +9,6 @@ import 'package:ala_feen/features/home/passenger/data/repos/passenger_home_repo.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart' hide TextDirection;
 import 'package:skeletonizer/skeletonizer.dart';
 
 class RatesScreen extends StatelessWidget {
@@ -24,8 +24,8 @@ class RatesScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: Column(
           children: [
-            const DriverDetailsHeader(
-              title: 'التقييمات',
+            DriverDetailsHeader(
+              title: 'menu.ratings'.tr(),
             ),
             Expanded(
               child: BlocBuilder<DriverRatingsCubit, DriverRatingsState>(
@@ -41,7 +41,7 @@ class RatesScreen extends StatelessWidget {
                         itemBuilder: (context, index) => _buildRateItem(
                           context,
                           rating: 5,
-                          comment: 'هذا نص تجريبي للتحميل...',
+                          comment: 'placeholder.text'.tr(),
                           date: DateTime.now(),
                           passengerId: 'dummy_id',
                         ),
@@ -58,7 +58,7 @@ class RatesScreen extends StatelessWidget {
                     if (state.ratings.isEmpty) {
                       return Center(
                         child: Text(
-                          'لا توجد تقييمات بعد',
+                          'driver.no_ratings'.tr(),
                           style: AppTextStyles.bold16(context),
                         ),
                       );
@@ -161,7 +161,9 @@ class RatesScreen extends StatelessWidget {
                       height: 45.w,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                        color: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: 0.1),
                       ),
                       child: Icon(
                         Icons.person,
@@ -180,7 +182,8 @@ class RatesScreen extends StatelessWidget {
                         builder: (context, state) {
                           String name = '...';
                           if (state is UserDataSuccess) {
-                            name = state.userModel.name ?? 'راكب';
+                            name =
+                                state.userModel.name ?? 'common.passenger'.tr();
                           }
                           return Text(
                             name,

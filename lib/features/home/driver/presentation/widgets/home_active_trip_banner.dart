@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_text_styles.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/features/home/driver/presentation/screens/active_trip_map_screen.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:flutter/material.dart';
@@ -45,13 +46,15 @@ class HomeActiveTripBanner extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'رحلة نشطة حالياً',
+                    'driver.active_trip_now'.tr(),
                     style: AppTextStyles.bold14(
                       context,
                     ).copyWith(color: Colors.white),
                   ),
                   Text(
-                    'نحو: ${trip.distAddress}',
+                    'driver.heading_to'.tr(
+                      namedArgs: {'address': trip.distAddress ?? ''},
+                    ),
                     style: AppTextStyles.regular12(
                       context,
                     ).copyWith(color: Colors.white70),

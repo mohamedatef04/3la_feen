@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,7 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        'حمل الصورة',
+                        'auth.upload_image'.tr(),
                         style: TextStyle(
                           color: AppColors.primary.withValues(alpha: 0.6),
                           fontSize: 12.sp,

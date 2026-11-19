@@ -1,4 +1,6 @@
 import 'package:ala_feen/core/di/injection_container.dart';
+import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
@@ -115,7 +117,7 @@ class OfferItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      driver.name ?? 'كابتن',
+                      driver.name ?? 'common.captain_short'.tr(),
                       style: AppTextStyles.bold18(context),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -147,7 +149,7 @@ class OfferItem extends StatelessWidget {
                         SizedBox(width: 8.w),
                         // Trip count could go here if available
                         Text(
-                          'متاح الآن',
+                          'passenger.available_now'.tr(),
                           style: AppTextStyles.regular12(context).copyWith(
                             color: Colors.green,
                           ),
@@ -162,7 +164,7 @@ class OfferItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${offer.offerPrice} ج.م',
+                    AppStrings.price(offer.offerPrice),
                     style: AppTextStyles.bold18(context).copyWith(
                       color: AppColors.primary,
                     ),
@@ -226,7 +228,7 @@ class OfferItem extends StatelessWidget {
                                   color: Colors.white,
                                 )
                               : Text(
-                                  'قبول العرض',
+                                  'passenger.accept_offer'.tr(),
                                   style: AppTextStyles.bold16(
                                     context,
                                   ).copyWith(color: Colors.white),
@@ -253,15 +255,15 @@ class OfferItem extends StatelessWidget {
     IconData icon;
 
     if (offerVal < requestedVal) {
-      text = 'أقل من طلبك';
+      text = 'passenger.below_request'.tr();
       color = Colors.green;
       icon = Icons.trending_down;
     } else if (offerVal > requestedVal) {
-      text = 'أعلى من طلبك';
+      text = 'passenger.above_request'.tr();
       color = Colors.orange[800]!;
       icon = Icons.trending_up;
     } else {
-      text = 'نفس طلبك';
+      text = 'passenger.same_as_request'.tr();
       color = Colors.blue;
       icon = Icons.unfold_more_double_outlined;
     }

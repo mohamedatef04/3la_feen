@@ -37,7 +37,7 @@ class SuccessRegistrationView extends StatelessWidget {
                 // Success Message
                 Column(
                   children: [
-                    const SuccessMessageWidget(
+                    SuccessMessageWidget(
                       message: AppStrings.successfulRegistrationForPassenger,
                     ),
 

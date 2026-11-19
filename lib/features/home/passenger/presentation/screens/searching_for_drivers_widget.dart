@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_text_styles.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_offers_stream_cubit/get_prices_offers_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/search_screen_widgets/offers_list.dart';
@@ -53,7 +54,7 @@ class _SearchingForDriversScreenState extends State<SearchingForDriversScreen> {
               child: Column(
                 children: [
                   Text(
-                    'جاري البحث عن كابتن...',
+                    'passenger.searching_captain'.tr(),
                     style: AppTextStyles.bold18(context),
                   ),
                   findDriver
@@ -65,7 +66,9 @@ class _SearchingForDriversScreenState extends State<SearchingForDriversScreen> {
                               }
                             }
                             return Text(
-                              'لديك $offers عروض حتي الآن',
+                              'passenger.offers_count'.tr(
+                                namedArgs: {'count': '$offers'},
+                              ),
                               style: AppTextStyles.regular12(context).copyWith(
                                 color: Colors.grey,
                               ),
@@ -73,7 +76,7 @@ class _SearchingForDriversScreenState extends State<SearchingForDriversScreen> {
                           },
                         )
                       : Text(
-                          'متصل وبانتظار العروض...',
+                          'passenger.waiting_offers'.tr(),
                           style: AppTextStyles.regular12(context).copyWith(
                             color: Colors.grey,
                           ),
