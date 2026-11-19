@@ -24,4 +24,7 @@ final class SendTripRequestFailure extends SendTripRequestState {
   final String errorMessage;
 
   const SendTripRequestFailure({required this.errorMessage});
+
+  @override
+  List<Object> get props => [errorMessage];
 }
