@@ -1,4 +1,6 @@
 import 'package:ala_feen/core/theme/app_text_styles.dart';
+import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/active_trip/active_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/accepted_offer_widgets/success_icon_widget.dart';
@@ -33,13 +35,13 @@ class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
             const SuccessIconWidget(),
             SizedBox(height: 24.h),
             Text(
-              'تم قبول عرضك!',
+              'driver.your_offer_accepted'.tr(),
               style: AppTextStyles.bold25(context),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 8.h),
             Text(
-              'الركاب في انتظارك الآن',
+              'driver.passenger_waiting'.tr(),
               style: AppTextStyles.regular16(context).copyWith(
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.grey[400]
@@ -56,7 +58,9 @@ class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
                   color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(16.r),
                   border: Border.all(
-                    color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
+                    color: Theme.of(
+                      context,
+                    ).dividerColor.withValues(alpha: 0.1),
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -72,8 +76,8 @@ class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
                       context,
                       icon: Icons.location_on,
                       color: Colors.green,
-                      label: 'نقطة الانطلاق',
-                      value: widget.trip.originAddress ?? 'غير محدد',
+                      label: 'trip.pickup'.tr(),
+                      value: widget.trip.originAddress ?? 'common.not_set'.tr(),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -86,8 +90,8 @@ class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
                       context,
                       icon: Icons.flag_rounded,
                       color: Colors.red,
-                      label: 'وجهة الوصول',
-                      value: widget.trip.distAddress ?? 'غير محدد',
+                      label: 'trip.drop_off'.tr(),
+                      value: widget.trip.distAddress ?? 'common.not_set'.tr(),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 12.h),
@@ -101,14 +105,14 @@ class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
                       children: [
                         _buildInfoColumn(
                           context,
-                          'السعر المتوقع',
-                          '${widget.trip.tripPrice} ج.م',
+                          'trip.expected_price'.tr(),
+                          AppStrings.price(widget.trip.tripPrice),
                           Icons.payments_outlined,
                           Colors.amber[800]!,
                         ),
                         _buildInfoColumn(
                           context,
-                          'المسافة',
+                          'trip.distance'.tr(),
                           widget.trip.tripDistance ?? '--',
                           Icons.straighten_outlined,
                           Colors.blue[700]!,
@@ -165,7 +169,7 @@ class _DriverOfferAcceptedScreenState extends State<DriverOfferAcceptedScreen> {
                 child: _isLoading
                     ? const CupertinoActivityIndicator(color: Colors.white)
                     : Text(
-                        'التوجه إلى الخريطة',
+                        'driver.go_to_map'.tr(),
                         style: AppTextStyles.bold18(
                           context,
                         ).copyWith(color: Colors.white),

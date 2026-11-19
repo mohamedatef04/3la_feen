@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:ala_feen/core/utils/notifications/local.dart';
@@ -131,7 +132,7 @@ class ChatNotificationService {
   void _showNotification(String content) {
     try {
       LocalNotifications().showNotification(
-        title: 'رسالة جديدة 💬',
+        title: 'chat.new_message'.tr(),
         body: content,
         payload: 'chat',
       );

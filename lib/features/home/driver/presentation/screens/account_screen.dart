@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
@@ -18,8 +19,8 @@ class AccountScreen extends StatelessWidget {
       backgroundColor: const Color(0xffF8F8F8),
       body: Column(
         children: [
-          const DriverDetailsHeader(
-            title: 'الحساب',
+          DriverDetailsHeader(
+            title: 'menu.account'.tr(),
           ),
           Expanded(
             child: SingleChildScrollView(

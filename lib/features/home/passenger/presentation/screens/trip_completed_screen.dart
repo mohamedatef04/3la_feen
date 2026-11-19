@@ -1,4 +1,6 @@
 import 'package:ala_feen/core/di/injection_container.dart';
+import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
@@ -43,7 +45,7 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
             listener: (context, state) {
               if (state is RatingSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('شكراً لتقييمك!')),
+                  SnackBar(content: Text('rating.thanks'.tr())),
                 );
                 context.go('/');
               } else if (state is RatingFailure) {
@@ -74,13 +76,13 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
                     ),
                     SizedBox(height: 24.h),
                     Text(
-                      'تمت الرحلة بنجاح!',
+                      'trip.completed_title'.tr(),
                       style: AppTextStyles.bold25(context),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 8.h),
                     Text(
-                      'شكراً لاستخدامك علي فين',
+                      'app.thanks_for_riding'.tr(),
                       style: AppTextStyles.regular14(context).copyWith(
                         color: Colors.grey[600],
                       ),
@@ -108,26 +110,26 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
                           _buildInfoRow(
                             context,
                             Icons.location_on,
-                            'من',
-                            widget.trip.origin ?? 'نقطة الانطلاق',
+                            'trip.from'.tr(),
+                            widget.trip.origin ?? 'trip.pickup'.tr(),
                           ),
                           Divider(height: 24.h),
                           _buildInfoRow(
                             context,
                             Icons.flag,
-                            'إلى',
-                            widget.trip.destination ?? 'الوجهة',
+                            'trip.to'.tr(),
+                            widget.trip.destination ?? 'trip.destination'.tr(),
                           ),
                           Divider(height: 24.h),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'إجمالي الأجرة',
+                                'trip.total_fare'.tr(),
                                 style: AppTextStyles.bold14(context),
                               ),
                               Text(
-                                '${widget.trip.price ?? 0} ج.م',
+                                AppStrings.price(widget.trip.price ?? 0),
                                 style: AppTextStyles.bold18(context).copyWith(
                                   color: AppColors.primary,
                                 ),
@@ -141,7 +143,9 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
 
                     // Rating Section
                     Text(
-                      'قيم رحلتك مع ${widget.driverName}',
+                      'passenger.rate_trip_with'.tr(
+                        namedArgs: {'name': widget.driverName},
+                      ),
                       style: AppTextStyles.bold16(context),
                     ),
                     SizedBox(height: 16.h),
@@ -174,7 +178,7 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
                       controller: _commentController,
                       maxLines: 3,
                       decoration: InputDecoration(
-                        hintText: 'أضف تعليقاً (اختياري)',
+                        hintText: 'passenger.add_comment'.tr(),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
                         ),
@@ -209,8 +213,10 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
                                   );
                                 } else if (_selectedRating == 0) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('الرجاء اختيار تقييم'),
+                                    SnackBar(
+                                      content: Text(
+                                        'rating.select_rating'.tr(),
+                                      ),
                                     ),
                                   );
                                 } else {
@@ -229,7 +235,7 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
                                 color: Colors.white,
                               )
                             : Text(
-                                'إرسال التقييم',
+                                'rating.submit'.tr(),
                                 style: AppTextStyles.bold16(context).copyWith(
                                   color: Colors.white,
                                 ),
@@ -242,7 +248,7 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
                     TextButton(
                       onPressed: () => context.go('/'),
                       child: Text(
-                        'تخطي',
+                        'common.skip'.tr(),
                         style: AppTextStyles.regular14(context).copyWith(
                           color: Colors.grey[600],
                         ),

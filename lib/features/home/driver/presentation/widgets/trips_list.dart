@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/functions/show_snack_bar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/trip_action/trip_action_cubit.dart';
@@ -29,9 +30,9 @@ class TripsList extends StatelessWidget {
         if (state.status == TripActionStatus.failure) {
           showCustomSnackBar(context, state.errorMessage.toString());
         } else if (state.status == TripActionStatus.pending) {
-          showCustomSnackBar(context, 'تم الارسال');
+          showCustomSnackBar(context, 'driver.offer_sent'.tr());
         } else if (state.status == TripActionStatus.accepted) {
-          showCustomSnackBar(context, 'تم قبول العرض');
+          showCustomSnackBar(context, 'driver.offer_accepted'.tr());
           if (state.trip != null) {
             context.push(
               DriverOfferAcceptedScreen.routeName,
@@ -39,7 +40,7 @@ class TripsList extends StatelessWidget {
             );
           }
         } else if (state.status == TripActionStatus.rejected) {
-          showCustomSnackBar(context, 'تم رفض العرض');
+          showCustomSnackBar(context, 'driver.offer_rejected'.tr());
         }
       },
       child: BlocBuilder<TripsStreamCubit, TripsStreamState>(
@@ -53,8 +54,8 @@ class TripsList extends StatelessWidget {
                 enabled: true,
                 child: TripCard(
                   passengerId: 'dummy_id',
-                  pickupLocation: 'موقع الانطلاق المتوقع',
-                  dropoffLocation: 'الوجهة المتوقعة للرحلة',
+                  pickupLocation: 'driver.expected_pickup'.tr(),
+                  dropoffLocation: 'driver.expected_destination'.tr(),
                   price: '150',
                   onAccept: () {},
                   onNegotiate: (_) {},
@@ -66,7 +67,7 @@ class TripsList extends StatelessWidget {
           if (state.trips == null || state.trips!.isEmpty) {
             return Center(
               child: Text(
-                'لا توجد رحلات متاحة',
+                'driver.no_trips'.tr(),
                 style: AppTextStyles.bold14(context),
               ),
             );

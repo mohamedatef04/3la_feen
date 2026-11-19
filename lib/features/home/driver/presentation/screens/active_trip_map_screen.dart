@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/utils/map_style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:ala_feen/core/utils/decode_polykine.dart';
@@ -71,7 +72,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
             markerId: const MarkerId('pickup'),
             position: LatLng(pickupLat, pickupLng),
             icon: MarkerUtils.personMarker,
-            infoWindow: const InfoWindow(title: 'موقع الراكب'),
+            infoWindow: InfoWindow(title: 'map.passenger_location'.tr()),
           ),
         );
       }
@@ -86,7 +87,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
             markerId: const MarkerId('destination'),
             position: LatLng(destLat, destLng),
             icon: MarkerUtils.stationMarker,
-            infoWindow: const InfoWindow(title: 'الوجهة'),
+            infoWindow: InfoWindow(title: 'trip.destination'.tr()),
           ),
         );
       }
@@ -130,7 +131,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
           markerId: const MarkerId('driver_location'),
           position: driverPos,
           icon: MarkerUtils.carMarker,
-          infoWindow: const InfoWindow(title: 'موقعي'),
+          infoWindow: InfoWindow(title: 'map.my_location'.tr()),
         ),
       );
     });
@@ -243,8 +244,8 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
       startLng: startLng,
       endLat: targetLat,
       endLng: targetLng,
-      startLocation: isStarted ? 'الراكب' : 'موقعي',
-      endLocation: isStarted ? 'الوجهة' : 'الراكب',
+      startLocation: isStarted ? 'map.passenger'.tr() : 'map.my_location'.tr(),
+      endLocation: isStarted ? 'trip.destination'.tr() : 'map.passenger'.tr(),
     );
   }
 
@@ -254,8 +255,8 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('وصلت للراكب؟'),
-        content: const Text('هل تود بدء الرحلة الآن؟'),
+        title: Text('driver.arrived_at_passenger'.tr()),
+        content: Text('driver.start_trip_now'.tr()),
         actions: [
           TextButton(
             onPressed: () {
@@ -264,7 +265,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
               });
               Navigator.pop(dialogContext);
             },
-            child: const Text('ليس بعد'),
+            child: Text('common.not_yet'.tr()),
           ),
           ElevatedButton(
             onPressed: () {
@@ -274,7 +275,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
               );
               Navigator.pop(dialogContext);
             },
-            child: const Text('بدء الرحلة'),
+            child: Text('trip.start'.tr()),
           ),
         ],
       ),
@@ -283,25 +284,26 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
 
   void _showArrivalConfirmation() {
     final monitorCubit = context.read<ActiveTripMonitorCubit>();
-    String passengerName = 'الراكب'; // Fallback
+    String passengerName = 'map.passenger'.tr(); // Fallback
 
     // Try to get name from any existing GetPassengerDetailsCubit state in context if available
     // or we'll just use a generic one if we don't want to block
     final passengerState = context.read<GetPassengerDetailsCubit>().state;
     if (passengerState is GetPassengerDetailsSuccess) {
-      passengerName = passengerState.passengerModel.name ?? 'الراكب';
+      passengerName =
+          passengerState.passengerModel.name ?? 'map.passenger'.tr();
     }
 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('وصلت لوجهتك؟'),
-        content: const Text('هل تود إنهاء الرحلة الآن؟'),
+        title: Text('driver.arrived_at_destination'.tr()),
+        content: Text('driver.end_trip_now'.tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('ليس بعد'),
+            child: Text('common.not_yet'.tr()),
           ),
           ElevatedButton(
             onPressed: () {
@@ -321,7 +323,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
                 ),
               );
             },
-            child: const Text('إنهاء الرحلة'),
+            child: Text('trip.end'.tr()),
           ),
         ],
       ),
@@ -347,7 +349,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
       _fetchInitialRoute(currentDriverPos);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('جاري تحديث المسار للمحاكاة...')),
+        SnackBar(content: Text('driver.updating_route_simulation'.tr())),
       );
     } else {
       // Fallback if no driver location found (likely first load)
@@ -359,7 +361,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
         _runSimulationLoop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('يرجى انتظار تحديد الموقع...')),
+          SnackBar(content: Text('driver.waiting_for_location'.tr())),
         );
       }
     }
@@ -476,7 +478,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
       listener: (context, state) {
         if (state.status == ActiveTripStatus.cancelled) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('تم إلغاء الرحلة')),
+            SnackBar(content: Text('trip.cancelled'.tr())),
           );
           // Navigate back to Driver Home and clear stack to prevent going back to map
           context.go('/driver-home');
@@ -648,7 +650,9 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
                             _isSimulating ? Icons.stop : Icons.play_arrow,
                           ),
                           label: Text(
-                            _isSimulating ? 'إيقاف المحاكاة' : 'بدء المحاكاة',
+                            _isSimulating
+                                ? 'driver.stop_simulation'.tr()
+                                : 'driver.start_simulation'.tr(),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _isSimulating

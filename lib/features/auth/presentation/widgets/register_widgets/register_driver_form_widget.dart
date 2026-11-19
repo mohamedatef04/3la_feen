@@ -83,7 +83,7 @@ class _RegisterDriverFormWidgetState extends State<RegisterDriverFormWidget> {
                   child: _buildFieldWithHeader(
                     context: context,
                     headerText: AppStrings.fullName,
-                    hintText: 'أدخل ${AppStrings.fullName}',
+                    hintText: AppStrings.enterField(AppStrings.fullName),
                     icon: Icons.person_outline,
                     controller: _driverNameController,
                     validator: Validator.validateName,
@@ -97,7 +97,7 @@ class _RegisterDriverFormWidgetState extends State<RegisterDriverFormWidget> {
                   child: _buildFieldWithHeader(
                     context: context,
                     headerText: AppStrings.phoneNumber,
-                    hintText: 'أدخل ${AppStrings.phoneNumber}',
+                    hintText: AppStrings.enterField(AppStrings.phoneNumber),
                     icon: Icons.phone_outlined,
                     controller: _driverPhoneController,
                     keyboardType: TextInputType.number,
@@ -117,7 +117,7 @@ class _RegisterDriverFormWidgetState extends State<RegisterDriverFormWidget> {
                   child: _buildFieldWithHeader(
                     context: context,
                     headerText: AppStrings.email,
-                    hintText: 'أدخل ${AppStrings.email}',
+                    hintText: AppStrings.enterField(AppStrings.email),
                     icon: Icons.email_outlined,
                     controller: _driverEmailController,
                     keyboardType: TextInputType.emailAddress,
@@ -132,7 +132,7 @@ class _RegisterDriverFormWidgetState extends State<RegisterDriverFormWidget> {
                   child: _buildFieldWithHeader(
                     context: context,
                     headerText: AppStrings.password,
-                    hintText: 'أدخل ${AppStrings.password}',
+                    hintText: AppStrings.enterField(AppStrings.password),
                     icon: Icons.lock_outline,
                     suffixIcon: IconButton(
                       icon: Icon(

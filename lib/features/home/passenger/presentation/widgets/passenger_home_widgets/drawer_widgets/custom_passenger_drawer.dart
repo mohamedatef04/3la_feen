@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/widgets/language_toggle_item.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/passenger_home_widgets/drawer_widgets/drawer_header_profile.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/passenger_home_widgets/drawer_widgets/drawer_item.dart';
@@ -64,6 +65,7 @@ class CustomPassengerDrawer extends StatelessWidget {
                   ),
                   const Divider(),
                   const ThemeToggleItem(),
+                  const LanguageToggleItem(),
                 ],
               ),
             ),

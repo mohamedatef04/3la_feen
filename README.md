@@ -86,6 +86,10 @@ bundle install
 bundle exec fastlane distribute
 ```
 
+## Languages
+
+The app runs in Arabic (default, RTL) and English; users switch from the side drawer and the choice is remembered. All UI text lives in `assets/lang/ar.json` and `assets/lang/en.json` (via `easy_localization`). To add a string, add the same key to both files and use `'group.key'.tr()`. A test fails if the two files ever get out of sync.
+
 ## Tests
 
 ```bash
