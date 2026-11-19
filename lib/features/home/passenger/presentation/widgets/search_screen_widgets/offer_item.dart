@@ -193,7 +193,7 @@ class OfferItem extends StatelessWidget {
                     child: Image.network(
                       driver.carPic!,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Icon(
+                      errorBuilder: (_, _, _) => Icon(
                         Icons.directions_car,
                         color: Colors.grey[400],
                         size: 30.sp,

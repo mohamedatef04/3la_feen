@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/utils/map_style.dart';
 import 'dart:async';
 import 'dart:math';
 import 'package:ala_feen/core/utils/decode_polykine.dart';
@@ -34,6 +35,7 @@ class ActiveTripMapScreen extends StatefulWidget {
 
 class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   GoogleMapController? mapController;
+  String? _mapStyle;
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
   bool isFirstLocationUpdate = true;
@@ -381,7 +383,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   void _runSimulationLoop() {
     // Semantic Speed: Update every 1 second (1000ms) for realistic movement
     // and to match throttled updates better
-    final stepSize =
+    const stepSize =
         1; // Move 1 point at a time for smoother, slower simulation
 
     _simulationTimer?.cancel();
@@ -422,18 +424,8 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   }
 
   Future<void> _setMapStyle() async {
-    if (mapController == null) return;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final stylePath = isDarkMode
-        ? 'assets/map_styles/dark_map_style.json'
-        : 'assets/map_styles/light_map_style.json';
-
-    try {
-      final style = await DefaultAssetBundle.of(context).loadString(stylePath);
-      await mapController!.setMapStyle(style);
-    } catch (e) {
-      debugPrint('Error loading map style: $e');
-    }
+    final style = await MapStyle.load(Theme.of(context).brightness);
+    if (mounted) setState(() => _mapStyle = style);
   }
 
   void _recenterMap() {
@@ -570,6 +562,7 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
                   Stack(
                     children: [
                       GoogleMap(
+                        style: _mapStyle,
                         initialCameraPosition: CameraPosition(
                           target: LatLng(
                             _safeParseDouble(currentTrip.originLat),

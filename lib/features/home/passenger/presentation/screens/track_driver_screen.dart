@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/utils/map_style.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/utils/marker_utils.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
@@ -39,6 +40,7 @@ class TrackDriverScreen extends StatefulWidget {
 
 class _TrackDriverScreenState extends State<TrackDriverScreen> {
   GoogleMapController? mapController;
+  String? _mapStyle;
   Set<Marker> markers = {};
   LatLng? driverLocation;
   String? distanceText;
@@ -210,18 +212,8 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
   }
 
   Future<void> _setMapStyle() async {
-    if (mapController == null) return;
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final stylePath = isDarkMode
-        ? 'assets/map_styles/dark_map_style.json'
-        : 'assets/map_styles/light_map_style.json';
-
-    try {
-      final style = await DefaultAssetBundle.of(context).loadString(stylePath);
-      await mapController!.setMapStyle(style);
-    } catch (e) {
-      debugPrint('Error loading map style: $e');
-    }
+    final style = await MapStyle.load(Theme.of(context).brightness);
+    if (mounted) setState(() => _mapStyle = style);
   }
 
   void _navigateToTripCompleted() {
@@ -378,6 +370,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
                     child: Stack(
                       children: [
                         GoogleMap(
+                          style: _mapStyle,
                           initialCameraPosition: CameraPosition(
                             target: LatLng(
                               _safeParseDouble(widget.trip.originLat),
@@ -445,7 +438,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
                 CircleAvatar(
                   backgroundColor: Theme.of(context).cardColor,
                   child: IconButton(
-                    icon: Icon(Icons.chat, color: AppColors.primary),
+                    icon: const Icon(Icons.chat, color: AppColors.primary),
                     onPressed: _openChat,
                   ),
                 ),
@@ -487,7 +480,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
                     borderRadius: BorderRadius.circular(16.r),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 10,
                         offset: const Offset(0, 5),
                       ),
@@ -503,7 +496,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
                             decoration: BoxDecoration(
                               color: _getStatusColor(
                                 tripState.status,
-                              ).withOpacity(0.1),
+                              ).withValues(alpha: 0.1),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
@@ -609,7 +602,7 @@ class _TrackDriverScreenState extends State<TrackDriverScreen> {
                                   // Quick action buttons
                                   IconButton(
                                     onPressed: _openChat,
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.message,
                                       color: AppColors.primary,
                                     ),

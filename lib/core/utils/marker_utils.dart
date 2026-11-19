@@ -67,7 +67,10 @@ class MarkerUtils {
       format: ui.ImageByteFormat.png,
     );
 
-    return BitmapDescriptor.fromBytes(byteData!.buffer.asUint8List());
+    return BitmapDescriptor.bytes(
+      byteData!.buffer.asUint8List(),
+      bitmapScaling: MapBitmapScaling.none,
+    );
   }
 
   /// Create a custom marker on-the-fly (for dynamic needs)
