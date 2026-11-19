@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/di/injection_container.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/features/chat/presentation/cubits/chat_cubit.dart';
 import 'package:ala_feen/core/services/chat_notification_service.dart';
@@ -57,7 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ChatCubit()..getMessages(widget.tripId),
+      create: (context) => sl<ChatCubit>()..getMessages(widget.tripId),
       child: Scaffold(
         appBar: AppBar(
           title: Text(widget.otherUserName),
@@ -69,6 +70,11 @@ class _ChatScreenState extends State<ChatScreen> {
               child: BlocConsumer<ChatCubit, ChatState>(
                 listener: (context, state) {
                   if (state is ChatSuccess) {
+                    if (state.sendError != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.sendError!)),
+                      );
+                    }
                     // Auto-scroll when new messages arrive
                     if (state.messages.length > _previousMessageCount) {
                       _scrollToBottom();
@@ -79,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 builder: (context, state) {
                   if (state is ChatSuccess) {
                     if (state.messages.isEmpty) {
-                      return Center(
+                      return const Center(
                         child: Text(
                           'لا توجد رسائل بعد',
                           style: TextStyle(color: Colors.grey),
@@ -152,7 +158,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 if (message.isMe) ...[
                   SizedBox(width: 4.w),
                   Icon(
-                    Icons.done_all,
+                    message.isPending ? Icons.schedule : Icons.done_all,
                     size: 12.sp,
                     color: Colors.white70,
                   ),

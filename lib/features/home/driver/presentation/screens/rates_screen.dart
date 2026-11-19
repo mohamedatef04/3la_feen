@@ -19,7 +19,7 @@ class RatesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DriverRatingsCubit()..getDriverRatings(),
+      create: (context) => sl<DriverRatingsCubit>()..getDriverRatings(),
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: Column(
@@ -120,7 +120,7 @@ class RatesScreen extends StatelessWidget {
             ),
           ],
           border: Border.all(
-            color: Theme.of(context).dividerColor.withOpacity(0.1),
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
           ),
         ),
         child: Column(
@@ -139,7 +139,7 @@ class RatesScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                           color: Theme.of(
                             context,
-                          ).primaryColor.withOpacity(0.1),
+                          ).primaryColor.withValues(alpha: 0.1),
                           image: user.profilePic != null
                               ? DecorationImage(
                                   image: NetworkImage(user.profilePic!),
@@ -161,7 +161,7 @@ class RatesScreen extends StatelessWidget {
                       height: 45.w,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                       ),
                       child: Icon(
                         Icons.person,
@@ -220,7 +220,7 @@ class RatesScreen extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 12.h),
                 child: Divider(
                   height: 1,
-                  color: Theme.of(context).dividerColor.withOpacity(0.5),
+                  color: Theme.of(context).dividerColor.withValues(alpha: 0.5),
                 ),
               ),
               Text(

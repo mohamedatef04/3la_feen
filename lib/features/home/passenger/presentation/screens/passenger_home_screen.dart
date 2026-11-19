@@ -1,5 +1,5 @@
-import 'package:ala_feen/core/utils/notifcations.dart/fcm.dart';
-import 'package:ala_feen/core/utils/notifcations.dart/local.dart';
+import 'package:ala_feen/core/utils/notifications/fcm.dart';
+import 'package:ala_feen/core/utils/notifications/local.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/passenger_trip_monitor_cubit/passenger_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_passenger_data_cubit/get_passenger_data_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/passenger_home_widgets/drawer_widgets/custom_passenger_drawer.dart';

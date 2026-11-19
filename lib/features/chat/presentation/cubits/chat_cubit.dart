@@ -1,126 +1,110 @@
 ﻿import 'dart:async';
+
+import 'package:ala_feen/core/utils/safe_emit.dart';
+import 'package:ala_feen/features/chat/data/models/chat_message.dart';
+import 'package:ala_feen/features/chat/data/repos/chat_repo.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ala_feen/core/utils/notifcations.dart/local.dart';
-import 'package:ala_feen/core/utils/safe_emit.dart';
+
+export 'package:ala_feen/features/chat/data/models/chat_message.dart';
 
 part 'chat_state.dart';
 
+/// Messages of one trip's chat. New messages arrive over realtime; messages
+/// sent from this device show immediately as pending until the server
+/// confirms them.
 class ChatCubit extends Cubit<ChatState> {
-  final SupabaseClient _supabase = Supabase.instance.client;
-  RealtimeChannel? _channel;
-  String? _currentTripId;
+  ChatCubit(this._repo) : super(ChatInitial());
+
+  final ChatRepo _repo;
+  StreamSubscription<ChatMessage>? _subscription;
   List<ChatMessage> _messages = [];
+  int _pendingCounter = 0;
 
-  ChatCubit() : super(ChatInitial());
-
-  void getMessages(String tripId) {
+  Future<void> getMessages(String tripId) async {
     safeEmit(ChatLoading());
-    _currentTripId = tripId;
 
-    // Initial fetch
-    _fetchMessages(tripId);
+    await _subscription?.cancel();
+    _subscription = _repo
+        .watchNewMessages(tripId)
+        .listen(_onIncoming, onError: (_) {});
 
-    // Subscribe to realtime changes
-    _subscribeToRealtimeChanges(tripId);
-  }
-
-  Future<void> _fetchMessages(String tripId) async {
-    try {
-      final data = await _supabase
-          .from('chat_messages')
-          .select()
-          .eq('trip_id', tripId)
-          .order('created_at', ascending: true);
-
-      _messages = (data as List).map((e) => ChatMessage.fromJson(e)).toList();
-      safeEmit(ChatSuccess(messages: List.from(_messages)));
-    } catch (error) {
-      safeEmit(ChatFailure(errorMessage: error.toString()));
-    }
-  }
-
-  void _subscribeToRealtimeChanges(String tripId) {
-    // Remove any existing subscription
-    _channel?.unsubscribe();
-
-    // Create a new channel for this trip's messages
-    _channel = _supabase.channel('chat_$tripId');
-
-    _channel!
-        .onPostgresChanges(
-          event: PostgresChangeEvent.insert,
-          schema: 'public',
-          table: 'chat_messages',
-          filter: PostgresChangeFilter(
-            type: PostgresChangeFilterType.eq,
-            column: 'trip_id',
-            value: tripId,
-          ),
-          callback: (payload) {
-            final newMessage = ChatMessage.fromJson(payload.newRecord);
-            _messages.add(newMessage);
-            safeEmit(ChatSuccess(messages: List.from(_messages)));
-
-            // Show notification for messages from other user
-            if (!newMessage.isMe) {
-              _showNewMessageNotification(newMessage);
-            }
-          },
-        )
-        .subscribe();
-  }
-
-  void _showNewMessageNotification(ChatMessage message) {
-    try {
-      LocalNotifications().showNotification(
-        title: 'Ø±Ø³Ø§Ù„Ø© Ø¬Ø¯ÙŠØ¯Ø©',
-        body: message.content,
-        payload: 'chat_${_currentTripId}',
-      );
-    } catch (e) {
-      // Ignore notification errors
-    }
+    final result = await _repo.fetchMessages(tripId);
+    result.fold(
+      (failure) => safeEmit(ChatFailure(errorMessage: failure.errorMessage)),
+      (messages) {
+        // Keep anything realtime delivered while the initial fetch ran.
+        final fetchedIds = messages.map((m) => m.id).toSet();
+        _messages = [
+          ...messages,
+          ..._messages.where((m) => !fetchedIds.contains(m.id)),
+        ];
+        _emitMessages();
+      },
+    );
   }
 
   Future<void> sendMessage({
     required String tripId,
     required String content,
   }) async {
-    try {
-      final userId = _supabase.auth.currentUser!.id;
+    final text = content.trim();
+    if (text.isEmpty) return;
 
-      // Optimistic update - add message locally first
-      final optimisticMessage = ChatMessage(
-        id: 'temp_${DateTime.now().millisecondsSinceEpoch}',
-        senderId: userId,
-        content: content,
-        createdAt: DateTime.now(),
-      );
-      _messages.add(optimisticMessage);
-      safeEmit(ChatSuccess(messages: List.from(_messages)));
+    final pending = ChatMessage(
+      id: 'pending_${_pendingCounter++}',
+      senderId: _repo.currentUserId ?? '',
+      content: text,
+      createdAt: DateTime.now(),
+      isMe: true,
+      isPending: true,
+    );
+    _messages = [..._messages, pending];
+    _emitMessages();
 
-      // Send to server
-      await _supabase.from('chat_messages').insert({
-        'trip_id': tripId,
-        'sender_id': userId,
-        'content': content,
-      });
+    final result = await _repo.sendMessage(tripId: tripId, content: text);
+    result.fold(
+      (failure) {
+        _messages = _messages.where((m) => m.id != pending.id).toList();
+        _emitMessages(sendError: failure.errorMessage);
+      },
+      (saved) {
+        final alreadyReceived = _messages.any((m) => m.id == saved.id);
+        _messages = [
+          for (final m in _messages)
+            if (m.id != pending.id) m else if (!alreadyReceived) saved,
+        ];
+        _emitMessages();
+      },
+    );
+  }
 
-      // Refresh to get the actual message with server-generated ID
-      await _fetchMessages(tripId);
-    } catch (e) {
-      // Remove optimistic message on error
-      _messages.removeWhere((m) => m.id.startsWith('temp_'));
-      safeEmit(ChatSuccess(messages: List.from(_messages)));
+  void _onIncoming(ChatMessage message) {
+    if (_messages.any((m) => m.id == message.id)) return;
+
+    // Our own message echoed back by realtime replaces its pending copy.
+    final pendingIndex = message.isMe
+        ? _messages.indexWhere(
+            (m) => m.isPending && m.content == message.content,
+          )
+        : -1;
+    if (pendingIndex != -1) {
+      _messages = [..._messages]..[pendingIndex] = message;
+    } else {
+      _messages = [..._messages, message];
     }
+    _emitMessages();
+  }
+
+  void _emitMessages({String? sendError}) {
+    safeEmit(
+      ChatSuccess(messages: List.unmodifiable(_messages), sendError: sendError),
+    );
   }
 
   @override
-  Future<void> close() {
-    _channel?.unsubscribe();
+  Future<void> close() async {
+    await _subscription?.cancel();
     return super.close();
   }
 }
-
