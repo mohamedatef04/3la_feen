@@ -21,7 +21,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:ala_feen/core/di/injection_container.dart';
 import 'package:ala_feen/features/home/driver/data/services/driver_tracking_service.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ActiveTripMapScreen extends StatefulWidget {
   static const String routeName = '/active-trip-map';
@@ -51,7 +50,6 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
   bool _isSimulating = false;
   bool _autoResumeSimulation = false;
   DateTime? _lastCameraUpdate;
-  DateTime? _lastSupabaseUpdate;
 
   @override
   void initState() {
@@ -137,24 +135,11 @@ class _ActiveTripMapScreenState extends State<ActiveTripMapScreen> {
       );
     });
 
-    // Update location in Supabase for passenger tracking (Throttled: max once per 1s)
-    try {
-      final now = DateTime.now();
-      if (_lastSupabaseUpdate == null ||
-          now.difference(_lastSupabaseUpdate!).inSeconds >= 1) {
-        final driverId = Supabase.instance.client.auth.currentUser?.id;
-        if (driverId != null) {
-          sl<DriverTrackingService>().updateLocation(
-            driverId: driverId,
-            lat: driverPos.latitude,
-            lng: driverPos.longitude,
-          );
-          _lastSupabaseUpdate = now;
-        }
-      }
-    } catch (e) {
-      // Ignore errors
-    }
+    // Share the position with the passenger (throttled inside the service).
+    sl<DriverTrackingService>().updateMyLocation(
+      lat: driverPos.latitude,
+      lng: driverPos.longitude,
+    );
 
     // Always track driver position with camera if it's the first time
     if (isFirstLocationUpdate) {
