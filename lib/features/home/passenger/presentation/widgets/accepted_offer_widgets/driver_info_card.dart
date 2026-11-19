@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_driver_data_cubit/get_driver_data_cubit.dart';
@@ -34,7 +35,7 @@ class DriverInfoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'معلومات الكابتن',
+                  'passenger.captain_info'.tr(),
                   style: AppTextStyles.bold14(context),
                 ),
                 SizedBox(height: 16.h),
@@ -92,7 +93,9 @@ class DriverInfoCard extends StatelessWidget {
                 ? Icon(
                     Icons.person,
                     size: 30.sp,
-                    color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
+                    color: Theme.of(
+                      context,
+                    ).iconTheme.color?.withValues(alpha: 0.5),
                   )
                 : null,
           ),
@@ -172,7 +175,7 @@ class DriverInfoCard extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => ChatScreen(
                   tripId: tripId,
-                  otherUserName: driver.name ?? 'الكابتن',
+                  otherUserName: driver.name ?? 'common.captain'.tr(),
                 ),
               ),
             );

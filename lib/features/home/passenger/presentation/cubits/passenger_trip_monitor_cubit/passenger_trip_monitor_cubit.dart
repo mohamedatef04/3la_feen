@@ -1,10 +1,11 @@
-﻿import 'dart:async';
+import 'dart:async';
 
 import 'package:ala_feen/core/utils/notifications/local.dart';
 import 'package:ala_feen/core/utils/safe_emit.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/passenger/data/repos/passenger_trip_repo.dart';
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:equatable/equatable.dart';
 
 part 'passenger_trip_monitor_state.dart';
@@ -109,17 +110,17 @@ class PassengerTripMonitorCubit extends Cubit<PassengerTripMonitorState> {
 
     switch (status) {
       case PassengerTripStatus.driverArrived:
-        title = 'الكابتن وصل! 🚗';
-        body = 'الكابتن وصل إلى موقعك، اتجه للسيارة الآن';
+        title = 'trip_status.driver_arrived_title'.tr();
+        body = 'trip_status.driver_arrived_body'.tr();
       case PassengerTripStatus.started:
-        title = 'الرحلة بدأت 🛣️';
-        body = 'الرحلة الآن في الطريق إلى وجهتك';
+        title = 'trip_status.started_title'.tr();
+        body = 'trip_status.started_body'.tr();
       case PassengerTripStatus.completed:
-        title = 'وصلت! 🎉';
-        body = 'تم إنهاء الرحلة بنجاح';
+        title = 'trip_status.completed_title'.tr();
+        body = 'trip_status.completed_body'.tr();
       case PassengerTripStatus.cancelled:
-        title = 'تم إلغاء الرحلة ❌';
-        body = 'تم إلغاء الرحلة';
+        title = 'trip_status.cancelled_title'.tr();
+        body = 'trip_status.cancelled_body'.tr();
       default:
         return;
     }

@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/custom_profile_avatar.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/home_driver/home_driver_state.dart';
@@ -57,7 +58,7 @@ class DriverHomeHeader extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                user?.name ?? 'الكابتن',
+                                user?.name ?? 'common.captain'.tr(),
                                 style: TextStyle(
                                   color: AppColors.white,
                                   fontSize: 16.sp,

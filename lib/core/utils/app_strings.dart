@@ -1,120 +1,127 @@
+import 'package:easy_localization/easy_localization.dart';
+
+/// Shared UI strings. Each getter returns the text in the current app
+/// language; the texts live in `assets/lang/{ar,en}.json`.
 abstract class AppStrings {
-  static const String splashViewWelcomeMessage = 'مرحبا بك في تطبيق (فين)';
-  static const String nextButton = 'التالي';
-  static const String skipButton = 'تخطي';
-  static const String newUser = 'مستخدم جديد';
-  static const String login = 'تسجيل الدخول';
-  static const String password = 'كلمه المرور';
-  static const String guestAccount = 'الدخول كزائر';
-  static const String pressHere = 'اضغط هنا';
-  static const String driver = 'سائق';
-  static const String passenger = 'راكب';
-  static const String fullName = 'الاسم الكامل';
-  static const String phoneNumber = 'رقم الهاتف';
-  static const String profileImage = 'الصوره الشخصيه';
-  static const String email = 'البريد الالكتروني';
-  static const String personalIdCard = 'البطاقه الشخصيه';
-  static const String licenseImage = 'صورة الرخصه';
-  static const String carImage = 'صورة السيارة';
-  static const String send = 'ارسال';
-  static const String successfulRegistrationForDriver =
-      ' تم التسجيل بنجاح وسيتم مراجعه بياناتك من قبل الاداره وسيتم الرد عليك في اقرب وقت';
-  static const String successfulRegistrationForPassenger =
-      'لقد تم تسجيلك بنجاح';
-  static const String thanksForUsingOurApp = 'شكرا لاستخدام تطبيقنا';
-  static const String backToLogin = 'تسجيل الدخول';
-  static const String exit = 'خروج';
-  static const String approveConditions =
-      'بمجرد الضغط علي تسجيل فانك توافق على الشروط والاحكام';
-  static const String availableTrips = 'الرحلات المتاحة';
-  static const String tripsWillAppearWhenYouBecomeAvailable =
-      'سيظهر لك الرحلات عندما تصبح متاحا';
-  static const String addressOneEx = 'بنزينه موبيل منطقه البطاش';
-  static const String addressTwoEx = 'موقف الاتوبيسات الكيلو 21';
-  static const String pound = 'جنيه';
-  static const String approve = 'قبول';
-  static const String reject = 'رفض';
-  static const String startTrip = 'بدء الرحلة';
-  static const String endTheTrip = 'انهاء الرحلة';
-  static const String tripIsFinished = 'تم انتهاء الرحلة';
-  static const String inTheRoad = 'في الطريق';
-  static const String tripCost = 'تكلفة الرحلة';
-  static const String tripDuration = 'مدة الرحلة';
-  static const String getPaid = 'تم الدفع';
-  static const String chooseYourTrip = 'اختر رحلتك الآن';
-  static const String from = 'من';
-  static const String to = 'الي';
-  static const String selectTheArea = 'ما الوجهه وما التكلفه ؟';
-  static const String searchingForDriver = 'جاري البحث عن سائق';
-  static const String driverFound = 'تم العثور على سائق';
-  static const String rating = 'التقييم';
-  static const String howWasYourTrip = 'كيف كانت رحلتك؟';
-  static const String rateTheDriver = 'قم بتقييم السائق';
-  static const String yourRatingWillHelpUsImprove =
-      'تقييمك سيساعدنا في تطوير و تقديم افضل خدمه';
-  static const String logout = 'تسجيل الخروج';
-  static const String account = 'الحساب';
-  static const String notifications = 'الاشعارات';
-  static const String history = 'السجل';
-  static const String ratings = 'التقييمات';
+  static String get splashViewWelcomeMessage => 'app.welcome'.tr();
+  static String get nextButton => 'common.next'.tr();
+  static String get skipButton => 'common.skip'.tr();
+  static String get newUser => 'auth.new_user'.tr();
+  static String get login => 'auth.login'.tr();
+  static String get password => 'auth.password'.tr();
+  static String get guestAccount => 'auth.guest'.tr();
+  static String get pressHere => 'common.press_here'.tr();
+  static String get driver => 'common.driver'.tr();
+  static String get passenger => 'common.passenger'.tr();
+  static String get fullName => 'auth.full_name'.tr();
+  static String get phoneNumber => 'auth.phone'.tr();
+  static String get profileImage => 'auth.profile_image'.tr();
+  static String get email => 'auth.email'.tr();
+  static String get personalIdCard => 'auth.id_card'.tr();
+  static String get licenseImage => 'auth.license_image'.tr();
+  static String get carImage => 'auth.car_image'.tr();
+  static String get send => 'common.send'.tr();
+  static String get successfulRegistrationForDriver =>
+      'auth.register_success_driver'.tr();
+  static String get successfulRegistrationForPassenger =>
+      'auth.register_success_passenger'.tr();
+  static String get thanksForUsingOurApp => 'app.thanks_for_using'.tr();
+  static String get backToLogin => 'auth.back_to_login'.tr();
+  static String get exit => 'common.exit'.tr();
+  static String get approveConditions => 'auth.terms_notice'.tr();
+  static String get availableTrips => 'driver.available_trips'.tr();
+  static String get tripsWillAppearWhenYouBecomeAvailable =>
+      'driver.trips_appear_when_available'.tr();
+  static String get addressOneEx => 'placeholder.address_one'.tr();
+  static String get addressTwoEx => 'placeholder.address_two'.tr();
+  static String get pound => 'units.pound'.tr();
+  static String get approve => 'common.accept'.tr();
+  static String get reject => 'common.decline'.tr();
+  static String get startTrip => 'trip.start'.tr();
+  static String get endTheTrip => 'trip.end'.tr();
+  static String get tripIsFinished => 'trip.finished'.tr();
+  static String get inTheRoad => 'trip.on_the_way'.tr();
+  static String get tripCost => 'trip.cost'.tr();
+  static String get tripDuration => 'trip.duration'.tr();
+  static String get getPaid => 'trip.paid'.tr();
+  static String get chooseYourTrip => 'trip.choose_now'.tr();
+  static String get from => 'trip.from'.tr();
+  static String get to => 'trip.to'.tr();
+  static String get selectTheArea => 'trip.where_and_how_much'.tr();
+  static String get searchingForDriver => 'trip.searching_driver'.tr();
+  static String get driverFound => 'trip.driver_found'.tr();
+  static String get rating => 'rating.title'.tr();
+  static String get howWasYourTrip => 'rating.how_was_trip'.tr();
+  static String get rateTheDriver => 'rating.rate_driver'.tr();
+  static String get yourRatingWillHelpUsImprove => 'rating.helps_us'.tr();
+  static String get logout => 'auth.logout'.tr();
+  static String get account => 'menu.account'.tr();
+  static String get notifications => 'menu.notifications'.tr();
+  static String get history => 'menu.history'.tr();
+  static String get ratings => 'menu.ratings'.tr();
 
   // Forget Password
-  static const String forgetPassword = 'نسيت كلمة المرور؟';
-  static const String forgetPasswordDescription =
-      'لا تقلق! أدخل بريدك الإلكتروني أدناه وسنرسل لك تعليمات لإعادة تعيين كلمة المرور.';
-  static const String enterEmail = 'أدخل البريد الإلكتروني';
+  static String get forgetPassword => 'auth.forgot_password'.tr();
+  static String get forgetPasswordDescription =>
+      'auth.forgot_password_description'.tr();
+  static String get enterEmail => 'auth.enter_email'.tr();
 
   // Reset Password
-  static const String resetPassword = 'إعادة تعيين كلمة المرور';
-  static const String resetPasswordDescription =
-      'أدخل كلمة المرور الجديدة الخاصة بك أدناه.';
-  static const String newPassword = 'كلمة المرور الجديدة';
-  static const String enterNewPassword = 'أدخل كلمة المرور الجديدة';
-  static const String confirmPassword = 'تأكيد كلمة المرور';
-  static const String confirmNewPassword = 'تأكيد كلمة المرور الجديدة';
-  static const String passwordsDoNotMatch = 'كلمات المرور غير متطابقة';
-  static const String changePassword = 'تغيير كلمة المرور';
+  static String get resetPassword => 'auth.reset_password'.tr();
+  static String get resetPasswordDescription =>
+      'auth.reset_password_description'.tr();
+  static String get newPassword => 'auth.new_password'.tr();
+  static String get enterNewPassword => 'auth.enter_new_password'.tr();
+  static String get confirmPassword => 'auth.confirm_password'.tr();
+  static String get confirmNewPassword => 'auth.confirm_new_password'.tr();
+  static String get passwordsDoNotMatch => 'validation.passwords_mismatch'.tr();
+  static String get changePassword => 'auth.change_password'.tr();
 
-  // Error Messages
-  static const String passwordChangedSuccessfully =
-      'تم تغيير كلمة المرور بنجاح';
-  static const String resetLinkSent =
-      'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني';
-  static const String loginSuccessful = 'تم تسجيل الدخول بنجاح';
-  static const String userAlreadyRegistered = 'المستخدم موجود بالفعل';
-  static const String invalidLoginCredentials =
-      'خطأ في البريد الإلكتروني أو كلمة المرور';
-  static const String emailNotConfirmed = 'البريد الإلكتروني غير مؤكد';
-  static const String weakPassword =
-      'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل';
-  static const String networkError = 'خطأ في الاتصال بالشبكة';
-  static const String unexpectedError =
-      'حدث خطأ غير متوقع، يرجى المحاولة لاحقاً';
-  static const String pleaseSelectProfileImage = 'يرجى اختيار صورة شخصية';
-  static const String pleaseUploadAllImages = 'يرجى تحميل جميع الصور المطلوبة';
+  // Messages
+  static String get passwordChangedSuccessfully => 'auth.password_changed'.tr();
+  static String get resetLinkSent => 'auth.reset_link_sent'.tr();
+  static String get loginSuccessful => 'auth.login_success'.tr();
+  static String get userAlreadyRegistered => 'errors.user_exists'.tr();
+  static String get invalidLoginCredentials =>
+      'errors.invalid_credentials'.tr();
+  static String get emailNotConfirmed => 'errors.email_not_confirmed'.tr();
+  static String get weakPassword => 'errors.weak_password'.tr();
+  static String get networkError => 'errors.network'.tr();
+  static String get unexpectedError => 'errors.unexpected'.tr();
+  static String get pleaseSelectProfileImage =>
+      'auth.select_profile_image'.tr();
+  static String get pleaseUploadAllImages => 'auth.upload_all_images'.tr();
 
   // Passenger Home
-  static const String chooseYourTripSafely = 'أختار رحلتك بامان';
-  static const String payment = 'الدفع';
-  static const String cash = 'كاش';
-  static const String searchForDriver = 'أبحث عن سائق';
-  static const String enterYourPath = 'أدخل مسارك';
-  static const String chooseOnMap = 'اختر على الخريطة';
-  static const String paymentMethods = 'طرق الدفع';
-  static const String offers = 'عروض';
-  static const String lightMode = 'الوضع الفاتح';
-  static const String darkMode = 'الوضع الداكن';
-  static const String home = 'المنزل';
-  static const String work = 'العمل';
-  static const String savedPlaces = 'الأماكن المحفوظة';
-  static const String fromValidator = 'يرجى اختيار مكان البداية';
-  static const String toValidator = 'يرجى اختيار وجهة الذهاب';
-  static const String tripDetails = 'تفاصيل الرحلة';
-  static const String km = 'كم';
-  static const String minute = 'دقيقة';
-  static const String tripCostOptional = 'تكلفة الرحلة (اختياري)';
-  static const String enterCost = 'التكلفه...';
-  static const String egp = 'ج.م';
-  static const String distance = 'المسافة';
-  static const String expectedTime = 'الوقت المتوقع';
+  static String get chooseYourTripSafely => 'trip.choose_safely'.tr();
+  static String get payment => 'trip.payment'.tr();
+  static String get cash => 'trip.cash'.tr();
+  static String get searchForDriver => 'trip.search_driver'.tr();
+  static String get enterYourPath => 'trip.enter_route'.tr();
+  static String get chooseOnMap => 'trip.choose_on_map'.tr();
+  static String get paymentMethods => 'menu.payment_methods'.tr();
+  static String get offers => 'menu.offers'.tr();
+  static String get lightMode => 'menu.light_mode'.tr();
+  static String get darkMode => 'menu.dark_mode'.tr();
+  static String get home => 'passenger.home'.tr();
+  static String get work => 'passenger.work'.tr();
+  static String get savedPlaces => 'passenger.saved_places'.tr();
+  static String get fromValidator => 'validation.pickup_required'.tr();
+  static String get toValidator => 'validation.destination_required'.tr();
+  static String get tripDetails => 'trip.details'.tr();
+  static String get km => 'units.km'.tr();
+  static String get minute => 'units.minute'.tr();
+  static String get tripCostOptional => 'trip.cost_optional'.tr();
+  static String get enterCost => 'trip.cost_hint'.tr();
+  static String get egp => 'units.egp'.tr();
+  static String get distance => 'trip.distance'.tr();
+  static String get expectedTime => 'trip.expected_time'.tr();
+
+  /// "Enter {field}" input hint, e.g. `enterField(email)`.
+  static String enterField(String field) =>
+      'auth.enter_field'.tr(namedArgs: {'field': field});
+
+  /// "{value} EGP" formatted price.
+  static String price(Object? value) =>
+      'units.price'.tr(namedArgs: {'value': '${value ?? 0}'});
 }

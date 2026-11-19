@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 class Validator {
   static String? validateEmptyText(String? fieldName, String? value) {
     if (value == null || value.isEmpty) {
@@ -9,14 +11,14 @@ class Validator {
 
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'البريد الإلكتروني مطلوب';
+      return 'validation.email_required'.tr();
     }
     final emailRegExp = RegExp(
       r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$',
     );
 
     if (!emailRegExp.hasMatch(value)) {
-      return 'البريد الإلكتروني غير صالح';
+      return 'validation.email_invalid'.tr();
     }
 
     return null;
@@ -24,87 +26,87 @@ class Validator {
 
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'كلمة المرور مطلوبة';
+      return 'validation.password_required'.tr();
     }
 
     if (value.length < 6) {
-      return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+      return 'validation.password_min'.tr();
     }
     if (!value.contains(RegExp(r'[A-Z]'))) {
-      return 'كلمة المرور يجب أن تحتوي على حرف كبير واحد على الأقل';
+      return 'validation.password_upper'.tr();
     }
     if (!value.contains(RegExp(r'[a-z]'))) {
-      return 'كلمة المرور يجب أن تحتوي على حرف صغير واحد على الأقل';
+      return 'validation.password_lower'.tr();
     }
 
     if (!value.contains(RegExp(r'[0-9]'))) {
-      return 'كلمة المرور يجب أن تحتوي على رقم واحد على الأقل';
+      return 'validation.password_digit'.tr();
     }
     if (!value.contains(RegExp(r'^(?=.*?[#?!@$%^&*-])'))) {
-      return 'كلمة المرور يجب أن تحتوي على رمز خاص واحد على الأقل';
+      return 'validation.password_special'.tr();
     }
     return null;
   }
 
   static String? validatePhone(String? value) {
     if (value == null || value.isEmpty) {
-      return 'رقم الهاتف مطلوب';
+      return 'validation.phone_required'.tr();
     }
     final phoneRegExp = RegExp(r'^(010|011|012|015)[0-9]{8}$');
 
     if (!phoneRegExp.hasMatch(value)) {
-      return 'رقم الهاتف غير صالح';
+      return 'validation.phone_invalid'.tr();
     }
     return null;
   }
 
   static String? validateConfirmPassword(String? value, String password) {
     if (value == null || value.isEmpty) {
-      return 'تأكيد كلمة المرور مطلوب';
+      return 'validation.confirm_password_required'.tr();
     }
     if (value != password) {
-      return 'كلمات المرور غير متطابقة';
+      return 'validation.passwords_mismatch'.tr();
     }
     return null;
   }
 
   static String? validateName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'الاسم مطلوب';
+      return 'validation.name_required'.tr();
     }
     if (value.length < 3) {
-      return 'الاسم يجب أن يكون 3 أحرف على الأقل';
+      return 'validation.name_min'.tr();
     }
     return null;
   }
 
   static String? validatePersonalId(String? value) {
     if (value == null || value.isEmpty) {
-      return 'رقم البطاقة الشخصية مطلوب';
+      return 'validation.national_id_required'.tr();
     }
     final personalIdRegExp = RegExp(r'^[0-9]{14}$');
     if (!personalIdRegExp.hasMatch(value)) {
-      return 'رقم البطاقة الشخصية يجب أن يكون 14 رقم';
+      return 'validation.national_id_length'.tr();
     }
     return null;
   }
 
   static String? validateLicenseNumber(String? value) {
     if (value == null || value.isEmpty) {
-      return 'رقم الرخصة مطلوب';
+      return 'validation.license_required'.tr();
     }
     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-      return 'رقم الرخصة يجب أن يحتوي على أرقام فقط';
+      return 'validation.license_digits'.tr();
     }
     return null;
   }
 
   static String? validateAddress(String? value) {
     if (value == null || value.isEmpty) {
-      return 'العنوان مطلوب';
+      return 'validation.address_required'.tr();
     }
     if (value.length < 5) {
-      return 'العنوان يجب أن يكون 5 أحرف على الأقل';
+      return 'validation.address_min'.tr();
     }
     return null;
   }

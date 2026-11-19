@@ -1,4 +1,6 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:ala_feen/core/utils/app_strings.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_trip_details_cubit/get_trip_details_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/accepted_offer_widgets/dotted_line_painter.dart';
@@ -31,7 +33,7 @@ class TripDetailsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'تفاصيل الرحلة',
+                  'trip.details'.tr(),
                   style: AppTextStyles.bold14(context),
                 ),
                 SizedBox(height: 16.h),
@@ -40,7 +42,7 @@ class TripDetailsCard extends StatelessWidget {
                   context,
                   icon: Icons.circle,
                   iconColor: Colors.green,
-                  title: 'من',
+                  title: 'trip.from'.tr(),
                   location: state.trip.originAddress ?? '',
                 ),
                 SizedBox(height: 12.h),
@@ -58,7 +60,7 @@ class TripDetailsCard extends StatelessWidget {
                   context,
                   icon: Icons.location_on,
                   iconColor: Colors.red,
-                  title: 'إلى',
+                  title: 'trip.to'.tr(),
                   location: state.trip.distAddress ?? '',
                 ),
                 SizedBox(height: 20.h),
@@ -69,7 +71,7 @@ class TripDetailsCard extends StatelessWidget {
                       child: _buildStatItem(
                         context,
                         icon: Icons.access_time,
-                        label: 'المدة',
+                        label: 'trip.duration_short'.tr(),
                         value: state.trip.tripDuration ?? '',
                       ),
                     ),
@@ -78,7 +80,7 @@ class TripDetailsCard extends StatelessWidget {
                       child: _buildStatItem(
                         context,
                         icon: Icons.straighten,
-                        label: 'المسافة',
+                        label: 'trip.distance'.tr(),
                         value: state.trip.tripDistance ?? '',
                       ),
                     ),
@@ -87,8 +89,8 @@ class TripDetailsCard extends StatelessWidget {
                       child: _buildStatItem(
                         context,
                         icon: Icons.payments,
-                        label: 'السعر',
-                        value: '${state.trip.tripPrice} ج.م',
+                        label: 'trip.price'.tr(),
+                        value: AppStrings.price(state.trip.tripPrice),
                       ),
                     ),
                   ],

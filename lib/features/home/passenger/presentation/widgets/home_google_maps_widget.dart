@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/utils/map_style.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/cubits/cubit/theme_toggle_cubit.dart';
 import 'package:ala_feen/core/functions/show_snack_bar.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyline_cubit/draw_polyline_cubit.dart';
@@ -141,8 +142,8 @@ class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
                         icon: BitmapDescriptor.defaultMarkerWithHue(
                           BitmapDescriptor.hueAzure,
                         ),
-                        infoWindow: const InfoWindow(
-                          title: 'موقعي الحالي',
+                        infoWindow: InfoWindow(
+                          title: 'map.my_current_location'.tr(),
                         ),
                       ),
                     );

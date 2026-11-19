@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
@@ -59,7 +60,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             child: _buildFieldWithHeader(
               context: context,
               headerText: AppStrings.email,
-              hintText: 'أدخل ${AppStrings.email}',
+              hintText: AppStrings.enterField(AppStrings.email),
               icon: Icons.email_outlined,
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -73,7 +74,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
             child: _buildFieldWithHeader(
               context: context,
               headerText: AppStrings.password,
-              hintText: 'أدخل ${AppStrings.password}',
+              hintText: AppStrings.enterField(AppStrings.password),
               icon: Icons.lock_outline,
               controller: _passwordController,
               validator: Validator.validatePassword,
@@ -101,7 +102,7 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                   GoRouter.of(context).push(ForgetPasswordScreen.routeName);
                 },
                 child: Text(
-                  'هل نسيت كلمة المرور؟',
+                  'auth.forgot_password_question'.tr(),
                   style: AppTextStyles.medium14(context).copyWith(
                     color: AppColors.primary,
                   ),

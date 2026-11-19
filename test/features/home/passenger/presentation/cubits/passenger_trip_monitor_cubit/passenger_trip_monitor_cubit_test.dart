@@ -64,7 +64,11 @@ void main() {
     await flush();
 
     expect(cubit.state.status, PassengerTripStatus.started);
-    expect(notifications, ['الكابتن وصل! 🚗', 'الرحلة بدأت 🛣️']);
+    // Translations aren't loaded in unit tests, so tr() returns the key.
+    expect(notifications, [
+      'trip_status.driver_arrived_title',
+      'trip_status.started_title',
+    ]);
   });
 
   test('does not notify when the status repeats', () async {

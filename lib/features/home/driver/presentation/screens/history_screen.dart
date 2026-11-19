@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart' hide TextDirection;
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/driver/presentation/widgets/driver_details_header.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,8 @@ class HistoryScreen extends StatelessWidget {
       backgroundColor: const Color(0xffF8F8F8),
       body: Column(
         children: [
-          const DriverDetailsHeader(
-            title: 'السجل',
+          DriverDetailsHeader(
+            title: 'menu.history'.tr(),
           ),
           Expanded(
             child: ListView.separated(
@@ -87,14 +88,14 @@ class HistoryScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'بنزينه موبيل منطقه البطاش',
+                        'placeholder.address_one'.tr(),
                         style: AppTextStyles.medium12(
                           context,
                         ).copyWith(color: AppColors.greyColor),
                       ),
                       SizedBox(height: 15.h),
                       Text(
-                        'موقف الاتوبيسات الكيلو 21',
+                        'placeholder.address_two'.tr(),
                         style: AppTextStyles.medium12(
                           context,
                         ).copyWith(color: AppColors.greyColor),

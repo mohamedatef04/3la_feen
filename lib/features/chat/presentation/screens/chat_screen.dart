@@ -1,11 +1,11 @@
 import 'package:ala_feen/core/di/injection_container.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/features/chat/presentation/cubits/chat_cubit.dart';
 import 'package:ala_feen/core/services/chat_notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 class ChatScreen extends StatefulWidget {
   static const String routeName = '/chat';
@@ -85,10 +85,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 builder: (context, state) {
                   if (state is ChatSuccess) {
                     if (state.messages.isEmpty) {
-                      return const Center(
+                      return Center(
                         child: Text(
-                          'لا توجد رسائل بعد',
-                          style: TextStyle(color: Colors.grey),
+                          'chat.no_messages'.tr(),
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       );
                     }
@@ -191,7 +191,7 @@ class _ChatScreenState extends State<ChatScreen> {
               child: TextField(
                 controller: _controller,
                 decoration: InputDecoration(
-                  hintText: 'اكتب رسالة...',
+                  hintText: 'chat.type_message'.tr(),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(24.r),
                     borderSide: BorderSide.none,

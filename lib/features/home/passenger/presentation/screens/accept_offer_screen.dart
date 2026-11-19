@@ -1,4 +1,5 @@
 import 'package:ala_feen/core/theme/app_text_styles.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_driver_data_cubit/get_driver_data_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_trip_details_cubit/get_trip_details_cubit.dart';
@@ -37,7 +38,7 @@ class _AcceptOfferScreenState extends State<AcceptOfferScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'تفاصيل الرحلة',
+          'trip.details'.tr(),
           style: AppTextStyles.bold18(context),
           textAlign: TextAlign.center,
         ),
@@ -56,7 +57,7 @@ class _AcceptOfferScreenState extends State<AcceptOfferScreen> {
                 listener: (context, state) {
                   if (state.status == PassengerTripStatus.cancelled) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('تم إلغاء الرحلة')),
+                      SnackBar(content: Text('trip.cancelled'.tr())),
                     );
                     context.go('/passenger-home');
                   }
@@ -90,13 +91,13 @@ class _AcceptOfferScreenState extends State<AcceptOfferScreen> {
                                     const SuccessIconWidget(),
                                     SizedBox(height: 24.h),
                                     Text(
-                                      'تم قبول العرض بنجاح!',
+                                      'passenger.offer_accepted'.tr(),
                                       style: AppTextStyles.bold25(context),
                                       textAlign: TextAlign.center,
                                     ),
                                     SizedBox(height: 8.h),
                                     Text(
-                                      'الكابتن في الطريق إليك',
+                                      'passenger.captain_on_way'.tr(),
                                       style: AppTextStyles.regular14(context)
                                           .copyWith(
                                             color: Theme.of(context).hintColor,
