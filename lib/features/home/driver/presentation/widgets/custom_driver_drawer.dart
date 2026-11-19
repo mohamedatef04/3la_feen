@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/widgets/language_toggle_item.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/core/utils/app_strings.dart';
@@ -107,6 +108,7 @@ class CustomDriverDrawer extends StatelessWidget {
                   ),
                   const Divider(),
                   const ThemeToggleItem(),
+                  const LanguageToggleItem(),
                 ],
               ),
             ),

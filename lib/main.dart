@@ -13,7 +13,8 @@ import 'core/di/injection_container.dart' as di;
 import 'package:ala_feen/core/utils/notifications/fcm.dart';
 import 'package:ala_feen/core/utils/notifications/local.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:ala_feen/core/localization/localization_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +38,17 @@ void main() async {
   // Initialize custom map markers
   await MarkerUtils.init();
 
-  runApp(const MyApp());
+  await EasyLocalization.ensureInitialized();
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: LocalizationManager.supportedLocales,
+      path: LocalizationManager.translationsPath,
+      startLocale: LocalizationManager.defaultLocale,
+      fallbackLocale: LocalizationManager.defaultLocale,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -56,16 +67,17 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: state,
               themeMode: ThemeMode.system,
-              locale: const Locale('ar'),
-              supportedLocales: const [
-                Locale('ar'),
-                Locale('en'),
-              ],
-              localizationsDelegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
+              // The selected language is saved by EasyLocalization and
+              // drives RTL/LTR through the material localizations.
+              locale: context.locale,
+              supportedLocales: context.supportedLocales,
+              localizationsDelegates: context.localizationDelegates,
+              // Rebuild every screen when the language changes so strings
+              // read outside the widget tree (AppStrings, .tr()) refresh.
+              builder: (context, child) => KeyedSubtree(
+                key: ValueKey(context.locale),
+                child: child!,
+              ),
             );
           },
         ),
