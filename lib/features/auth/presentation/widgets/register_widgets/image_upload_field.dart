@@ -58,7 +58,7 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
               color: const Color.fromARGB(255, 213, 213, 232),
               borderRadius: BorderRadius.circular(15.r),
               border: Border.all(
-                color: AppColors.primary.withOpacity(0.2),
+                color: AppColors.primary.withValues(alpha: 0.2),
                 width: 1,
               ),
               image: _image != null
@@ -74,14 +74,14 @@ class _ImageUploadFieldState extends State<ImageUploadField> {
                     children: [
                       Icon(
                         Icons.cloud_upload_outlined,
-                        color: AppColors.primary.withOpacity(0.6),
+                        color: AppColors.primary.withValues(alpha: 0.6),
                         size: 30.sp,
                       ),
                       SizedBox(height: 4.h),
                       Text(
                         'حمل الصورة',
                         style: TextStyle(
-                          color: AppColors.primary.withOpacity(0.6),
+                          color: AppColors.primary.withValues(alpha: 0.6),
                           fontSize: 12.sp,
                           fontWeight: FontWeight.bold,
                         ),

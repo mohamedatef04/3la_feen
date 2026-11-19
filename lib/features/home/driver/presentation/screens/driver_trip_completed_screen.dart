@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/di/injection_container.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
@@ -35,7 +36,7 @@ class _DriverTripCompletedScreenState extends State<DriverTripCompletedScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RatingCubit(),
+      create: (context) => sl<RatingCubit>(),
       child: Scaffold(
         body: SafeArea(
           child: BlocConsumer<RatingCubit, RatingState>(
@@ -61,7 +62,7 @@ class _DriverTripCompletedScreenState extends State<DriverTripCompletedScreen> {
                       width: 120.w,
                       height: 120.w,
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -95,7 +96,7 @@ class _DriverTripCompletedScreenState extends State<DriverTripCompletedScreen> {
                         borderRadius: BorderRadius.circular(16.r),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),
@@ -264,7 +265,7 @@ class _DriverTripCompletedScreenState extends State<DriverTripCompletedScreen> {
         Container(
           padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8.r),
           ),
           child: Icon(icon, color: AppColors.primary, size: 20.sp),

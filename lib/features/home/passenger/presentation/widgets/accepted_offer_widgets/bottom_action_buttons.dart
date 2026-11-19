@@ -167,7 +167,7 @@ class _BottomActionButtonsState extends State<BottomActionButtons> {
                             await Future.delayed(
                               const Duration(milliseconds: 100),
                             );
-                            if (!mounted) return;
+                            if (!context.mounted) return;
 
                             await Navigator.push(
                               context,

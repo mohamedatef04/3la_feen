@@ -1,4 +1,4 @@
-import 'package:ala_feen/core/utils/notifcations.dart/local.dart';
+import 'package:ala_feen/core/utils/notifications/local.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -91,7 +91,7 @@ class FcmService {
           .update({'fcm_token': token})
           .eq('id', user.id);
     } catch (e) {
-      print('Error saving FCM token: $e');
+      debugPrint('Error saving FCM token: $e');
     }
   }
 }

@@ -26,7 +26,7 @@ class DrawPolylineCubit extends Cubit<DrawPolylineState> {
         position: points.first,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
         infoWindow: const InfoWindow(
-          title: 'Ù†Ù‚Ø·Ø© Ø§Ù„Ø¨Ø¯Ø§ÙŠØ©',
+          title: 'نقطة البداية',
         ),
       ),
       Marker(
@@ -34,7 +34,7 @@ class DrawPolylineCubit extends Cubit<DrawPolylineState> {
         position: points.last,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         infoWindow: const InfoWindow(
-          title: 'Ù†Ù‚Ø·Ø© Ø§Ù„Ù†Ù‡Ø§ÙŠØ©',
+          title: 'نقطة النهاية',
         ),
       ),
     };

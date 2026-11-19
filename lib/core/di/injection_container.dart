@@ -18,7 +18,7 @@ import 'package:ala_feen/features/home/passenger/presentation/cubits/get_driver_
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_offers_stream_cubit/get_prices_offers_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_passenger_data_cubit/get_passenger_data_cubit.dart';
 import 'package:ala_feen/features/home/driver/presentation/cubit/get_passenger_data/get_passenger_details_cubit.dart';
-import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_items.dart/get_places_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_cubit/get_places_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_route_cubit/get_route_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/send_trip_cubit/send_trip_request_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
@@ -39,6 +39,13 @@ import 'package:ala_feen/features/chat/presentation/cubits/chat_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/passenger_trip_monitor_cubit/passenger_trip_monitor_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/rating_cubit/rating_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:ala_feen/core/cubits/notifications/notifications_cubit.dart';
+import 'package:ala_feen/core/repos/notifications_repo.dart';
+import 'package:ala_feen/features/chat/data/data_source/chat_data_source.dart';
+import 'package:ala_feen/features/chat/data/repos/chat_repo.dart';
+import 'package:ala_feen/features/home/driver/presentation/cubit/driver_ratings/driver_ratings_cubit.dart';
+import 'package:ala_feen/features/home/passenger/data/data_source/passenger_trip_data_source.dart';
+import 'package:ala_feen/features/home/passenger/data/repos/passenger_trip_repo.dart';
 
 final sl = GetIt.instance;
 
@@ -162,19 +169,46 @@ Future<void> init() async {
   sl.registerLazySingleton<DriverTrackingService>(
     () => DriverTrackingService(sl.get<SupabaseClient>()),
   );
+  sl.registerFactory<DriverRatingsCubit>(
+    () => DriverRatingsCubit(sl.get<DriverRepo>()),
+  );
+
+  //* passenger trip (after the request: status, tracking, cancel, rating)
+  sl.registerLazySingleton<PassengerTripDataSource>(
+    () => PassengerTripDataSourceImpl(sl.get<SupabaseClient>()),
+  );
+  sl.registerLazySingleton<PassengerTripRepo>(
+    () => PassengerTripRepoImpl(sl.get<PassengerTripDataSource>()),
+  );
   sl.registerFactory<CancelTripCubit>(
-    () => CancelTripCubit(),
+    () => CancelTripCubit(sl.get<PassengerTripRepo>()),
   );
   sl.registerFactory<TrackDriverCubit>(
-    () => TrackDriverCubit(),
-  );
-  sl.registerFactory<ChatCubit>(
-    () => ChatCubit(),
+    () => TrackDriverCubit(sl.get<PassengerTripRepo>()),
   );
   sl.registerFactory<PassengerTripMonitorCubit>(
-    () => PassengerTripMonitorCubit(),
+    () => PassengerTripMonitorCubit(sl.get<PassengerTripRepo>()),
   );
   sl.registerFactory<RatingCubit>(
-    () => RatingCubit(),
+    () => RatingCubit(sl.get<PassengerTripRepo>()),
+  );
+
+  //* notifications
+  sl.registerLazySingleton<NotificationsRepo>(
+    () => NotificationsRepoImpl(sl.get<SupabaseClient>()),
+  );
+  sl.registerFactory<NotificationsCubit>(
+    () => NotificationsCubit(sl.get<NotificationsRepo>()),
+  );
+
+  //* chat
+  sl.registerLazySingleton<ChatDataSource>(
+    () => ChatDataSourceImpl(sl.get<SupabaseClient>()),
+  );
+  sl.registerLazySingleton<ChatRepo>(
+    () => ChatRepoImpl(sl.get<ChatDataSource>()),
+  );
+  sl.registerFactory<ChatCubit>(
+    () => ChatCubit(sl.get<ChatRepo>()),
   );
 }

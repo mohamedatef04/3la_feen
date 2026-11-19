@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ala_feen/core/utils/notifcations.dart/local.dart';
+import 'package:ala_feen/core/utils/notifications/local.dart';
 
 /// Global service that listens for new chat messages in the background
 /// and shows notifications when the user is not in the chat screen.

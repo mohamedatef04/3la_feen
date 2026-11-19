@@ -1,5 +1,7 @@
 # 3la Feen (على فين)
 
+[![CI](https://github.com/mohamedatef04/3la_feen/actions/workflows/ci.yml/badge.svg)](https://github.com/mohamedatef04/3la_feen/actions/workflows/ci.yml)
+
 A ride-hailing app for Egypt, built with Flutter and Supabase. Passengers post a trip, nearby drivers send price offers, the passenger picks one, and both sides follow the trip live on the map until it ends with a rating.
 
 One codebase serves both roles: the app opens the passenger or the driver experience depending on the signed-in account.

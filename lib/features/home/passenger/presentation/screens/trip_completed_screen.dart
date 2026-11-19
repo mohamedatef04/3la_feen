@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/di/injection_container.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
 import 'package:ala_feen/core/theme/app_text_styles.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
@@ -35,7 +36,7 @@ class _TripCompletedScreenState extends State<TripCompletedScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => RatingCubit(),
+      create: (context) => sl<RatingCubit>(),
       child: Scaffold(
         body: SafeArea(
           child: BlocConsumer<RatingCubit, RatingState>(

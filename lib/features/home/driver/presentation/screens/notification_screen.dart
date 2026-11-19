@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/di/injection_container.dart';
 import 'package:ala_feen/core/cubits/notifications/notifications_cubit.dart';
 import 'package:ala_feen/core/models/notification_model.dart';
 import 'package:ala_feen/core/theme/app_colors.dart';
@@ -17,7 +18,7 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => NotificationsCubit()..getNotifications(),
+      create: (context) => sl<NotificationsCubit>()..getNotifications(),
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: Column(

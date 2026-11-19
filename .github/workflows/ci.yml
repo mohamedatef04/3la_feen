@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          # Pinned so CI matches local development; bump deliberately.
+          flutter-version: 3.47.5
+          channel: stable
+          cache: true
+
+      # .env is a declared asset; CI uses the template's placeholder values.
+      - name: Create .env from template
+        run: cp .env.example .env
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting of tests
+        run: dart format --output=none --set-exit-if-changed test
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test --coverage

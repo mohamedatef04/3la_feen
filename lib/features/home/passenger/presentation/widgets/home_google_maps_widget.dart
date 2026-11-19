@@ -1,9 +1,9 @@
+import 'package:ala_feen/core/utils/map_style.dart';
 import 'package:ala_feen/core/cubits/cubit/theme_toggle_cubit.dart';
 import 'package:ala_feen/core/functions/show_snack_bar.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyline_cubit/draw_polyline_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -18,6 +18,7 @@ class HomeGoogleMapsWidget extends StatefulWidget {
 class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
   late CameraPosition initialCameraPosition;
   GoogleMapController? mapController;
+  String? _mapStyle;
   Set<Marker> markers = {};
   Set<Polyline> polylines = {};
   bool isFirstLocationUpdate = true;
@@ -33,19 +34,10 @@ class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
   }
 
   Future<void> _setMapStyle({Brightness? brightness}) async {
-    if (mapController == null) return;
-    final targetBrightness = brightness ?? Theme.of(context).brightness;
-    final isDarkMode = targetBrightness == Brightness.dark;
-    final stylePath = isDarkMode
-        ? 'assets/map_styles/dark_map_style.json'
-        : 'assets/map_styles/light_map_style.json';
-
-    try {
-      final style = await rootBundle.loadString(stylePath);
-      await mapController!.setMapStyle(style);
-    } catch (e) {
-      debugPrint('Error loading map style: $e');
-    }
+    final style = await MapStyle.load(
+      brightness ?? Theme.of(context).brightness,
+    );
+    if (mounted) setState(() => _mapStyle = style);
   }
 
   @override
@@ -103,6 +95,7 @@ class _HomeGoogleMapsWidgetState extends State<HomeGoogleMapsWidget> {
       child: Stack(
         children: [
           GoogleMap(
+            style: _mapStyle,
             initialCameraPosition: initialCameraPosition,
             onMapCreated: (controller) {
               mapController = controller;

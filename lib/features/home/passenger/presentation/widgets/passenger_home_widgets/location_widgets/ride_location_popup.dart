@@ -8,7 +8,7 @@ import 'package:ala_feen/features/auth/presentation/widgets/shared_widgets/custo
 import 'package:ala_feen/features/get_started/widgets/custom_button_widget.dart';
 
 import 'package:ala_feen/features/home/passenger/presentation/cubits/draw_polyline_cubit/draw_polyline_cubit.dart';
-import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_items.dart/get_places_cubit.dart';
+import 'package:ala_feen/features/home/passenger/presentation/cubits/get_places_cubit/get_places_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/get_route_cubit/get_route_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/cubits/track_my_location_cubit/track_my_location_cubit.dart';
 import 'package:ala_feen/features/home/passenger/presentation/widgets/passenger_home_widgets/location_widgets/location_popup_header.dart';

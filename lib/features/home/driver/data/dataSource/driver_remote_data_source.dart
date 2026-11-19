@@ -1,3 +1,4 @@
+import 'package:ala_feen/core/errors/custom_exeption.dart';
 import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
@@ -14,11 +15,25 @@ abstract class DriverRemoteDataSource {
     required String status,
   });
   Future<UserModel?> getPassengerData(String passengerId);
+  Future<List<Map<String, dynamic>>> getMyRatings();
 }
 
 class DriverRemoteDataSourceImpl implements DriverRemoteDataSource {
   final SupabaseClient supabaseClient;
   DriverRemoteDataSourceImpl(this.supabaseClient);
+
+  @override
+  Future<List<Map<String, dynamic>>> getMyRatings() async {
+    final driverId = supabaseClient.auth.currentUser?.id;
+    if (driverId == null) {
+      throw const CustomExeption(errorMessage: 'User not authenticated');
+    }
+    return supabaseClient
+        .from('trip_ratings')
+        .select()
+        .eq('driver_id', driverId)
+        .order('created_at', ascending: false);
+  }
 
   @override
   Future<UserModel?> getDriverData() async {

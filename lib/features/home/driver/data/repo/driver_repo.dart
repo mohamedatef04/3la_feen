@@ -1,3 +1,5 @@
+import 'package:ala_feen/core/errors/failures.dart';
+import 'package:dartz/dartz.dart';
 import 'package:ala_feen/features/auth/data/models/user_model.dart';
 import 'package:ala_feen/features/home/passenger/data/models/trip_model.dart';
 import 'package:ala_feen/features/home/passenger/data/models/offer_model.dart';
@@ -13,4 +15,7 @@ abstract class DriverRepo {
     required String status,
   });
   Future<UserModel?> getPassengerData(String passengerId);
+
+  /// Ratings passengers gave the signed-in driver, newest first.
+  Future<Either<Failures, List<Map<String, dynamic>>>> getMyRatings();
 }

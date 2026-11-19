@@ -92,7 +92,7 @@ class DriverInfoCard extends StatelessWidget {
                 ? Icon(
                     Icons.person,
                     size: 30.sp,
-                    color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
+                    color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
                   )
                 : null,
           ),
